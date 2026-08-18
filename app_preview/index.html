@@ -1226,18 +1226,44 @@ function addToCart() {
   alert(`${qty}x ${currentItem.item_name_fr} ajouté au panier! Total: $${total.toFixed(2)}`);
 }
 
+let customerDistanceKm = 3.5; // Default within 5 km
+
+function calculateDeliveryFee(distanceKm) {
+  if (distanceKm <= 5.0) return 0.00;
+  if (distanceKm <= 10.0) return 4.99;
+  if (distanceKm <= 15.0) return 9.99;
+  return 12.99;
+}
+
 function openCartModal() {
   if (cart.length === 0) {
-    alert("Votre panier est vide. Choisissez un délicieux wrap pour commencer!");
+    alert(currentLanguage === 'FR' 
+      ? "Votre panier est vide. Choisissez un délicieux wrap pour commencer!" 
+      : "Your cart is empty. Choose a delicious wrap to get started!"
+    );
     return;
   }
+  
   let subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-  let deliveryFee = 3.99;
+  let deliveryFee = calculateDeliveryFee(customerDistanceKm);
   let tps = (subtotal + deliveryFee) * 0.05;
   let tvq = (subtotal + deliveryFee) * 0.09975;
   let grandTotal = subtotal + deliveryFee + tps + tvq;
 
-  alert(`🛒 RÉCAPITULATIF COMMANDE (Drummondville)\n\nArticles: ${cart.length}\nSous-total: $${subtotal.toFixed(2)}\nLivraison: $${deliveryFee.toFixed(2)}\nTPS (5%): $${tps.toFixed(2)}\nTVQ (9.975%): $${tvq.toFixed(2)}\n\nTOTAL: $${grandTotal.toFixed(2)} CAD\n\nPrêt pour paiement Stripe!`);
+  let feeLabel = deliveryFee === 0 ? "GRATUIT (0 - 5 km)" : `$${deliveryFee.toFixed(2)} CAD`;
+
+  alert(`🛒 RÉCAPITULATIF COMMANDE (Drummondville)
+  
+📍 Adresse: 998 110e Ave → Destination (${customerDistanceKm} km)
+📦 Articles: ${cart.length}
+💵 Sous-total: $${subtotal.toFixed(2)}
+🛵 Frais de livraison: ${feeLabel}
+🏛️ TPS (5.000%): $${tps.toFixed(2)}
+🏛️ TVQ (9.975%): $${tvq.toFixed(2)}
+---------------------------------
+⭐ TOTAL: $${grandTotal.toFixed(2)} CAD
+
+(Barème de Livraison: 0-5 km: GRATUIT · 5-10 km: $4.99 · 10-15 km: $9.99)`);
 }
 
 function toggleLanguage() {

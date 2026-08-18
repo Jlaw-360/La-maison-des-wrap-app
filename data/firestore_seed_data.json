@@ -28,7 +28,46 @@
         "friday": "11:00 - 23:00",
         "saturday": "11:00 - 23:00",
         "sunday": "12:00 - 22:00"
-      }
+      },
+      "delivery_tiers": [
+        {
+          "tier_name": "Zone 1: Coeur de Drummondville (0 - 5 km)",
+          "min_km": 0,
+          "max_km": 5,
+          "delivery_fee_cad": 0,
+          "label_fr": "LIVRAISON GRATUITE",
+          "label_en": "FREE DELIVERY",
+          "min_order_cad": 15
+        },
+        {
+          "tier_name": "Zone 2: Grand Drummondville & Banlieue (5 - 10 km)",
+          "min_km": 5.01,
+          "max_km": 10,
+          "delivery_fee_cad": 4.99,
+          "label_fr": "Frais de livraison: 4.99$",
+          "label_en": "Delivery Fee: $4.99",
+          "min_order_cad": 20
+        },
+        {
+          "tier_name": "Zone 3: Régions périphériques (10 - 15 km)",
+          "min_km": 10.01,
+          "max_km": 15,
+          "delivery_fee_cad": 9.99,
+          "label_fr": "Frais de livraison: 9.99$",
+          "label_en": "Delivery Fee: $9.99",
+          "min_order_cad": 30
+        },
+        {
+          "tier_name": "Zone 4: Limite Extérieure (15 - 18 km)",
+          "min_km": 15.01,
+          "max_km": 18,
+          "delivery_fee_cad": 12.99,
+          "label_fr": "Frais de livraison longue distance: 12.99$",
+          "label_en": "Long Distance Delivery Fee: $12.99",
+          "min_order_cad": 35
+        }
+      ],
+      "max_delivery_radius_km": 18
     }
   },
   "users": {
