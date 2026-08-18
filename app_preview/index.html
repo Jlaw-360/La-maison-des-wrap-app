@@ -77,11 +77,20 @@
 
     .brand-title {
       font-family: var(--font-heading);
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.5px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
     }
 
     .brand-title span.accent {
@@ -689,9 +698,12 @@
   <header class="app-header">
     <div class="header-top">
       <div class="brand-title">
-        <span>LA MAISON DES <span class="accent">WRAPS</span></span>
-        <div class="location-subtitle">
-          <i class="fa-solid fa-location-dot"></i> 998 110e Ave, Drummondville, QC
+        <img src="logo.png" alt="La Maison des Wraps Logo" class="brand-logo-img">
+        <div>
+          <div>LA MAISON DES <span class="accent">WRAPS</span></div>
+          <div class="location-subtitle">
+            <i class="fa-solid fa-location-dot"></i> 998 110e Ave, Drummondville
+          </div>
         </div>
       </div>
       <div class="header-actions">
