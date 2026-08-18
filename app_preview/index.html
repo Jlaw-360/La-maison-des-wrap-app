@@ -710,6 +710,9 @@
         <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">
           <i class="fa-solid fa-globe"></i> <span id="currentLang">FR</span>
         </button>
+        <button class="lang-btn" id="authHeaderBtn" onclick="openAuthModal()" style="background: rgba(255,85,0,0.15); border-color: var(--primary); color: var(--primary);">
+          <i class="fa-solid fa-user"></i> <span id="authBtnLabel">Connexion</span>
+        </button>
         <div class="icon-badge-btn" onclick="openCartModal()">
           <i class="fa-solid fa-bag-shopping"></i>
           <div class="badge-count" id="cartCount">0</div>
@@ -782,7 +785,173 @@
 
 </div>
 
-<!-- Customization Modal Sheet -->
+<!-- Auth Modal Sheet (Sign Up & Sign In) -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-content" style="max-height: 90vh;">
+    <div class="modal-close" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></div>
+    
+    <!-- Auth Tabs (Connexion / Inscription) -->
+    <div style="display: flex; background: var(--bg-dark); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border);">
+      <button id="tabSignInBtn" onclick="switchAuthTab('signin')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: var(--surface-card); color: #fff; transition: all 0.2s;">
+        <span id="tabSignInText">Se Connecter</span>
+      </button>
+      <button id="tabSignUpBtn" onclick="switchAuthTab('signup')" style="flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; background: transparent; color: var(--text-muted); transition: all 0.2s;">
+        <span id="tabSignUpText">S'inscrire</span>
+      </button>
+    </div>
+
+    <!-- Error/Alert Banner -->
+    <div id="authAlert" style="display: none; background: rgba(255, 61, 0, 0.15); border: 1px solid var(--badge-hot); color: #FF7766; padding: 10px 14px; border-radius: 10px; font-size: 12px; margin-bottom: 16px; font-weight: 600;">
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="signInForm">
+      <div class="option-group">
+        <label id="lblSignInEmail" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Courriel</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-envelope" style="color: var(--text-muted);"></i>
+          <input type="email" id="signInEmail" placeholder="client@exemple.com">
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label id="lblSignInPass" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Mot de passe</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-lock" style="color: var(--text-muted);"></i>
+          <input type="password" id="signInPassword" placeholder="••••••••">
+        </div>
+      </div>
+
+      <!-- Demo Role Selector Bypass -->
+      <div style="background: rgba(255, 85, 0, 0.08); border: 1px dashed var(--primary); border-radius: 12px; padding: 12px; margin-bottom: 18px;">
+        <div style="font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 6px; text-transform: uppercase;">
+          <i class="fa-solid fa-bolt"></i> <span id="lblDemoRole">Accès Rapide par Rôle (Démo)</span>
+        </div>
+        <div class="chips-row">
+          <div class="chip selected" id="roleDemoCustomer" onclick="setDemoRole('customer')" style="font-size: 11px;">Client (/order)</div>
+          <div class="chip" id="roleDemoStore" onclick="setDemoRole('store')" style="font-size: 11px;">Cuisine (/kitchen)</div>
+          <div class="chip" id="roleDemoDriver" onclick="setDemoRole('driver')" style="font-size: 11px;">Livreur (/driver)</div>
+        </div>
+      </div>
+
+      <button class="hero-cta" onclick="handleSignIn()" style="width: 100%; justify-content: center; padding: 14px; font-size: 14px; margin-top: 6px;">
+        <span id="btnSignInText">Se Connecter</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+      </button>
+
+      <div style="text-align: center; margin-top: 14px; font-size: 12px; color: var(--text-muted);">
+        <span id="lblNoAccount">Pas encore de compte?</span> 
+        <a href="javascript:void(0)" onclick="switchAuthTab('signup')" style="color: var(--primary); font-weight: 700; text-decoration: none;"> <span id="lnkCreateAccount">Créer un compte</span></a>
+      </div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signUpForm" style="display: none;">
+      <div class="option-group">
+        <label id="lblName" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Nom complet</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-user" style="color: var(--text-muted);"></i>
+          <input type="text" id="signUpName" placeholder="Jean Tremblay">
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label id="lblEmail" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Courriel</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-envelope" style="color: var(--text-muted);"></i>
+          <input type="email" id="signUpEmail" placeholder="jean.tremblay@exemple.com">
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label id="lblPhone" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Numéro de téléphone</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-phone" style="color: var(--text-muted);"></i>
+          <input type="tel" id="signUpPhone" placeholder="819 850-3972">
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label id="lblPassword" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Mot de passe (Min. 6 caractères)</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-lock" style="color: var(--text-muted);"></i>
+          <input type="password" id="signUpPassword" placeholder="••••••••">
+        </div>
+      </div>
+
+      <div class="option-group">
+        <label id="lblConfirmPassword" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Confirmer le mot de passe</label>
+        <div class="search-bar" style="background: var(--bg-dark);">
+          <i class="fa-solid fa-shield-halved" style="color: var(--text-muted);"></i>
+          <input type="password" id="signUpConfirmPassword" placeholder="••••••••">
+        </div>
+      </div>
+
+      <button class="hero-cta" onclick="handleSignUp()" style="width: 100%; justify-content: center; padding: 14px; font-size: 14px; margin-top: 10px;">
+        <span id="btnSignUpText">Créer un compte</span> <i class="fa-solid fa-user-plus"></i>
+      </button>
+
+      <div style="text-align: center; margin-top: 14px; font-size: 12px; color: var(--text-muted);">
+        <span id="lblHaveAccount">Vous avez déjà un compte?</span> 
+        <a href="javascript:void(0)" onclick="switchAuthTab('signin')" style="color: var(--primary); font-weight: 700; text-decoration: none;"> <span id="lnkSignIn">Se connecter</span></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Kitchen & Driver Portal Modals for Live Role Routing -->
+<div class="modal-overlay" id="kitchenPortalModal">
+  <div class="modal-content" style="max-width: 440px;">
+    <div class="modal-close" onclick="closePortalModal('kitchenPortalModal')"><i class="fa-solid fa-xmark"></i></div>
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <span style="font-size: 24px;">👨‍🍳</span>
+      <div class="modal-title">Cuisine Kanban (/kitchen)</div>
+    </div>
+    <div class="modal-desc">Flux de préparation des commandes en direct pour le restaurant à Drummondville.</div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+      <div style="background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
+          <span style="font-size: 10px; background: var(--badge-hot); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN PRÉPARATION</span>
+        </div>
+        <div style="font-size: 13px; font-weight: 700;">2x Kebab au Poulet (Pain Naan, Trio)</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Sauces: Ail, Harissa · Extra Œuf</div>
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="hero-cta" style="padding: 6px 12px; font-size: 11px; flex: 1; justify-content: center;" onclick="alert('Commande #CMD-4092 marquée comme PRÊTE!')">
+            Marquer Prêt (Générer QR)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="driverPortalModal">
+  <div class="modal-content" style="max-width: 440px;">
+    <div class="modal-close" onclick="closePortalModal('driverPortalModal')"><i class="fa-solid fa-xmark"></i></div>
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+      <span style="font-size: 24px;">🛵</span>
+      <div class="modal-title">Portail Livreur (/driver)</div>
+    </div>
+    <div class="modal-desc">Livraisons prêtes à être récupérées à Drummondville (998 110e Ave).</div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+      <div style="background: var(--surface-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
+          <span style="font-size: 10px; background: var(--badge-success); color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PRÊT À RAMASSER</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-muted);">Destination: 1450 Rue Saint-Pierre, Drummondville</div>
+        <div style="margin-top: 10px; display: flex; gap: 8px;">
+          <button class="hero-cta" style="padding: 8px 12px; font-size: 11px; flex: 1; justify-content: center;" onclick="alert('Scanner Caméra QR Activé. Commande assignée au livreur!')">
+            <i class="fa-solid fa-qrcode"></i> Scanner QR pour Récupérer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="customModal">
   <div class="modal-content">
     <div class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div>
@@ -1079,21 +1248,204 @@ function toggleLanguage() {
     document.getElementById('heroDesc').innerText = 'Fait avec pâte fraîche, viandes marinées et sauces savoureuses.';
     document.getElementById('heroCtaText').innerText = 'Commander Maintenant';
     document.getElementById('searchInput').placeholder = 'Rechercher votre wrap, panini, poutine...';
+    
+    // Auth French Strings
+    document.getElementById('tabSignInText').innerText = 'Se Connecter';
+    document.getElementById('tabSignUpText').innerText = "S'inscrire";
+    document.getElementById('btnSignInText').innerText = 'Se Connecter';
+    document.getElementById('btnSignUpText').innerText = 'Créer un compte';
+    document.getElementById('lblSignInEmail').innerText = 'Courriel';
+    document.getElementById('lblSignInPass').innerText = 'Mot de passe';
+    document.getElementById('lblName').innerText = 'Nom complet';
+    document.getElementById('lblEmail').innerText = 'Courriel';
+    document.getElementById('lblPhone').innerText = 'Numéro de téléphone';
+    document.getElementById('lblPassword').innerText = 'Mot de passe (Min. 6 caractères)';
+    document.getElementById('lblConfirmPassword').innerText = 'Confirmer le mot de passe';
+    document.getElementById('lblNoAccount').innerText = 'Pas encore de compte?';
+    document.getElementById('lnkCreateAccount').innerText = 'Créer un compte';
+    document.getElementById('lblHaveAccount').innerText = 'Vous avez déjà un compte?';
+    document.getElementById('lnkSignIn').innerText = 'Se connecter';
+    if (!currentUser) document.getElementById('authBtnLabel').innerText = 'Connexion';
   } else {
     document.getElementById('heroHeadline').innerHTML = 'BETTER INGREDIENTS.<br>BETTER WRAPS.';
     document.getElementById('heroDesc').innerText = 'Crafted with fresh dough, marinated meats & delicious sauces.';
     document.getElementById('heroCtaText').innerText = 'Order Now';
     document.getElementById('searchInput').placeholder = 'Search your favorite wrap, panini, poutine...';
+    
+    // Auth English Strings
+    document.getElementById('tabSignInText').innerText = 'Sign In';
+    document.getElementById('tabSignUpText').innerText = 'Sign Up';
+    document.getElementById('btnSignInText').innerText = 'Sign In';
+    document.getElementById('btnSignUpText').innerText = 'Create Account';
+    document.getElementById('lblSignInEmail').innerText = 'Email Address';
+    document.getElementById('lblSignInPass').innerText = 'Password';
+    document.getElementById('lblName').innerText = 'Full Name';
+    document.getElementById('lblEmail').innerText = 'Email Address';
+    document.getElementById('lblPhone').innerText = 'Phone Number';
+    document.getElementById('lblPassword').innerText = 'Password (Min. 6 characters)';
+    document.getElementById('lblConfirmPassword').innerText = 'Confirm Password';
+    document.getElementById('lblNoAccount').innerText = "Don't have an account?";
+    document.getElementById('lnkCreateAccount').innerText = 'Create Account';
+    document.getElementById('lblHaveAccount').innerText = 'Already have an account?';
+    document.getElementById('lnkSignIn').innerText = 'Sign In';
+    if (!currentUser) document.getElementById('authBtnLabel').innerText = 'Sign In';
   }
   renderCategories();
   renderMenu();
 }
 
+// Current User & Auth State
+let currentUser = null;
+let selectedDemoRole = 'customer';
+
+function openAuthModal() {
+  document.getElementById('authAlert').style.display = 'none';
+  document.getElementById('authModal').classList.add('open');
+}
+
+function closeAuthModal() {
+  document.getElementById('authModal').classList.remove('open');
+}
+
+function closePortalModal(modalId) {
+  document.getElementById(modalId).classList.remove('open');
+}
+
+function switchAuthTab(tab) {
+  document.getElementById('authAlert').style.display = 'none';
+  if (tab === 'signin') {
+    document.getElementById('signInForm').style.display = 'block';
+    document.getElementById('signUpForm').style.display = 'none';
+    document.getElementById('tabSignInBtn').style.background = 'var(--surface-card)';
+    document.getElementById('tabSignInBtn').style.color = '#fff';
+    document.getElementById('tabSignUpBtn').style.background = 'transparent';
+    document.getElementById('tabSignUpBtn').style.color = 'var(--text-muted)';
+  } else {
+    document.getElementById('signInForm').style.display = 'none';
+    document.getElementById('signUpForm').style.display = 'block';
+    document.getElementById('tabSignUpBtn').style.background = 'var(--surface-card)';
+    document.getElementById('tabSignUpBtn').style.color = '#fff';
+    document.getElementById('tabSignInBtn').style.background = 'transparent';
+    document.getElementById('tabSignInBtn').style.color = 'var(--text-muted)';
+  }
+}
+
+function setDemoRole(role) {
+  selectedDemoRole = role;
+  document.getElementById('roleDemoCustomer').classList.remove('selected');
+  document.getElementById('roleDemoStore').classList.remove('selected');
+  document.getElementById('roleDemoDriver').classList.remove('selected');
+
+  if (role === 'customer') document.getElementById('roleDemoCustomer').classList.add('selected');
+  if (role === 'store') document.getElementById('roleDemoStore').classList.add('selected');
+  if (role === 'driver') document.getElementById('roleDemoDriver').classList.add('selected');
+}
+
+function showAuthAlert(message) {
+  const alertEl = document.getElementById('authAlert');
+  alertEl.innerText = message;
+  alertEl.style.display = 'block';
+}
+
+function handleSignUp() {
+  const name = document.getElementById('signUpName').value.trim();
+  const email = document.getElementById('signUpEmail').value.trim();
+  const phone = document.getElementById('signUpPhone').value.trim();
+  const password = document.getElementById('signUpPassword').value;
+  const confirmPassword = document.getElementById('signUpConfirmPassword').value;
+
+  // 1. Validation
+  if (!name) {
+    showAuthAlert(currentLanguage === 'FR' ? 'Veuillez entrer votre nom complet.' : 'Please enter your full name.');
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    showAuthAlert(currentLanguage === 'FR' ? 'Veuillez entrer une adresse courriel valide.' : 'Please enter a valid email address.');
+    return;
+  }
+
+  if (!phone) {
+    showAuthAlert(currentLanguage === 'FR' ? 'Veuillez entrer votre numéro de téléphone.' : 'Please enter your phone number.');
+    return;
+  }
+
+  if (!password || password.length < 6) {
+    showAuthAlert(currentLanguage === 'FR' ? 'Le mot de passe doit comporter au moins 6 caractères.' : 'Password must be at least 6 characters.');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showAuthAlert(currentLanguage === 'FR' ? 'Les mots de passe ne correspondent pas.' : 'Passwords do not match.');
+    return;
+  }
+
+  // 2. Create User Document (Firestore schema mapping)
+  const newUser = {
+    uid: 'usr_' + Math.random().toString(36).substr(2, 9),
+    name: name,
+    email: email,
+    phone: phone,
+    role: 'customer', // Default for public registrations
+    preferred_language: currentLanguage.toLowerCase(),
+    created_at: new Date().toISOString()
+  };
+
+  currentUser = newUser;
+  closeAuthModal();
+  updateAuthUI();
+
+  alert(currentLanguage === 'FR' 
+    ? `Compte créé avec succès pour ${name}!\n\nDocument Firestore créé:\n- UID: ${newUser.uid}\n- Rôle: ${newUser.role}\n- Langue: ${newUser.preferred_language}`
+    : `Account created successfully for ${name}!\n\nFirestore Document Created:\n- UID: ${newUser.uid}\n- Role: ${newUser.role}\n- Language: ${newUser.preferred_language}`
+  );
+}
+
+function handleSignIn() {
+  const email = document.getElementById('signInEmail').value.trim() || 'demo@lamaisondeswraps.ca';
+  const role = selectedDemoRole;
+
+  currentUser = {
+    uid: 'usr_demo_' + role,
+    name: role === 'customer' ? 'Jean Tremblay' : (role === 'store' ? 'Chef Cuisine (Drummondville)' : 'Livreur Express'),
+    email: email,
+    role: role,
+    preferred_language: currentLanguage.toLowerCase()
+  };
+
+  closeAuthModal();
+  updateAuthUI();
+
+  // 3. Conditional Role-Based Routing
+  if (role === 'customer') {
+    alert(currentLanguage === 'FR' 
+      ? `Bienvenue, ${currentUser.name}! Redirection vers la page de commande (/order).`
+      : `Welcome, ${currentUser.name}! Redirecting to Customer Menu (/order).`
+    );
+  } else if (role === 'store') {
+    document.getElementById('kitchenPortalModal').classList.add('open');
+  } else if (role === 'driver') {
+    document.getElementById('driverPortalModal').classList.add('open');
+  }
+}
+
+function updateAuthUI() {
+  if (currentUser) {
+    document.getElementById('authBtnLabel').innerText = currentUser.name.split(' ')[0];
+    document.getElementById('authHeaderBtn').style.background = 'rgba(34, 197, 94, 0.15)';
+    document.getElementById('authHeaderBtn').style.borderColor = 'var(--badge-success)';
+    document.getElementById('authHeaderBtn').style.color = 'var(--badge-success)';
+  }
+}
+
 function switchTab(tab) {
-  if (tab === 'kitchen') {
-    alert("Accès Cuisine / Kitchen Kanban : Affichage des tickets de commande en direct avec alerte sonore.");
+  if (tab === 'home' || tab === 'menu') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (tab === 'kitchen') {
+    document.getElementById('kitchenPortalModal').classList.add('open');
   } else if (tab === 'driver') {
-    alert("Accès Livreur / Driver Dispatch : Scanner QR code pour récupérer la livraison à Drummondville.");
+    document.getElementById('driverPortalModal').classList.add('open');
   }
 }
 </script>
