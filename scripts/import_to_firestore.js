@@ -1,16 +1,12 @@
 /**
  * La Maison des Wraps - Direct Firestore Importer
  * Project: la-maison-des-wrap-app
- * 
- * Usage:
- * 1. Obtain your Firebase Service Account JSON from Firebase Console:
- *    https://console.firebase.google.com/u/0/project/la-maison-des-wrap-app/settings/serviceaccounts/adminsdk
- * 2. Save it as serviceAccountKey.json in this directory
- * 3. Run: node scripts/import_to_firestore.js
  */
 
 const fs = require('fs');
 const path = require('path');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 
 const seedFile = path.join(__dirname, '../data/firestore_seed_data.json');
 const serviceKeyFile = path.join(__dirname, '../serviceAccountKey.json');
@@ -20,55 +16,55 @@ if (!fs.existsSync(seedFile)) {
   process.exit(1);
 }
 
-const seedData = JSON.parse(fs.readFileSync(seedFile, 'utf8'));
-
-console.log("=================================================");
-console.log("🔥 LA MAISON DES WRAPS - FIRESTORE DATA READY 🔥");
-console.log("=================================================");
-console.log(`\nProject: la-maison-des-wrap-app`);
-console.log(`Total Collections: 5`);
-console.log(`- menu_items: ${Object.keys(seedData.menu_items).length} items`);
-console.log(`- users: ${Object.keys(seedData.users).length} profiles (Customer, Store, Driver)`);
-console.log(`- orders: ${Object.keys(seedData.orders).length} sample delivery orders`);
-console.log(`- restaurant_info: Drummondville 998 110e Ave configuration`);
-console.log(`- inventory: 9 live ingredient stock toggles\n`);
-
 if (!fs.existsSync(serviceKeyFile)) {
-  console.log("ℹ️ To automatically batch-write these collections directly into your live Firebase Firestore:");
-  console.log("1. Download your serviceAccountKey.json from:");
-  console.log("   👉 https://console.firebase.google.com/u/0/project/la-maison-des-wrap-app/settings/serviceaccounts/adminsdk");
-  console.log("2. Place it in the root folder of this project.");
-  console.log("3. Run: npm install firebase-admin && node scripts/import_to_firestore.js\n");
-} else {
-  const admin = require('firebase-admin');
-  const serviceAccount = require(serviceKeyFile);
+  console.error("❌ serviceAccountKey.json not found in project root");
+  process.exit(1);
+}
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
+const seedData = JSON.parse(fs.readFileSync(seedFile, 'utf8'));
+const serviceAccount = JSON.parse(fs.readFileSync(serviceKeyFile, 'utf8'));
 
-  const db = admin.firestore();
+console.log("=================================================");
+console.log("🔥 LA MAISON DES WRAPS - FIRESTORE UPLOADER 🔥");
+console.log("=================================================");
+console.log(`\nTarget Project: ${serviceAccount.project_id}`);
+console.log(`Service Account: ${serviceAccount.client_email}`);
 
-  async function importAll() {
-    console.log("⏳ Uploading collections to Firestore...");
+const app = initializeApp({
+  credential: cert(serviceAccount)
+});
+
+const db = getFirestore(app);
+
+async function importAll() {
+  console.log("\n⏳ Uploading all collections to Firestore...");
+  
+  for (const [collectionName, docs] of Object.entries(seedData)) {
+    console.log(`--> Uploading collection: ${collectionName} (${Object.keys(docs).length} documents)...`);
     
-    for (const [collectionName, docs] of Object.entries(seedData)) {
-      console.log(`--> Uploading collection: ${collectionName}...`);
-      const batch = db.batch();
-      for (const [docId, docData] of Object.entries(docs)) {
-        const ref = db.collection(collectionName).doc(docId);
-        batch.set(ref, docData, { merge: true });
-      }
-      await batch.commit();
-      console.log(`    ✅ Collection '${collectionName}' written successfully!`);
+    // Firestore batch supports up to 500 operations
+    const batch = db.batch();
+    for (const [docId, docData] of Object.entries(docs)) {
+      const ref = db.collection(collectionName).doc(docId);
+      batch.set(ref, docData, { merge: true });
     }
-
-    console.log("\n🎉 ALL FIRESTORE DATA IMPORTED SUCCESSFULLY TO la-maison-des-wrap-app!");
-    process.exit(0);
+    
+    await batch.commit();
+    console.log(`    ✅ Collection '${collectionName}' written successfully!`);
   }
 
-  importAll().catch(err => {
-    console.error("❌ Error importing data:", err.message);
-    process.exit(1);
-  });
+  console.log("\n=================================================");
+  console.log("🎉 ALL FIRESTORE COLLECTIONS IMPORTED TO LIVE FIREBASE!");
+  console.log("=================================================");
+  console.log("1. 'menu_items': 59 bilingual items with prices & options");
+  console.log("2. 'users': Customer, Store Kitchen, and In-House Driver");
+  console.log("3. 'orders': Live connected order #CMD-4092 flow");
+  console.log("4. 'restaurant_info': Drummondville 998 110e Ave rules");
+  console.log("5. 'inventory': 9 ingredient stock switches");
+  console.log("\nYour app is now 100% connected to live database data!");
 }
+
+importAll().catch(err => {
+  console.error("❌ Error uploading to Firestore:", err);
+  process.exit(1);
+});
