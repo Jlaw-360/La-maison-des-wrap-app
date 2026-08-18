@@ -945,11 +945,68 @@
         <div style="font-size: 12px; color: var(--text-muted);">Destination: 1450 Rue Saint-Pierre, Drummondville</div>
         <div style="margin-top: 10px; display: flex; gap: 8px;">
           <button class="hero-cta" style="padding: 8px 12px; font-size: 11px; flex: 1; justify-content: center;" onclick="alert('Scanner Caméra QR Activé. Commande assignée au livreur!')">
-            <i class="fa-solid fa-qrcode"></i> Scanner QR pour Récupérer
+            <i class="fa-solid fa-qrcode"></i> Scanner QR
+          </button>
+          <button class="hero-cta" style="padding: 8px 12px; font-size: 11px; background: #2A2A2A; color: #fff; border: 1px solid var(--border);" onclick="openChatModal('driver')">
+            <i class="fa-solid fa-comment-dots"></i> Chat Client
           </button>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Multi-Role Live Chat Modal (Customer / Driver / Store) -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-content" style="max-height: 92vh; display: flex; flex-direction: column; padding: 16px;">
+    <div class="modal-close" onclick="closePortalModal('chatModal')"><i class="fa-solid fa-xmark"></i></div>
+
+    <!-- Chat Role Switcher Tabs -->
+    <div style="display: flex; background: var(--bg-dark); border-radius: 10px; padding: 4px; margin-bottom: 12px; border: 1px solid var(--border);">
+      <button id="chatTabCustomer" onclick="switchChatRole('customer')" style="flex: 1; padding: 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; background: var(--surface-card); color: #fff;">
+        👤 Vue Client
+      </button>
+      <button id="chatTabDriver" onclick="switchChatRole('driver')" style="flex: 1; padding: 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--text-muted);">
+        🛵 Vue Livreur
+      </button>
+      <button id="chatTabStore" onclick="switchChatRole('store')" style="flex: 1; padding: 8px; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; background: transparent; color: var(--text-muted);">
+        👨‍🍳 Vue Cuisine
+      </button>
+    </div>
+
+    <!-- Active Chat Header Banner -->
+    <div id="chatHeaderBanner" style="background: var(--surface-card); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div id="chatAvatar" style="width: 34px; height: 34px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px;">🛵</div>
+        <div>
+          <div id="chatTargetTitle" style="font-size: 13px; font-weight: 700; color: #fff;">Marc Livreur (In-House)</div>
+          <div id="chatTargetSubtitle" style="font-size: 10px; color: var(--primary);">Honda Civic Noir · En route</div>
+        </div>
+      </div>
+      <a href="tel:8198503972" style="color: #4CAF50; font-size: 16px; text-decoration: none; padding: 6px;"><i class="fa-solid fa-phone"></i></a>
+    </div>
+
+    <!-- Message Stream -->
+    <div id="chatMessagesStream" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 6px; max-height: 42vh;">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Quick Preset Response Chips -->
+    <div id="chatQuickChips" style="display: flex; gap: 6px; overflow-x: auto; padding: 8px 0; margin-top: 6px;">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Input Bar -->
+    <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px; background: var(--bg-dark); border-radius: 24px; padding: 4px 8px; border: 1px solid var(--border);">
+      <button id="chatCameraBtn" onclick="sendChatPhoto()" style="background: transparent; border: none; color: var(--primary); font-size: 16px; cursor: pointer; padding: 4px 8px;">
+        <i class="fa-solid fa-camera"></i>
+      </button>
+      <input type="text" id="chatInputText" placeholder="Écrire un message..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 13px; outline: none; padding: 6px 0;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+      <button onclick="sendChatMessage()" style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <i class="fa-solid fa-paper-plane" style="font-size: 12px;"></i>
+      </button>
+    </div>
+
   </div>
 </div>
 <div class="modal-overlay" id="customModal">
@@ -1474,7 +1531,135 @@ function switchTab(tab) {
     document.getElementById('driverPortalModal').classList.add('open');
   }
 }
+
+// =================== LIVE CHAT ENGINE ===================
+let activeChatRole = 'customer'; // 'customer', 'driver', 'store'
+const chatData = {
+  customer: {
+    title: "Marc Livreur (In-House)",
+    subtitle: "Honda Civic Noir · En route",
+    avatar: "🛵",
+    messages: [
+      { sender: "me", text: "Bonjour Marc, pourriez-vous sonner à l'interphone #204 en arrivant s'il vous plaît?", time: "14:15" },
+      { sender: "other", text: "Parfait Jean! C'est bien noté. Je suis à 3 minutes de chez vous avec votre sac isotherme.", time: "14:18" },
+      { sender: "other", text: "Je suis arrivé au 1450 Rue Saint-Pierre! Votre commande chaude est à votre porte.", photo: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500", time: "14:22" }
+    ],
+    chips: ["Sonner à l'interphone", "Laisser à la porte", "Je descends", "Merci beaucoup!"]
+  },
+  driver: {
+    title: "Client: Jean Tremblay",
+    subtitle: "1450 Rue Saint-Pierre, Drummondville",
+    avatar: "👤",
+    messages: [
+      { sender: "other", text: "Bonjour Marc, pourriez-vous sonner à l'interphone #204 en arrivant s'il vous plaît?", time: "14:15" },
+      { sender: "me", text: "Parfait Jean! C'est bien noté. Je suis à 3 minutes de chez vous avec votre sac isotherme.", time: "14:18" },
+      { sender: "me", text: "Je suis arrivé au 1450 Rue Saint-Pierre! Votre commande chaude est à votre porte.", photo: "https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500", time: "14:22" }
+    ],
+    chips: ["Je suis en bas 🚗", "À 2 minutes ⏱️", "Déposé à la porte 📸"]
+  },
+  store: {
+    title: "Client: Jean Tremblay",
+    subtitle: "Commande #CMD-4092 · Cuisine Drummondville",
+    avatar: "👨‍🍳",
+    messages: [
+      { sender: "other", text: "Bonjour, j'ai une légère intolérance aux arachides, pourriez-vous vous assurer qu'il n'y en a pas dans le curry?", time: "14:02" },
+      { sender: "me", text: "Bonjour Jean! Rassurez-vous, nos recettes de wraps et curries sont 100% sans arachides. Votre wrap Kebab Naan est bien préparé avec extra sauce à l'ail!", time: "14:05" }
+    ],
+    chips: ["En préparation! 👨‍🍳", "Prêt pour le livreur 📦", "100% Halal & Sans arachides ✅"]
+  }
+};
+
+function openChatModal(role = 'customer') {
+  activeChatRole = role;
+  switchChatRole(role);
+  document.getElementById('chatModal').classList.add('open');
+}
+
+function switchChatRole(role) {
+  activeChatRole = role;
+  
+  // Highlight tab
+  ['Customer', 'Driver', 'Store'].forEach(r => {
+    const btn = document.getElementById('chatTab' + r);
+    if (r.toLowerCase() === role) {
+      btn.style.background = 'var(--surface-card)';
+      btn.style.color = '#fff';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.color = 'var(--text-muted)';
+    }
+  });
+
+  const active = chatData[role];
+  document.getElementById('chatAvatar').innerText = active.avatar;
+  document.getElementById('chatTargetTitle').innerText = active.title;
+  document.getElementById('chatTargetSubtitle').innerText = active.subtitle;
+
+  // Render quick chips
+  document.getElementById('chatQuickChips').innerHTML = active.chips.map(chip => `
+    <div class="chip" style="font-size: 11px; padding: 4px 10px;" onclick="sendQuickChip('${chip}')">${chip}</div>
+  `).join('');
+
+  renderChatMessages();
+}
+
+function renderChatMessages() {
+  const container = document.getElementById('chatMessagesStream');
+  const messages = chatData[activeChatRole].messages;
+  
+  container.innerHTML = messages.map(m => {
+    const isMe = m.sender === 'me';
+    return `
+      <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; max-width: 80%; background: ${isMe ? 'var(--primary)' : 'var(--surface-card)'}; color: #fff; padding: 10px 14px; border-radius: 14px; ${isMe ? 'border-bottom-right-radius: 2px;' : 'border-bottom-left-radius: 2px;'} font-size: 13px; line-height: 1.4; border: 1px solid ${isMe ? 'transparent' : 'var(--border)'};">
+        ${m.photo ? `<img src="${m.photo}" style="width: 100%; border-radius: 8px; margin-bottom: 6px; display: block;">` : ''}
+        <div>${m.text}</div>
+        <div style="font-size: 10px; color: ${isMe ? 'rgba(255,255,255,0.7)' : 'var(--text-muted)'}; text-align: right; margin-top: 4px;">${m.time}</div>
+      </div>
+    `;
+  }).join('');
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatInputText');
+  const text = input.value.trim();
+  if (!text) return;
+
+  chatData[activeChatRole].messages.push({
+    sender: 'me',
+    text: text,
+    time: 'Maintenant'
+  });
+
+  input.value = '';
+  renderChatMessages();
+}
+
+function sendQuickChip(chipText) {
+  chatData[activeChatRole].messages.push({
+    sender: 'me',
+    text: chipText,
+    time: 'Maintenant'
+  });
+  renderChatMessages();
+}
+
+function sendChatPhoto() {
+  chatData[activeChatRole].messages.push({
+    sender: 'me',
+    text: '📸 Photo de livraison déposée à la porte!',
+    photo: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?w=500',
+    time: 'Maintenant'
+  });
+  renderChatMessages();
+}
 </script>
+
+<!-- Floating Live Chat Trigger Button -->
+<div onclick="openChatModal('customer')" style="position: fixed; bottom: 84px; right: 18px; width: 50px; height: 50px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 6px 20px rgba(255,85,0,0.4); cursor: pointer; z-index: 99; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+  <i class="fa-solid fa-comment-dots"></i>
+</div>
 
 </body>
 </html>
