@@ -1,66 +1,67 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check authentication
+
+    // Helper functions
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Helper function to get current user data
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
-    }
-    
-    function isStore() {
-      return isAuthenticated() && (getUserData().role == 'store' || getUserData().role == 'admin');
-    }
-    
-    function isDriver() {
-      return isAuthenticated() && getUserData().role == 'driver';
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // 1. Users Collection
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isAuthenticated() && (request.auth.uid == userId || isStore());
-      allow delete: if isStore();
-    }
-
-    // 2. Menu Items Collection (Public read, Store write)
+    // 1. Collection 'menu_items'
+    // - Create: Authenticated Users
+    // - Read: Everyone (Publicly accessible so guests can browse the menu)
+    // - Write: Authenticated Users
+    // - Delete: No One
     match /menu_items/{itemId} {
       allow read: if true;
-      allow write: if isStore();
+      allow create, update: if isAuthenticated();
+      allow delete: if false;
     }
 
-    // 3. Orders Collection
-    match /orders/{orderId} {
-      // Customers can read their own orders; Store & Drivers can read active orders
-      allow read: if isAuthenticated() && (
-        resource.data.customer_uid == request.auth.uid ||
-        isStore() ||
-        isDriver()
-      );
-      // Customers create orders with their own UID
-      allow create: if isAuthenticated() && request.resource.data.customer_uid == request.auth.uid;
-      // Store can update all statuses; Drivers can update when claiming or delivering
-      allow update: if isAuthenticated() && (
-        isStore() ||
-        (isDriver() && (resource.data.driver_uid == request.auth.uid || resource.data.status == 'ready'))
-      );
-      allow delete: if isStore();
-    }
-
-    // 4. Live Order Chat Messages
-    match /orders/{orderId}/chats/{messageId} {
-      allow read, write: if isAuthenticated();
-    }
-
-    // 5. Inventory & 86 Item Toggles
-    match /inventory/{itemId} {
+    // 2. Collection 'users'
+    // - Create: Everyone (Allows new sign-ups)
+    // - Read: Authenticated Users
+    // - Write: User Document Owner (Users can only update their own profile)
+    // - Delete: No One
+    match /users/{userId} {
+      allow create: if true;
       allow read: if isAuthenticated();
-      allow write: if isStore();
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // 3. Collection 'orders'
+    // - Create: Authenticated Users (Customers place orders)
+    // - Read: Authenticated Users (Customers view their orders; kitchen and drivers view assigned orders)
+    // - Write: Authenticated Users (Kitchen updates prep status; drivers update delivery progress)
+    // - Delete: No One
+    match /orders/{orderId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if false;
+    }
+
+    // 4. Collection 'chats'
+    // - Create: Authenticated Users
+    // - Read: Authenticated Users
+    // - Write: Authenticated Users
+    // - Delete: No One
+    match /chats/{chatId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if false;
+    }
+    
+    // Nested Chat Messages (if subcollection used)
+    match /orders/{orderId}/chats/{messageId} {
+      allow create, read, update: if isAuthenticated();
+      allow delete: if false;
     }
   }
 }
