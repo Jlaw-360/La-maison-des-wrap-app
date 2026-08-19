@@ -895,7 +895,9 @@
       <button class="pill-btn" onclick="openCartModal()" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary);">
         <i class="fa-solid fa-bag-shopping"></i> Panier
       </button>
-      <button class="pill-btn" id="btnHeaderAuth" onclick="openSignupSurveyModal()"><i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Inscription</button>
+      <button class="pill-btn" id="btnHeaderProfile" onclick="switchTab('profile')">
+        <i class="fa-solid fa-circle-user" style="color: #22C55E;"></i> <span id="lblHeaderUserName">Profil</span>
+      </button>
       <button class="pill-btn" onclick="openGiftCardModal()"><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> Cadeau</button>
       <button class="pill-btn" id="langBtn" onclick="toggleLanguage()">EN</button>
     </div>
@@ -2512,11 +2514,10 @@ function updateUserProfileUI() {
   const profileSub = document.querySelector('.profile-card p');
   if (profileSub && clientProfile.email) profileSub.innerText = `${clientProfile.email} • ${clientProfile.phone}`;
 
-  // Update header sign-up button to show logged in name
-  const signupHeaderBtn = document.querySelector('.header-actions button:first-child');
-  if (signupHeaderBtn && clientProfile.name) {
-    signupHeaderBtn.innerHTML = `<i class="fa-solid fa-circle-user" style="color: #22C55E;"></i> ${clientProfile.name.split(' ')[0]}`;
-    signupHeaderBtn.onclick = () => switchTab('profile');
+  // Update header profile button to show logged in name
+  const lblHeaderUserName = document.getElementById('lblHeaderUserName');
+  if (lblHeaderUserName) {
+    lblHeaderUserName.innerText = clientProfile.name ? clientProfile.name.split(' ')[0] : 'Profil';
   }
 
   // Pre-fill delivery address if present
