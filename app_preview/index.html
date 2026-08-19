@@ -1443,7 +1443,7 @@ function recalcCartPrices() {
   document.getElementById('btnPayText').innerText = `$${grand.toFixed(2)}`;
 }
 
-// Stripe Initialization
+// Stripe Initialization (Canadian Format fr-CA)
 const STRIPE_PK = 'pk_test_51U18R4EP3Grb2rSSVkDRnkguIJClznmXedbsFP8IjF0tKOyDmXVM3QRKFglXeRcKZnKg1KCJpvgX0Wj4o4hrCdil005JeuJkBg';
 let stripe = null;
 let cardElement = null;
@@ -1451,9 +1451,13 @@ let cardElement = null;
 function initStripe() {
   if (typeof Stripe !== 'undefined') {
     try {
-      stripe = Stripe(STRIPE_PK);
-      const elements = stripe.elements();
+      // Set Canadian French locale
+      stripe = Stripe(STRIPE_PK, { locale: 'fr-CA' });
+      const elements = stripe.elements({ locale: 'fr-CA' });
+      
+      // Hide US ZIP Code input - only standard Card Number, Expiry, and CVC
       cardElement = elements.create('card', {
+        hidePostalCode: true,
         style: {
           base: {
             color: '#ffffff',
