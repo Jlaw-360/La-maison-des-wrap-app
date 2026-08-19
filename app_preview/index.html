@@ -1038,36 +1038,101 @@
   </div>
 </div>
 
-<!-- ==================== ORDER CONFIRMATION / QR CODE & PIN MODAL ==================== -->
+<!-- ==================== ORDER CONFIRMATION / RECEIPT & LIVE TRACKING SHEET ==================== -->
 <div class="modal-overlay" id="orderConfirmModal">
-  <div class="modal-sheet" style="text-align: center;">
-    <div class="sheet-header">
-      <div class="sheet-title" style="color: var(--accent-green);">🎉 Commande Confirmée!</div>
+  <div class="modal-sheet" style="max-height: 90vh;">
+    <div class="sheet-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+          <i class="fa-solid fa-circle-check"></i> Commande Validée
+        </div>
+        <div class="sheet-title" style="margin-top: 6px; font-size: 20px;">Reçu & Suivi en Direct</div>
+      </div>
       <button class="close-btn" onclick="closeModal('orderConfirmModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div style="font-size: 13px; font-weight: 700; margin-bottom: 2px;">Numéro de Commande : <span style="color: var(--primary);" id="confOrderId">#CMD-4092</span></div>
-    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="confFulfillmentSummary">Cueillette au Restaurant (998 110e Avenue)</div>
-
-    <!-- Generated QR Code for Customer Verification -->
-    <div style="background: #FFFFFF; padding: 14px; border-radius: 16px; display: inline-block; margin-bottom: 14px;">
-      <canvas id="customerQrCanvas"></canvas>
+    <!-- Live Status Tracker Bar -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 800; color: #fff;" id="confOrderIdLabel">Commande #CMD-4092</span>
+        <span style="font-size: 11px; color: var(--primary); font-weight: 700;" id="confEtaLabel">⏱️ Prêt dans ~20 min</span>
+      </div>
+      
+      <!-- Multi-step tracker line -->
+      <div style="display: flex; justify-content: space-between; position: relative; margin: 16px 8px 8px 8px;">
+        <div style="position: absolute; top: 12px; left: 0; right: 0; height: 3px; background: var(--border-subtle); z-index: 1;"></div>
+        <div style="position: absolute; top: 12px; left: 0; width: 33%; height: 3px; background: var(--primary); z-index: 2;"></div>
+        
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-check"></i></div>
+          <span style="font-size: 10px; color: #fff; font-weight: 700;">Reçue</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-fire-burner"></i></div>
+          <span style="font-size: 10px; color: var(--primary); font-weight: 700;">Cuisine</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-motorcycle"></i></div>
+          <span style="font-size: 10px; color: var(--text-muted);">Prête</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-house"></i></div>
+          <span style="font-size: 10px; color: var(--text-muted);">Livrée</span>
+        </div>
+      </div>
     </div>
 
-    <!-- 5-Digit PIN Fallback Code -->
-    <div style="background: rgba(255, 85, 0, 0.12); border: 1.5px dashed var(--primary); border-radius: 14px; padding: 12px; margin-bottom: 16px;">
-      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 2px;">Code PIN de Confirmation :</div>
-      <div style="font-family: monospace; font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 4px;" id="confPinCode">52325</div>
+    <!-- QR Code & PIN Code Card -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;" id="confFulfillmentSummary">
+        🛵 Livraison Directe (1450 Rue Saint-Pierre)
+      </div>
+
+      <div style="background: #FFFFFF; padding: 12px; border-radius: 14px; display: inline-block; margin-bottom: 12px;">
+        <canvas id="customerQrCanvas"></canvas>
+      </div>
+
+      <div style="background: rgba(255, 85, 0, 0.12); border: 1.5px dashed var(--primary); border-radius: 12px; padding: 10px; margin-bottom: 10px;">
+        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Code PIN de Confirmation</div>
+        <div style="font-family: monospace; font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 4px;" id="confPinCode">52325</div>
+      </div>
+
+      <p style="font-size: 11px; color: var(--text-body); line-height: 1.35;" id="confInstructionsText">
+        Donnez le PIN <strong>52325</strong> ou montrez ce QR Code au livreur lors de la remise.
+      </p>
     </div>
 
-    <p style="font-size: 12px; color: var(--text-body); line-height: 1.4; margin-bottom: 18px;" id="confInstructionsText">
-      Présentez ce QR Code ou donnez le PIN <strong>52325</strong> au restaurant lors de la récupération.
-    </p>
+    <!-- Itemized Order Receipt Breakdown -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;">Détails des Articles Commandés</div>
+      <div id="confReceiptItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
 
-    <button class="btn-main" onclick="closeModal('orderConfirmModal'); switchTab('profile');">
-      <span>Voir dans mon Profil</span>
-      <i class="fa-solid fa-arrow-right"></i>
-    </button>
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Sous-total</span><span id="confReceiptSubtotal">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Livraison</span><span id="confReceiptDelivery">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TPS (5%)</span><span id="confReceiptTPS">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TVQ (9.975%)</span><span id="confReceiptTVQ">$0.00</span></div>
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #fff;">
+          <span>TOTAL PAYÉ</span>
+          <span style="color: var(--primary);" id="confReceiptTotal">$0.00 CAD</span>
+        </div>
+        <div style="font-size: 10px; color: var(--accent-green); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-shield-halved"></i> Payé avec succès via Stripe (Test Mode)
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-main" style="flex: 1; background: #22C55E;" onclick="closeModal('orderConfirmModal'); openChatModal();">
+        <i class="fa-solid fa-comments"></i> Chat en Direct
+      </button>
+      <button class="btn-main" style="flex: 1;" onclick="closeModal('orderConfirmModal'); switchTab('profile');">
+        <span>Voir Profil</span>
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+
   </div>
 </div>
 
@@ -1510,11 +1575,44 @@ function initStripe() {
   }
 }
 
+let lastPlacedOrder = null;
+
 function triggerStripeCheckout() {
   const btn = document.getElementById('btnStripeSubmit');
   const amountText = document.getElementById('btnPayText').innerText;
-  btn.innerText = "⏳ Validation Test Stripe...";
+  
+  if (cart.length === 0) {
+    alert("Votre panier est vide!");
+    return;
+  }
+
+  btn.innerText = "⏳ Traitement & Validation...";
   btn.disabled = true;
+
+  // Snapshot cart details for the receipt sheet
+  const subtotal = cart.reduce((a, b) => a + b.price, 0);
+  const deliveryFee = currentFulfillment === 'delivery' 
+    ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99))
+    : 0.00;
+  const taxable = subtotal + deliveryFee;
+  const tps = taxable * 0.05;
+  const tvq = taxable * 0.09975;
+  const grandTotal = taxable + tps + tvq;
+
+  const orderNum = 'CMD-' + Math.floor(1000 + Math.random() * 9000);
+  lastPlacedOrder = {
+    id: orderNum,
+    items: [...cart],
+    subtotal: subtotal,
+    deliveryFee: deliveryFee,
+    tps: tps,
+    tvq: tvq,
+    total: grandTotal,
+    fulfillment: currentFulfillment,
+    dropoff: currentDropoffOption,
+    address: document.getElementById('deliveryAddressInput')?.value || "1450 Rue Saint-Pierre, Drummondville, QC",
+    pin: '52325'
+  };
 
   setTimeout(() => {
     cart = [];
@@ -1523,33 +1621,69 @@ function triggerStripeCheckout() {
     btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span><span id="btnPayText">$0.00</span>`;
     btn.disabled = false;
 
-    // Open Order Confirmation with QR Code & PIN
-    openOrderConfirmationModal('CMD-4092');
-  }, 1200);
+    // Open Order Confirmation Receipt & Tracker Sheet
+    openOrderConfirmationModal(lastPlacedOrder.id);
+  }, 1000);
 }
 
 function openOrderConfirmationModal(orderId) {
-  document.getElementById('confOrderId').innerText = `#${orderId}`;
-  const pin = '52325';
-  document.getElementById('confPinCode').innerText = pin;
+  const order = lastPlacedOrder || {
+    id: orderId || 'CMD-4092',
+    items: [
+      { name: 'Kebab au Poulet (Pain Naan, Trio)', price: 16.25 },
+      { name: 'Poutine Poulet au Beurre', price: 15.95 }
+    ],
+    subtotal: 32.20,
+    deliveryFee: 0.00,
+    tps: 1.61,
+    tvq: 3.21,
+    total: 37.02,
+    fulfillment: currentFulfillment,
+    dropoff: currentDropoffOption,
+    address: "1450 Rue Saint-Pierre, Drummondville, QC",
+    pin: '52325'
+  };
 
-  if (currentFulfillment === 'pickup') {
+  document.getElementById('confOrderIdLabel').innerText = `Commande #${order.id}`;
+  document.getElementById('confPinCode').innerText = order.pin;
+
+  if (order.fulfillment === 'pickup') {
     document.getElementById('confFulfillmentSummary').innerText = "🥡 Cueillette au Restaurant (998 110e Avenue)";
-    document.getElementById('confInstructionsText').innerHTML = `Présentez ce QR Code ou donnez le PIN <strong>${pin}</strong> au comptoir du restaurant pour récupérer votre commande.`;
+    document.getElementById('confInstructionsText').innerHTML = `Présentez ce QR Code ou donnez le PIN <strong>${order.pin}</strong> au comptoir du restaurant pour récupérer votre commande.`;
   } else {
-    document.getElementById('confFulfillmentSummary').innerText = currentDropoffOption === 'door' 
-      ? "🛵 Livraison : Laisser à la porte" 
-      : "🛵 Livraison : Remise en main propre";
-    document.getElementById('confInstructionsText').innerHTML = currentDropoffOption === 'door'
+    document.getElementById('confFulfillmentSummary').innerText = order.dropoff === 'door' 
+      ? `🛵 Livraison : Laisser à la porte (${order.address})` 
+      : `🛵 Livraison : Remise en main propre (${order.address})`;
+    document.getElementById('confInstructionsText').innerHTML = order.dropoff === 'door'
       ? `Le livreur déposera votre sac et prendra une <strong>photo de preuve</strong> à votre porte.`
-      : `Donnez le code PIN <strong>${pin}</strong> au livreur pour réceptionner votre commande en main propre.`;
+      : `Donnez le code PIN <strong>${order.pin}</strong> au livreur pour réceptionner votre commande en main propre.`;
   }
 
+  // Populate Itemized Receipt
+  const receiptList = document.getElementById('confReceiptItemsList');
+  if (receiptList) {
+    receiptList.innerHTML = order.items.map(item => `
+      <div style="display: flex; justify-content: space-between; font-size: 13px;">
+        <span>1x ${item.name}</span>
+        <strong style="color: var(--primary);">$${item.price.toFixed(2)}</strong>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('confReceiptSubtotal').innerText = `$${order.subtotal.toFixed(2)}`;
+  document.getElementById('confReceiptDelivery').innerText = order.deliveryFee === 0 ? "GRATUIT" : `$${order.deliveryFee.toFixed(2)}`;
+  document.getElementById('confReceiptTPS').innerText = `$${order.tps.toFixed(2)}`;
+  document.getElementById('confReceiptTVQ').innerText = `$${order.tvq.toFixed(2)}`;
+  document.getElementById('confReceiptTotal').innerText = `$${order.total.toFixed(2)} CAD`;
+
   // Generate QR Code on canvas
-  QRCode.toCanvas(document.getElementById('customerQrCanvas'), `LMDW-${orderId}-PIN${pin}`, {
-    width: 140,
-    margin: 1
-  });
+  const canvas = document.getElementById('customerQrCanvas');
+  if (canvas && typeof QRCode !== 'undefined') {
+    QRCode.toCanvas(canvas, `LMDW-${order.id}-PIN${order.pin}`, {
+      width: 140,
+      margin: 1
+    });
+  }
 
   document.getElementById('orderConfirmModal').classList.add('open');
 }
