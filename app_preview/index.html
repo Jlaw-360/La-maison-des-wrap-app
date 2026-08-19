@@ -777,6 +777,95 @@
 
 <div class="app-container">
 
+  <!-- ==================== FULL-SCREEN PRIMARY LOGIN & SIGN-UP GATEWAY ==================== -->
+  <div id="view-login-gate" style="display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding: 24px 20px; background: radial-gradient(circle at top, #1E1E26 0%, #0C0C0E 100%);">
+    
+    <!-- Restaurant Brand Header -->
+    <div style="text-align: center; margin-bottom: 22px;">
+      <img src="/logo.png" alt="Logo" style="width: 76px; height: 76px; border-radius: 50%; border: 2.5px solid var(--primary); object-fit: cover; margin-bottom: 12px; box-shadow: 0 10px 28px rgba(255, 85, 0, 0.35);" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120'">
+      <h1 style="font-family: var(--font-heading); font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.3px;">La Maison des Wraps</h1>
+      <p style="font-size: 13px; color: var(--text-body); margin-top: 4px; font-weight: 500;">Restauration Rapide Indienne • Drummondville</p>
+      <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> 998 110e Avenue • (819) 850-3972</p>
+    </div>
+
+    <!-- Welcome Perk Banner -->
+    <div style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.22) 0%, rgba(255, 85, 0, 0.16) 100%); border: 1.5px dashed var(--accent-gold); border-radius: 16px; padding: 14px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 28px;">🎁</span>
+      <div>
+        <strong style="font-size: 13px; color: #fff;">Bonus de Bienvenue +50 Points!</strong>
+        <p style="font-size: 11px; color: var(--text-body); margin-top: 2px;">Connectez-vous ou créez votre compte pour accéder au menu, commander et recevoir votre cadeau.</p>
+      </div>
+    </div>
+
+    <!-- 1-Tap Google Sign-In Button -->
+    <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+      </svg>
+      <span>Continuer avec mon Compte Google</span>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ou par identifiants</span>
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+    </div>
+
+    <!-- Toggle Login vs Sign-up -->
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button type="button" id="tabGateLogin" class="cat-btn active" style="flex: 1; text-align: center;" onclick="switchGateTab('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Me Connecter
+      </button>
+      <button type="button" id="tabGateSignup" class="cat-btn" style="flex: 1; text-align: center;" onclick="switchGateTab('signup')">
+        <i class="fa-solid fa-user-plus"></i> Créer un Compte (+50 Pts)
+      </button>
+    </div>
+
+    <!-- Form 1: Fast Login Form (Active by default) -->
+    <form id="formGateLogin" onsubmit="event.preventDefault(); submitGateLogin();">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Numéro de Téléphone ou Courriel</label>
+          <input type="text" id="gateLoginUser" required placeholder="819 555-0192 ou client@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code PIN ou Mot de passe</label>
+          <input type="password" id="gateLoginPass" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+      </div>
+      <button type="submit" class="btn-main" style="background: var(--primary); width: 100%;">
+        <span><i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Se Connecter & Accéder au Restaurant</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Form 2: Sign-Up Form (Hidden by default) -->
+    <form id="formGateSignup" style="display: none;" onsubmit="event.preventDefault(); submitGateSignup();">
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+        <input type="text" id="gateSignupName" required placeholder="Prénom & Nom (Ex: Jean Tremblay)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input type="tel" id="gateSignupPhone" required placeholder="Téléphone (819 555-0192)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          <input type="date" id="gateSignupBirthday" title="Date d'anniversaire pour votre cadeau annuel" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
+        </div>
+
+        <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (jean@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <input type="text" id="gateSignupAddress" placeholder="Adresse à Drummondville (1450 Rue Saint-Pierre)" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+      </div>
+      <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); width: 100%;">
+        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Compte (+50 Pts) & Entrer</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+  </div>
+
+  <!-- ==================== MAIN RESTAURANT APP CONTAINER (Visible when authenticated) ==================== -->
+  <div id="appMainWrapper" style="display: none;">
+
   <!-- Top Sticky Header -->
   <header class="top-header">
     <div class="brand-meta" onclick="switchTab('home')">
@@ -962,6 +1051,14 @@
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
 
+        <div class="profile-menu-item" onclick="handleLogOut()" style="border-top: 1px solid var(--border-subtle); margin-top: 8px;">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #EF4444;"></i>
+            <span style="color: #EF4444; font-weight: 600;">Se Déconnecter</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
       </div>
 
     </div>
@@ -993,6 +1090,8 @@
       <span>Profil</span>
     </div>
   </nav>
+
+  </div> <!-- /#appMainWrapper -->
 
 </div> <!-- /.app-container -->
 
@@ -2032,21 +2131,69 @@ let clientProfile = {
 // Check if client is already logged in from previous session
 function checkSavedUserSession() {
   const saved = localStorage.getItem('lmdw_user');
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+
   if (saved) {
     try {
       clientProfile = JSON.parse(saved);
       isUserLoggedIn = true;
       updateUserProfileUI();
+      if (gateEl) gateEl.style.display = 'none';
+      if (appWrapper) appWrapper.style.display = 'block';
     } catch(e){}
+  } else {
+    // Show Full-Screen Login & Sign-Up Gateway first
+    if (gateEl) gateEl.style.display = 'flex';
+    if (appWrapper) appWrapper.style.display = 'none';
   }
 }
 
+function switchGateTab(mode) {
+  const loginForm = document.getElementById('formGateLogin');
+  const signupForm = document.getElementById('formGateSignup');
+  const tabLogin = document.getElementById('tabGateLogin');
+  const tabSignup = document.getElementById('tabGateSignup');
+
+  if (mode === 'login') {
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+    tabLogin.classList.add('active');
+    tabSignup.classList.remove('active');
+  } else {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+    tabSignup.classList.add('active');
+    tabLogin.classList.remove('active');
+  }
+}
+
+function submitGateLogin() {
+  const identifier = document.getElementById('gateLoginUser').value.trim() || "Jean Tremblay";
+  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
+  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
+  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
+  clientProfile.points = 120;
+  isUserLoggedIn = true;
+
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Hide Gateway & Reveal Main Restaurant App
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
+}
+
 function submitGateSignup() {
-  const name = document.getElementById('gateName').value.trim() || "Jean Tremblay";
-  const phone = document.getElementById('gatePhone').value.trim() || "819 555-0192";
-  const email = document.getElementById('gateEmail').value.trim() || "client@exemple.com";
-  const birthday = document.getElementById('gateBirthday').value || "";
-  const address = document.getElementById('gateAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
+  const name = document.getElementById('gateSignupName').value.trim() || "Jean Tremblay";
+  const phone = document.getElementById('gateSignupPhone').value.trim() || "819 555-0192";
+  const email = document.getElementById('gateSignupEmail').value.trim() || "client@exemple.com";
+  const birthday = document.getElementById('gateSignupBirthday').value || "";
+  const address = document.getElementById('gateSignupAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
 
   clientProfile = {
     name,
@@ -2064,34 +2211,45 @@ function submitGateSignup() {
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
-  // Hide Gateway & Reveal Main App
-  document.getElementById('view-auth-gate').style.display = 'none';
-  document.getElementById('appMainWrapper').style.display = 'block';
+  // Sync with Firestore
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+        name,
+        email,
+        phone,
+        birthday,
+        address,
+        points: 50,
+        createdAt: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn(err));
+    } catch(e){}
+  }
+
+  // Hide Gateway & Reveal Main Restaurant App
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
 
   alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
 }
 
-function submitGateLogin() {
-  const identifier = document.getElementById('gateLoginIdentifier').value.trim() || "Jean Tremblay";
-  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
-  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
-  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
-  clientProfile.points = 120;
-  isUserLoggedIn = true;
+function handleLogOut() {
+  localStorage.removeItem('lmdw_user');
+  isUserLoggedIn = false;
+  
+  if (typeof firebase !== 'undefined' && firebase.auth) {
+    try { firebase.auth().signOut(); } catch(e){}
+  }
 
-  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-  updateUserProfileUI();
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'flex';
+  if (appWrapper) appWrapper.style.display = 'none';
 
-  // Hide Gateway & Reveal Main App
-  document.getElementById('view-auth-gate').style.display = 'none';
-  document.getElementById('appMainWrapper').style.display = 'block';
-
-  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
-}
-
-function enterAsGuest() {
-  document.getElementById('view-auth-gate').style.display = 'none';
-  document.getElementById('appMainWrapper').style.display = 'block';
+  alert("👋 Vous êtes maintenant déconnecté.");
 }
 
 function openSignupSurveyModal(intent = '') {
@@ -2246,8 +2404,8 @@ function handleGoogleSignIn() {
 
         closeModal('signupSurveyModal');
 
-        // Hide Gateway & Reveal Main App
-        const gateEl = document.getElementById('view-auth-gate');
+        // Hide Login Gateway & Reveal Main Restaurant App
+        const gateEl = document.getElementById('view-login-gate');
         const appWrapper = document.getElementById('appMainWrapper');
         if (gateEl) gateEl.style.display = 'none';
         if (appWrapper) appWrapper.style.display = 'block';
@@ -2280,6 +2438,11 @@ function handleGoogleSignIn() {
         updateUserProfileUI();
         closeModal('signupSurveyModal');
 
+        const gateEl = document.getElementById('view-login-gate');
+        const appWrapper = document.getElementById('appMainWrapper');
+        if (gateEl) gateEl.style.display = 'none';
+        if (appWrapper) appWrapper.style.display = 'block';
+
         alert(`🌐 Connexion Google Réussie!\n\nBienvenue à La Maison des Wraps!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
 
         if (pendingOrderAction && cart.length > 0) {
@@ -2296,6 +2459,12 @@ function handleGoogleSignIn() {
     localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
     updateUserProfileUI();
     closeModal('signupSurveyModal');
+
+    const gateEl = document.getElementById('view-login-gate');
+    const appWrapper = document.getElementById('appMainWrapper');
+    if (gateEl) gateEl.style.display = 'none';
+    if (appWrapper) appWrapper.style.display = 'block';
+
     alert("🌐 Connexion Google Réussie!\n🎁 +50 Points de Fidélité crédités sur votre compte.");
     if (pendingOrderAction && cart.length > 0) {
       pendingOrderAction = false;
