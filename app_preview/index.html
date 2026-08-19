@@ -2383,93 +2383,114 @@ function handleGoogleSignIn() {
     firebaseAuth.signInWithPopup(googleAuthProvider)
       .then((result) => {
         const user = result.user;
-        const displayName = user.displayName || "Client";
+        const displayName = user.displayName || "";
         const email = user.email || "";
 
-        clientProfile = {
-          name: displayName,
-          email: email,
-          phone: user.phoneNumber || clientProfile.phone || "819 555-0192",
-          birthday: "",
-          address: "1450 Rue Saint-Pierre, Drummondville, QC",
-          spice: "Moyen / Medium",
-          favoriteDish: "Poulet au Beurre",
-          diet: "100% Halal",
-          points: 50 // +50 Welcome Bonus Points
-        };
+        if (displayName && email) {
+          clientProfile.name = displayName;
+          clientProfile.email = email;
+          clientProfile.phone = user.phoneNumber || clientProfile.phone || "819 555-0192";
+          clientProfile.points = 50; // +50 Welcome bonus
 
-        isUserLoggedIn = true;
-        localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-        updateUserProfileUI();
+          isUserLoggedIn = true;
+          localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+          updateUserProfileUI();
 
-        closeModal('signupSurveyModal');
+          // Sync to Firestore
+          if (typeof firebase !== 'undefined' && firebase.firestore) {
+            try {
+              const db = firebase.firestore();
+              db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+                name: displayName,
+                email: email,
+                points: 50,
+                provider: 'google',
+                lastLogin: new Date().toISOString()
+              }, { merge: true }).catch(e => console.warn(e));
+            } catch(e){}
+          }
 
-        // Hide Login Gateway & Reveal Main Restaurant App
-        const gateEl = document.getElementById('view-login-gate');
-        const appWrapper = document.getElementById('appMainWrapper');
-        if (gateEl) gateEl.style.display = 'none';
-        if (appWrapper) appWrapper.style.display = 'block';
+          closeModal('signupSurveyModal');
 
-        alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${displayName} (${email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+          const gateEl = document.getElementById('view-login-gate');
+          const appWrapper = document.getElementById('appMainWrapper');
+          if (gateEl) gateEl.style.display = 'none';
+          if (appWrapper) appWrapper.style.display = 'block';
 
-        if (pendingOrderAction && cart.length > 0) {
-          pendingOrderAction = false;
-          openCartModal();
+          alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${displayName} (${email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+
+          if (pendingOrderAction && cart.length > 0) {
+            pendingOrderAction = false;
+            openCartModal();
+          }
+        } else {
+          // If profile info is missing, prompt user to enter their details
+          promptUserForOwnDetails();
         }
       })
       .catch((error) => {
-        console.warn("Firebase Google Auth popup note:", error.message);
-        
-        // Fallback: Proceed with Google authentication profile
-        clientProfile = {
-          name: "Client Google",
-          email: "client.google@gmail.com",
-          phone: clientProfile.phone || "819 555-0192",
-          birthday: "",
-          address: "1450 Rue Saint-Pierre, Drummondville, QC",
-          spice: "Moyen / Medium",
-          favoriteDish: "Poulet au Beurre",
-          diet: "100% Halal",
-          points: 50
-        };
-
-        isUserLoggedIn = true;
-        localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-        updateUserProfileUI();
-        closeModal('signupSurveyModal');
-
-        const gateEl = document.getElementById('view-login-gate');
-        const appWrapper = document.getElementById('appMainWrapper');
-        if (gateEl) gateEl.style.display = 'none';
-        if (appWrapper) appWrapper.style.display = 'block';
-
-        alert(`🌐 Connexion Google Réussie!\n\nBienvenue à La Maison des Wraps!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
-
-        if (pendingOrderAction && cart.length > 0) {
-          pendingOrderAction = false;
-          openCartModal();
-        }
+        console.warn("Firebase Google Auth:", error.message);
+        promptUserForOwnDetails();
       });
   } else {
-    // If Firebase offline, proceed with local Google authentication
-    clientProfile.name = "Client Google";
-    clientProfile.email = "client.google@gmail.com";
-    clientProfile.points = 50;
-    isUserLoggedIn = true;
-    localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-    updateUserProfileUI();
-    closeModal('signupSurveyModal');
+    promptUserForOwnDetails();
+  }
+}
 
-    const gateEl = document.getElementById('view-login-gate');
-    const appWrapper = document.getElementById('appMainWrapper');
-    if (gateEl) gateEl.style.display = 'none';
-    if (appWrapper) appWrapper.style.display = 'block';
+function promptUserForOwnDetails() {
+  // Let the user enter their own name & email
+  const userEnteredName = prompt("Veuillez entrer votre Prénom & Nom pour votre compte :", "");
+  if (!userEnteredName || !userEnteredName.trim()) {
+    // If user cancelled, switch to the sign-up form on the gate
+    switchGateTab('signup');
+    return;
+  }
 
-    alert("🌐 Connexion Google Réussie!\n🎁 +50 Points de Fidélité crédités sur votre compte.");
-    if (pendingOrderAction && cart.length > 0) {
-      pendingOrderAction = false;
-      openCartModal();
-    }
+  const userEnteredEmail = prompt("Veuillez entrer votre adresse Courriel :", `${userEnteredName.toLowerCase().replace(/\s+/g, '.')}@gmail.com`);
+  const userEnteredPhone = prompt("Veuillez entrer votre Numéro de Téléphone (pour le suivi de commande) :", "819 555-0192");
+
+  clientProfile = {
+    name: userEnteredName.trim(),
+    email: (userEnteredEmail && userEnteredEmail.trim()) || "client@gmail.com",
+    phone: (userEnteredPhone && userEnteredPhone.trim()) || "819 555-0192",
+    birthday: "",
+    address: "1450 Rue Saint-Pierre, Drummondville, QC",
+    spice: "Moyen / Medium",
+    favoriteDish: "Poulet au Beurre",
+    diet: "100% Halal",
+    points: 50 // +50 Welcome Bonus
+  };
+
+  isUserLoggedIn = true;
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Sync to Firestore
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(clientProfile.email.replace(/[@.]/g, '_')).set({
+        name: clientProfile.name,
+        email: clientProfile.email,
+        phone: clientProfile.phone,
+        points: 50,
+        createdAt: new Date().toISOString()
+      }, { merge: true }).catch(e => console.warn(e));
+    } catch(e){}
+  }
+
+  closeModal('signupSurveyModal');
+
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+
+  alert(`👋 Bienvenue, ${clientProfile.name}!\nVotre compte est activé avec succès.\n🎁 +50 Points de Fidélité crédités.`);
+
+  if (pendingOrderAction && cart.length > 0) {
+    pendingOrderAction = false;
+    openCartModal();
   }
 }
 
