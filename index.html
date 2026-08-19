@@ -912,32 +912,43 @@
   <!-- ==================== VIEW 1: HOME (ACCUEIL) ==================== -->
   <div class="app-view active" id="view-home">
     
-    <!-- McDonald's Style Fulfillment Mode & Address Bar -->
-    <div style="margin: 12px 16px 14px 16px; background: linear-gradient(135deg, #1A1A22 0%, #141419 100%); border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
-      <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
-        <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255, 85, 0, 0.18); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; shrink: 0;">
-          <i class="fa-solid fa-motorcycle" id="iconTopFulfillment"></i>
-        </div>
+    <!-- Tim Hortons Canada Style Fulfillment Selector (Livraison / Comptoir / Service au Volant) -->
+    <div style="margin: 12px 16px 14px 16px; background: linear-gradient(135deg, #1C1C24 0%, #141419 100%); border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+      <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+        <button type="button" class="cat-btn active" id="btnModeDelivery" onclick="selectTimsMode('delivery')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
+          <i class="fa-solid fa-motorcycle"></i> Livraison
+        </button>
+        <button type="button" class="cat-btn" id="btnModePickup" onclick="selectTimsMode('pickup')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
+          <i class="fa-solid fa-bag-shopping"></i> Comptoir
+        </button>
+        <button type="button" class="cat-btn" id="btnModeDrive" onclick="selectTimsMode('drive')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
+          <i class="fa-solid fa-car-side"></i> Au Volant
+        </button>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;" id="lblTopMode">Livraison • 25-35 min</span>
+            <span style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase;" id="lblTopMode">Livraison • 25-35 min</span>
             <span style="font-size: 9px; background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 1px 6px; border-radius: 10px; font-weight: 700;">Ouvert</span>
           </div>
-          <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;" id="lblTopAddress">1450 Rue Saint-Pierre, Drummondville, QC</div>
+          <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;" id="lblTopAddress">1450 Rue Saint-Pierre, Drummondville, QC</div>
         </div>
+        <button type="button" onclick="openCartModal()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
+          <i class="fa-solid fa-sliders" style="font-size: 10px; margin-right: 4px;"></i> Modifier
+        </button>
       </div>
-      <button type="button" onclick="openCartModal()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
-        <i class="fa-solid fa-sliders" style="font-size: 10px; margin-right: 4px;"></i> Modifier
-      </button>
     </div>
 
-    <!-- Client Loyalty Points Card -->
-    <div class="loyalty-banner">
+    <!-- Tim Hortons Digital Rewards Card (Scan in Store for Points) -->
+    <div class="loyalty-banner" onclick="openTimsScanCardModal()" style="cursor: pointer;">
       <div class="points-info">
-        <h3><i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> <span>Programme Fidélité</span></h3>
-        <p>120 Points disponibles • Niveau Argent</p>
+        <h3><i class="fa-solid fa-qrcode" style="color: var(--accent-gold); margin-right: 6px;"></i> <span>Carte Récompenses</span></h3>
+        <p><strong id="lblTimsPointsCount">50</strong> Points disponibles • <span style="text-decoration: underline; color: var(--accent-gold);">Toucher pour scanner en caisse</span></p>
       </div>
-      <button class="redeem-pill" onclick="alert('🎁 Vos 120 points débloquent: 1 Wrap ou Panini Gratuit dès 15$ d\'achat!')">Échanger</button>
+      <button type="button" class="redeem-pill" style="display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-barcode"></i> Scanner
+      </button>
     </div>
 
     <!-- Promotion Banner -->
@@ -1581,6 +1592,44 @@
       </button>
     </div>
 
+  </div>
+</div>
+
+<!-- ==================== TIM HORTONS CANADA STYLE DIGITAL SCAN CARD MODAL ==================== -->
+<div class="modal-overlay" id="timsScanCardModal">
+  <div class="modal-sheet" style="max-height: 85vh; text-align: center;">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">
+          <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Carte Fidélité Numérique
+        </div>
+        <div class="sheet-title" style="font-size: 18px;" id="lblScanCardName">Carte Membre</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('timsScanCardModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div style="background: linear-gradient(135deg, #1C1C24 0%, #111116 100%); border: 1.5px solid var(--accent-gold); border-radius: 20px; padding: 20px; margin: 10px 0 16px 0; box-shadow: 0 10px 30px rgba(229, 169, 60, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">La Maison des Wraps</span>
+        <span style="font-size: 12px; background: rgba(229, 169, 60, 0.2); color: var(--accent-gold); padding: 3px 10px; border-radius: 12px; font-weight: 800;" id="lblScanCardPoints">50 Points</span>
+      </div>
+
+      <!-- Scannable Digital QR Code -->
+      <div style="background: #FFFFFF; padding: 12px; border-radius: 14px; display: inline-block; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+        <canvas id="timsBarcodeCanvas"></canvas>
+      </div>
+
+      <div style="font-family: monospace; font-size: 14px; color: #FFF; font-weight: 800; letter-spacing: 2px;" id="lblScanCardCode">
+        LMDW-8920-3391
+      </div>
+      <p style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">
+        Présentez ce code en caisse à Drummondville (998 110e Ave) pour accumuler vos points et débloquer vos récompenses.
+      </p>
+    </div>
+
+    <button type="button" class="btn-main" onclick="closeModal('timsScanCardModal')" style="background: var(--primary); width: 100%;">
+      <span>Fermer la Carte</span>
+    </button>
   </div>
 </div>
 
@@ -2387,6 +2436,66 @@ function enterAsGuest() {
   if (gateEl) gateEl.style.display = 'none';
   if (appWrapper) appWrapper.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Tim Hortons Canada 3-Way Fulfillment Selector
+function selectTimsMode(mode) {
+  ['btnModeDelivery', 'btnModePickup', 'btnModeDrive'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+
+  const iconTop = document.getElementById('iconTopFulfillment');
+  const lblMode = document.getElementById('lblTopMode');
+  const lblAddr = document.getElementById('lblTopAddress');
+
+  if (mode === 'delivery') {
+    const b = document.getElementById('btnModeDelivery');
+    if (b) b.classList.add('active');
+    currentFulfillment = 'delivery';
+    if (iconTop) iconTop.className = "fa-solid fa-motorcycle";
+    if (lblMode) lblMode.innerText = "Livraison • 25-35 min";
+    if (lblAddr) lblAddr.innerText = clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC";
+  } else if (mode === 'pickup') {
+    const b = document.getElementById('btnModePickup');
+    if (b) b.classList.add('active');
+    currentFulfillment = 'pickup';
+    if (iconTop) iconTop.className = "fa-solid fa-bag-shopping";
+    if (lblMode) lblMode.innerText = "Cueillette au Comptoir • 10-15 min";
+    if (lblAddr) lblAddr.innerText = "998 110e Avenue, Drummondville, QC J2B 6X2";
+  } else if (mode === 'drive') {
+    const b = document.getElementById('btnModeDrive');
+    if (b) b.classList.add('active');
+    currentFulfillment = 'pickup';
+    if (iconTop) iconTop.className = "fa-solid fa-car-side";
+    if (lblMode) lblMode.innerText = "Service au Volant • 5-10 min";
+    if (lblAddr) lblAddr.innerText = "Voie Drive-Thru • 998 110e Avenue, Drummondville";
+  }
+  recalcCartPrices();
+}
+
+// Tim Hortons Digital Card Modal (Scan for Points in Store)
+function openTimsScanCardModal() {
+  const codeVal = clientProfile.email ? ('LMDW-' + clientProfile.email.split('@')[0].toUpperCase() + '-PTS' + (clientProfile.points || 50)) : 'LMDW-MEMBRE-52325';
+  
+  const lblName = document.getElementById('lblScanCardName');
+  const lblPoints = document.getElementById('lblScanCardPoints');
+  const lblCode = document.getElementById('lblScanCardCode');
+  
+  if (lblName) lblName.innerText = (clientProfile.name || "Client") + ' (Membre)';
+  if (lblPoints) lblPoints.innerText = (clientProfile.points || 50) + ' Points';
+  if (lblCode) lblCode.innerText = codeVal;
+
+  document.getElementById('timsScanCardModal').classList.add('open');
+
+  setTimeout(() => {
+    if (typeof QRCode !== 'undefined') {
+      const canvas = document.getElementById('timsBarcodeCanvas');
+      if (canvas) {
+        QRCode.toCanvas(canvas, codeVal, { width: 140, margin: 1 });
+      }
+    }
+  }, 100);
 }
 
 let pendingResetAccount = null;
