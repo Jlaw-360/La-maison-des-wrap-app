@@ -75,6 +75,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
     .brand-logo-img {
@@ -119,6 +120,21 @@
     }
 
     .pill-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* App Views / Pages */
+    .app-view {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .app-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     /* Loyalty Points Bar */
     .loyalty-banner {
@@ -345,6 +361,106 @@
       cursor: pointer;
     }
 
+    /* About Restaurant Card */
+    .about-card {
+      margin: 10px 18px 24px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .about-card h3 {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      margin-bottom: 10px;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+
+    .info-row i {
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* Profile View Styles */
+    .profile-container {
+      padding: 18px;
+    }
+
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .profile-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      border: 3px solid var(--bg-surface);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .profile-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-menu-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-white);
+      transition: background 0.15s;
+    }
+
+    .profile-menu-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .profile-menu-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .profile-menu-item-left i {
+      font-size: 16px;
+      color: var(--primary);
+      width: 20px;
+    }
+
     /* Floating Center Bottom Navigation */
     .bottom-nav {
       position: fixed;
@@ -510,9 +626,9 @@
 
 <div class="app-container">
 
-  <!-- Top Header -->
+  <!-- Top Sticky Header -->
   <header class="top-header">
-    <div class="brand-meta">
+    <div class="brand-meta" onclick="switchTab('home')">
       <img src="/logo.png" alt="Logo" class="brand-logo-img" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100'">
       <div class="brand-text">
         <h1>La Maison des Wraps</h1>
@@ -525,50 +641,174 @@
     </div>
   </header>
 
-  <!-- Client Loyalty Points Card -->
-  <div class="loyalty-banner">
-    <div class="points-info">
-      <h3><i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> <span>Programme Fidélité</span></h3>
-      <p>120 Points disponibles • Niveau Argent</p>
+  <!-- ==================== VIEW 1: HOME (ACCUEIL) ==================== -->
+  <div class="app-view active" id="view-home">
+    
+    <!-- Client Loyalty Points Card -->
+    <div class="loyalty-banner">
+      <div class="points-info">
+        <h3><i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> <span>Programme Fidélité</span></h3>
+        <p>120 Points disponibles • Niveau Argent</p>
+      </div>
+      <button class="redeem-pill" onclick="alert('🎁 Vos 120 points débloquent: 1 Wrap ou Panini Gratuit dès 15$ d\'achat!')">Échanger</button>
     </div>
-    <button class="redeem-pill" onclick="alert('🎁 Vos 120 points débloquent: 1 Wrap ou Panini Gratuit dès 15$ d\'achat!')">Échanger</button>
-  </div>
 
-  <!-- Promotion Banner -->
-  <section class="promo-section">
-    <div class="promo-card">
-      <span class="promo-tag">Offre Spéciale</span>
-      <h2>Livraison Gratuite dans un rayon de 5 km</h2>
-      <p>Commandez vos wraps, curries et poutines en direct du restaurant à Drummondville.</p>
-      <div class="promo-perks">
-        <span><i class="fa-solid fa-clock"></i> 11h - 21h (Mar-Sam)</span>
-        <span>•</span>
-        <span><i class="fa-solid fa-shield-halved"></i> 100% Halal</span>
+    <!-- Promotion Banner -->
+    <section class="promo-section">
+      <div class="promo-card">
+        <span class="promo-tag">Offre Spéciale</span>
+        <h2>Livraison Gratuite dans un rayon de 5 km</h2>
+        <p>Commandez vos wraps, curries et poutines en direct du restaurant à Drummondville.</p>
+        <div class="promo-perks">
+          <span><i class="fa-solid fa-clock"></i> 11h - 21h (Mar-Sam)</span>
+          <span>•</span>
+          <span><i class="fa-solid fa-shield-halved"></i> 100% Halal</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Category Explorer on Home -->
+    <div class="dishes-header" style="margin-top: 6px;">
+      <h2>Explorer les Catégories</h2>
+      <span style="color: var(--primary); cursor: pointer; font-weight: 700;" onclick="switchTab('menu')">Voir Tout le Menu <i class="fa-solid fa-arrow-right"></i></span>
+    </div>
+    <div class="category-nav" id="homeCategoryNav">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Top Featured Dishes (Plats Vedettes) -->
+    <div class="dishes-header">
+      <h2>Nos Plats Vedettes</h2>
+      <span>5 signatures</span>
+    </div>
+    <div class="menu-grid" id="homeFeaturedGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Restaurant Info & Hours Card -->
+    <div class="about-card">
+      <h3><i class="fa-solid fa-store" style="color: var(--primary);"></i> Notre Restaurant à Drummondville</h3>
+      <div class="info-row">
+        <i class="fa-solid fa-location-dot"></i>
+        <div><strong>Adresse :</strong> 998 110e Avenue, Drummondville, QC J2B 6X2</div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-phone"></i>
+        <div><strong>Téléphone :</strong> (819) 850-3972</div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-clock"></i>
+        <div>
+          <strong>Heures d'ouverture :</strong><br>
+          Mardi à Samedi : 11h00 - 21h00<br>
+          Dimanche : 12h00 - 21h00<br>
+          Lundi : Fermé
+        </div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-bread-slice"></i>
+        <div><strong>Fait Maison :</strong> Pains Kebab et Naans cuits sur place chaque matin.</div>
       </div>
     </div>
-  </section>
 
-  <!-- Visual Category Tabs (Based on Official Menu Boards) -->
-  <div class="category-nav" id="categoryNav">
-    <!-- Populated by JS -->
   </div>
 
-  <!-- Dishes Grid -->
-  <div class="dishes-header">
-    <h2 id="currentCategoryTitle">Nos Wraps</h2>
-    <span id="itemsCountLabel">7 plats</span>
+  <!-- ==================== VIEW 2: MENU ==================== -->
+  <div class="app-view" id="view-menu">
+
+    <!-- Search Bar in Menu -->
+    <div style="padding: 12px 18px 0 18px;">
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" id="menuSearchInput" placeholder="Rechercher un plat, wrap, curry..." oninput="filterMenuBySearch(this.value)" style="background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px;">
+      </div>
+    </div>
+
+    <!-- Visual Category Tabs from Official Menu Boards -->
+    <div class="category-nav" id="menuCategoryNav">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Dishes Grid in Menu -->
+    <div class="dishes-header">
+      <h2 id="menuCategoryTitle">Nos Wraps</h2>
+      <span id="menuItemsCountLabel">7 plats</span>
+    </div>
+    <div class="menu-grid" id="fullMenuGrid">
+      <!-- Populated by JS -->
+    </div>
+
   </div>
-  <div class="menu-grid" id="menuGrid">
-    <!-- Populated by JS -->
+
+  <!-- ==================== VIEW 3: PROFILE (PROFIL) ==================== -->
+  <div class="app-view" id="view-profile">
+    <div class="profile-container">
+
+      <!-- Profile Header Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">JT</div>
+        <h2 style="font-family: var(--font-heading); font-size: 17px; font-weight: 800;">Jean Tremblay</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">jean.tremblay@exemple.com • (819) 555-0192</p>
+        
+        <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; background: rgba(229, 169, 60, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+          <i class="fa-solid fa-crown"></i> Membre VIP Argent (120 Pts)
+        </div>
+      </div>
+
+      <!-- Profile Actions Menu List -->
+      <div class="profile-menu-list">
+        
+        <div class="profile-menu-item" onclick="alert('📦 Commande Active #CMD-4092:\nStatut: En préparation en cuisine\nLivreur assigné: Marc Livreur (Honda Civic)')">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Historique des Commandes</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="alert('📍 Adresse Enregistrée :\n1450 Rue Saint-Pierre, Drummondville, QC J2C 3Z5')">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Mes Adresses de Livraison</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="openGiftCardModal()">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i>
+            <span>Mes Cartes Cadeaux & Parrainage</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="window.location.href='tel:8198503972'">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-headset"></i>
+            <span>Service Client & Support</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="alert('🔒 Déconnexion sécurisée.')" style="border-color: rgba(255, 68, 68, 0.3);">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FF4444;"></i>
+            <span style="color: #FF4444;">Se Déconnecter</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 
   <!-- Bottom Navigation with Elevated Center Order Button -->
   <nav class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('home')">
+    <div class="nav-item active" id="tab-home" onclick="switchTab('home')">
       <i class="fa-solid fa-house"></i>
       <span>Accueil</span>
     </div>
-    <div class="nav-item" onclick="switchTab('menu')">
+    <div class="nav-item" id="tab-menu" onclick="switchTab('menu')">
       <i class="fa-solid fa-utensils"></i>
       <span>Menu</span>
     </div>
@@ -583,7 +823,7 @@
       <i class="fa-solid fa-gift"></i>
       <span>Cadeaux</span>
     </div>
-    <div class="nav-item" onclick="switchTab('profile')">
+    <div class="nav-item" id="tab-profile" onclick="switchTab('profile')">
       <i class="fa-solid fa-user"></i>
       <span>Profil</span>
     </div>
@@ -739,10 +979,15 @@ const CATEGORIES = [
 ];
 
 const BOARD_DISHES = [
+  // Top Featured Signatures (for Home)
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet au Beurre (Butter Chicken)', desc_fr: 'Poulet tikka dans une sauce crémeuse au beurre et aux amandes.', price: 17.65, is_wrap: false, is_featured: true },
+  { cat: 'Nos Wraps', name_fr: 'Kebab au Poulet', desc_fr: 'Poulet assaisonné et grillé, servi avec salade et sauce au choix.', price: 8.95, is_wrap: true, is_featured: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Tikka', desc_fr: 'Morceaux de poulet mariné aux épices tandoori rouges.', price: 8.95, is_wrap: true, is_featured: true },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet au Beurre', desc_fr: 'Fromage couic-couic nappé de notre sauce beurre maison.', price: 15.95, is_wrap: false, is_featured: true },
+  { cat: 'Biryani', name_fr: 'Biryani au Poulet', desc_fr: 'Riz basmati parfumé au safran, amandes et épices royales + Raita.', price: 18.85, is_wrap: false, is_featured: true },
+
   // Wraps
-  { cat: 'Nos Wraps', name_fr: 'Kebab au Poulet', desc_fr: 'Poulet assaisonné et grillé, servi avec salade et sauce au choix.', price: 8.95, is_wrap: true },
   { cat: 'Nos Wraps', name_fr: 'Kebab à la Dinde et Bœuf', desc_fr: 'Mélange savoureux de dinde et bœuf émincé et grillé.', price: 8.95, is_wrap: true },
-  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Tikka', desc_fr: 'Morceaux de poulet mariné aux épices tandoori rouges.', price: 8.95, is_wrap: true },
   { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Masala', desc_fr: 'Poulet mariné dans un mélange d\'épices masala traditionnelles.', price: 8.95, is_wrap: true },
   { cat: 'Nos Wraps', name_fr: 'Wrap au Steak Fromage', desc_fr: 'Lamelles de steak de bœuf tendre garni de fromage fondant.', price: 9.75, is_wrap: true },
   { cat: 'Nos Wraps', name_fr: 'Wrap Poulet Croustillant', desc_fr: 'Poulet frit croustillant garni de salade fraîche.', price: 8.95, is_wrap: true },
@@ -754,14 +999,12 @@ const BOARD_DISHES = [
   { cat: 'Paninis', name_fr: 'Panini Saumon & Fromage', desc_fr: 'Saumon savoureux garni de fromage chaud.', price: 9.25, is_wrap: false },
 
   // Curry Bowls & Combos
-  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet au Beurre (Butter Chicken)', desc_fr: 'Poulet tikka dans une sauce crémeuse au beurre et aux amandes.', price: 17.65, is_wrap: false },
   { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Curry Traditionnel', desc_fr: 'Poulet mijoté dans notre sauce curry spéciale aux herbes.', price: 17.65, is_wrap: false },
   { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Malai Tikka', desc_fr: 'Blanc de volaille tandoor dans sauce crème et fromage.', price: 17.65, is_wrap: false },
   { cat: 'Bols de Curry & Combos', name_fr: 'Panneer Makhani (Fromage Maison)', desc_fr: 'Paneer dans une sauce crémeuse aux tomates et épices.', price: 15.25, is_wrap: false },
   { cat: 'Bols de Curry & Combos', name_fr: 'Combo 2 : Curry + Riz + Naan Fromage', desc_fr: 'Grand bol au choix avec portion de riz basmati et naan fromage.', price: 24.35, is_wrap: false },
 
   // Biryani
-  { cat: 'Biryani', name_fr: 'Biryani au Poulet', desc_fr: 'Riz basmati parfumé au safran, amandes, raisins et noix de cajou + Raita.', price: 18.85, is_wrap: false },
   { cat: 'Biryani', name_fr: 'Biryani aux Crevettes', desc_fr: 'Riz basmati royal aux crevettes sautées et épices + Raita.', price: 18.85, is_wrap: false },
 
   // Assiettes
@@ -771,7 +1014,6 @@ const BOARD_DISHES = [
 
   // Poutines
   { cat: 'Nos Poutines', name_fr: 'Poutine Poulet Tikka', desc_fr: 'Fromage en grains du Québec, poulet tikka et sauce au choix.', price: 14.95, is_wrap: false },
-  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet au Beurre', desc_fr: 'Fromage couic-couic nappé de notre sauce beurre maison.', price: 15.95, is_wrap: false },
   { cat: 'Nos Poutines', name_fr: 'Poutine Kebab au Poulet', desc_fr: 'Frites croustillantes et lamelles de kebab au poulet.', price: 14.50, is_wrap: false },
 
   // Burgers & Menu Enfant
@@ -787,29 +1029,89 @@ const BOARD_DISHES = [
 ];
 
 function init() {
-  renderCatNav();
-  renderDishes();
+  renderHomeCategories();
+  renderHomeFeatured();
+  renderMenuCategories();
+  renderMenuDishes();
 }
 
-function renderCatNav() {
-  const container = document.getElementById('categoryNav');
+// Switch between App Tabs (Home, Menu, Profile)
+function switchTab(tabName) {
+  // Hide all views
+  document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+
+  // Show active view
+  if (tabName === 'home') {
+    document.getElementById('view-home').classList.add('active');
+    document.getElementById('tab-home').classList.add('active');
+  } else if (tabName === 'menu') {
+    document.getElementById('view-menu').classList.add('active');
+    document.getElementById('tab-menu').classList.add('active');
+  } else if (tabName === 'profile') {
+    document.getElementById('view-profile').classList.add('active');
+    document.getElementById('tab-profile').classList.add('active');
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// HOME VIEW RENDERING
+function renderHomeCategories() {
+  const container = document.getElementById('homeCategoryNav');
   container.innerHTML = CATEGORIES.map(cat => `
-    <button class="cat-btn ${cat === activeCat ? 'active' : ''}" onclick="selectCat('${cat}')">${cat}</button>
+    <button class="cat-btn" onclick="openMenuAtCategory('${cat}')">${cat}</button>
   `).join('');
 }
 
-function selectCat(cat) {
+function openMenuAtCategory(cat) {
   activeCat = cat;
-  renderCatNav();
-  renderDishes();
+  switchTab('menu');
+  renderMenuCategories();
+  renderMenuDishes();
 }
 
-function renderDishes() {
-  const container = document.getElementById('menuGrid');
-  const filtered = BOARD_DISHES.filter(d => d.cat === activeCat);
+function renderHomeFeatured() {
+  const container = document.getElementById('homeFeaturedGrid');
+  const featured = BOARD_DISHES.filter(d => d.is_featured);
 
-  document.getElementById('currentCategoryTitle').innerText = activeCat;
-  document.getElementById('itemsCountLabel').innerText = `${filtered.length} plats`;
+  container.innerHTML = featured.map(dish => `
+    <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
+      <div class="dish-badge">Vedette • ${dish.cat}</div>
+      <div class="dish-title">${dish.name_fr}</div>
+      <div class="dish-desc">${dish.desc_fr}</div>
+      <div class="dish-price-row">
+        <span class="price-text">$${dish.price.toFixed(2)}</span>
+        <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// MENU VIEW RENDERING
+function renderMenuCategories() {
+  const container = document.getElementById('menuCategoryNav');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <button class="cat-btn ${cat === activeCat ? 'active' : ''}" onclick="selectMenuCat('${cat}')">${cat}</button>
+  `).join('');
+}
+
+function selectMenuCat(cat) {
+  activeCat = cat;
+  renderMenuCategories();
+  renderMenuDishes();
+}
+
+function renderMenuDishes(query = '') {
+  const container = document.getElementById('fullMenuGrid');
+  const filtered = BOARD_DISHES.filter(d => {
+    const matchesCat = d.cat === activeCat;
+    const matchesQuery = !query || d.name_fr.toLowerCase().includes(query) || d.desc_fr.toLowerCase().includes(query);
+    return matchesCat && matchesQuery;
+  });
+
+  document.getElementById('menuCategoryTitle').innerText = activeCat;
+  document.getElementById('menuItemsCountLabel').innerText = `${filtered.length} plats`;
 
   container.innerHTML = filtered.map(dish => `
     <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
@@ -822,6 +1124,10 @@ function renderDishes() {
       </div>
     </div>
   `).join('');
+}
+
+function filterMenuBySearch(val) {
+  renderMenuDishes(val.toLowerCase().trim());
 }
 
 function openDishModal(name) {
@@ -910,31 +1216,35 @@ function openCartModal() {
   document.getElementById('cartModal').classList.add('open');
 }
 
-// Initialize Stripe with Live Publishable Key
+// Stripe Initialization
 const STRIPE_PK = 'pk_live_51U18R4EP3Grb2rSSxwG3CjaGa537qkkW71swZGJ2hHmoXVO1H4bVZq3DkZmsJfxAO1nsAmp0CO7ENcsXeNa15WiR00ZmvJsPeQ';
 let stripe = null;
 let cardElement = null;
 
 function initStripe() {
   if (typeof Stripe !== 'undefined') {
-    stripe = Stripe(STRIPE_PK);
-    const elements = stripe.elements();
-    cardElement = elements.create('card', {
-      style: {
-        base: {
-          color: '#ffffff',
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          fontSize: '14px',
-          '::placeholder': { color: '#888899' }
-        },
-        invalid: { color: '#FF4444' }
-      }
-    });
-    cardElement.mount('#stripe-card-element');
-    cardElement.on('change', (e) => {
-      const err = document.getElementById('card-errors');
-      err.textContent = e.error ? e.error.message : '';
-    });
+    try {
+      stripe = Stripe(STRIPE_PK);
+      const elements = stripe.elements();
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#ffffff',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: '14px',
+            '::placeholder': { color: '#888899' }
+          },
+          invalid: { color: '#FF4444' }
+        }
+      });
+      cardElement.mount('#stripe-card-element');
+      cardElement.on('change', (e) => {
+        const err = document.getElementById('card-errors');
+        err.textContent = e.error ? e.error.message : '';
+      });
+    } catch(e) {
+      console.warn("Stripe init:", e);
+    }
   }
 }
 
@@ -979,7 +1289,6 @@ function shareGiftCardLink() {
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function switchTab(t) { if (t === 'home' || t === 'menu') window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
 
 window.onload = function() {
