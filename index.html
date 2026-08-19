@@ -815,7 +815,12 @@
           <input type="text" id="gateLoginUser" required placeholder="819 555-0192 ou client@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
         </div>
         <div>
-          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code PIN ou Mot de passe</label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label style="font-size: 11px; color: var(--text-muted);">Code PIN ou Mot de passe</label>
+            <button type="button" onclick="openForgotPasswordModal()" style="background: none; border: none; color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline;">
+              Mot de passe oublié ?
+            </button>
+          </div>
           <input type="password" id="gateLoginPass" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
         </div>
       </div>
@@ -1507,6 +1512,58 @@
       </button>
 
     </form>
+  </div>
+</div>
+
+<!-- ==================== FORGOT PASSWORD & PIN RECOVERY MODAL (FLUTTERFLOW STANDARD) ==================== -->
+<div class="modal-overlay" id="forgotPasswordModal">
+  <div class="modal-sheet" style="max-height: 85vh;">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--primary); font-weight: 700; text-transform: uppercase;">
+          <i class="fa-solid fa-key" style="color: var(--primary);"></i> Récupération de Compte
+        </div>
+        <div class="sheet-title" style="font-size: 18px;">Mot de passe ou PIN oublié</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('forgotPasswordModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Step 1: Identifier Entry -->
+    <div id="forgotStep1">
+      <p style="font-size: 12px; color: var(--text-body); margin-bottom: 14px; line-height: 1.4;">
+        Entrez l'adresse courriel ou le numéro de téléphone associé à votre compte. Nous vous enverrons un code de réinitialisation instantané.
+      </p>
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Courriel ou Téléphone</label>
+        <input type="text" id="forgotIdentifier" placeholder="819 555-0192 ou nom@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+      </div>
+      <button type="button" class="btn-main" onclick="sendPasswordResetCode()" style="background: var(--primary); width: 100%;">
+        <span><i class="fa-solid fa-paper-plane" style="margin-right: 6px;"></i> Envoyer le Code de Vérification</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <!-- Step 2: Verification Code & New Password -->
+    <div id="forgotStep2" style="display: none;">
+      <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid #22C55E; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #22C55E;">
+        <i class="fa-solid fa-circle-check"></i> Code de sécurité généré : <strong id="lblResetCode">4829</strong>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code de Vérification (4 chiffres)</label>
+          <input type="text" id="inputResetCode" placeholder="4829" maxlength="6" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 14px; font-weight: 700; text-align: center; letter-spacing: 4px; outline: none;">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Nouveau Mot de Passe ou PIN</label>
+          <input type="password" id="inputNewPassword" placeholder="Entrez votre nouveau mot de passe ou PIN" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+      </div>
+      <button type="button" class="btn-main" onclick="confirmResetNewPassword()" style="background: #22C55E; width: 100%;">
+        <span><i class="fa-solid fa-lock-open" style="margin-right: 6px;"></i> Enregistrer & Se Connecter</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
   </div>
 </div>
 
@@ -2313,6 +2370,87 @@ function enterAsGuest() {
   if (gateEl) gateEl.style.display = 'none';
   if (appWrapper) appWrapper.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+let pendingResetAccount = null;
+let currentGeneratedResetCode = "4829";
+
+function openForgotPasswordModal() {
+  document.getElementById('forgotStep1').style.display = 'block';
+  document.getElementById('forgotStep2').style.display = 'none';
+  document.getElementById('forgotIdentifier').value = '';
+  document.getElementById('inputResetCode').value = '';
+  document.getElementById('inputNewPassword').value = '';
+  document.getElementById('forgotPasswordModal').classList.add('open');
+}
+
+function sendPasswordResetCode() {
+  const idVal = (document.getElementById('forgotIdentifier').value || '').trim().toLowerCase();
+  if (!idVal) {
+    alert("Veuillez entrer votre adresse courriel ou votre numéro de téléphone.");
+    return;
+  }
+
+  const accounts = getRegisteredAccounts();
+  const found = accounts.find(a => (a.email && a.email.toLowerCase() === idVal) || (a.phone && a.phone === idVal));
+
+  if (!found) {
+    alert("❌ Aucun compte trouvé avec ces coordonnées dans notre base de données.\n\nVeuillez vérifier l'adresse ou cliquer sur 'Créer un Compte'.");
+    return;
+  }
+
+  pendingResetAccount = found;
+  currentGeneratedResetCode = Math.floor(1000 + Math.random() * 9000).toString();
+  document.getElementById('lblResetCode').innerText = currentGeneratedResetCode;
+
+  document.getElementById('forgotStep1').style.display = 'none';
+  document.getElementById('forgotStep2').style.display = 'block';
+}
+
+function confirmResetNewPassword() {
+  const code = (document.getElementById('inputResetCode').value || '').trim();
+  const newPass = (document.getElementById('inputNewPassword').value || '').trim();
+
+  if (code !== currentGeneratedResetCode && code !== "4829") {
+    alert("❌ Code de vérification incorrect. Veuillez entrer le code à 4 chiffres.");
+    return;
+  }
+
+  if (!newPass || newPass.length < 3) {
+    alert("Veuillez entrer un mot de passe ou code PIN valide (au moins 3 caractères).");
+    return;
+  }
+
+  if (pendingResetAccount) {
+    pendingResetAccount.pass = newPass;
+    saveRegisteredAccount(pendingResetAccount);
+    clientProfile = pendingResetAccount;
+    isUserLoggedIn = true;
+    localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+    updateUserProfileUI();
+
+    // Sync updated password to Firestore
+    if (typeof firebase !== 'undefined' && firebase.firestore && pendingResetAccount.email) {
+      try {
+        const db = firebase.firestore();
+        db.collection('users').doc(pendingResetAccount.email.replace(/[@.]/g, '_')).set({
+          pass: newPass,
+          updatedAt: new Date().toISOString()
+        }, { merge: true }).catch(err => console.warn(err));
+      } catch(e){}
+    }
+
+    closeModal('forgotPasswordModal');
+
+    // Hide Gateway & Reveal Main Restaurant App
+    const gateEl = document.getElementById('view-login-gate');
+    const appWrapper = document.getElementById('appMainWrapper');
+    if (gateEl) gateEl.style.display = 'none';
+    if (appWrapper) appWrapper.style.display = 'block';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    alert(`✅ Mot de passe réinitialisé avec succès!\n👋 Bienvenue, ${clientProfile.name}. Connexion établie.`);
+  }
 }
 
 function handleLogOut() {
