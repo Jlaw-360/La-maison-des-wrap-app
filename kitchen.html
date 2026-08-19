@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuisine Kanban - La Maison des Wraps</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF5500">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <style>
+    :root {
+      --primary: #FF5500;
+      --bg-dark: #121212;
+      --surface-card: #1E1E22;
+      --surface-elevated: #26262C;
+      --border: #32323A;
+      --text-main: #FFFFFF;
+      --text-muted: #A0A0A5;
+      --badge-received: #3B82F6;
+      --badge-prep: #F59E0B;
+      --badge-ready: #10B981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 24px;
+      flex: 1;
+    }
+    .kanban-col {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ticket-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.2s;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ticket-id { font-weight: 800; color: var(--primary); font-size: 14px; }
+    .ticket-items {
+      font-size: 13px;
+      color: #E0E0E0;
+      line-height: 1.4;
+    }
+    .btn-action {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-action:hover { opacity: 0.9; }
+    .qr-container {
+      background: #FFFFFF;
+      padding: 10px;
+      border-radius: 10px;
+      display: inline-block;
+      margin: 8px auto;
+    }
+    .backup-pin-badge {
+      background: rgba(255, 85, 0, 0.15);
+      border: 1px dashed var(--primary);
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    .nav-links { display: flex; gap: 10px; }
+    .nav-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover { color: #fff; border-color: var(--primary); }
+    .badge-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand-title">
+    <span>👨‍🍳</span>
+    <span>Cuisine Kanban • Drummondville (998 110e Ave)</span>
+  </div>
+  <div class="nav-links">
+    <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> App Client</a>
+    <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> App Livreur</a>
+    <a href="/admin.html" class="nav-btn"><i class="fa-solid fa-crown"></i> Admin</a>
+  </div>
+</header>
+
+<div class="kanban-board">
+
+  <!-- Column 1: Nouvelles Commandes -->
+  <div class="kanban-col">
+    <div class="col-header">
+      <span style="color: var(--badge-received);"><i class="fa-solid fa-bell"></i> 1. Nouvelles Reçues</span>
+      <span class="badge" style="background: var(--badge-received); padding: 2px 8px; border-radius: 10px; font-size: 11px;">1</span>
+    </div>
+    <div class="ticket-card" id="ticket-CMD-4093">
+      <div class="ticket-header">
+        <span class="ticket-id">#CMD-4093</span>
+        <span class="badge-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">🛵 LIVRAISON</span>
+      </div>
+      <div class="ticket-items">
+        <strong>1x Wrap Poulet Tikka (Pain Tortilla, Trio)</strong><br>
+        <small style="color: var(--text-muted);">• Accompagnement: Frites • Sauces: Ail, Verte</small><br>
+        <strong>1x Poutine Poulet Tikka</strong>
+      </div>
+      <button class="btn-action" onclick="moveTicket('CMD-4093', 'prep')">
+        <i class="fa-solid fa-fire-burner"></i> Lancer en Préparation
+      </button>
+    </div>
+  </div>
+
+  <!-- Column 2: En Préparation -->
+  <div class="kanban-col">
+    <div class="col-header">
+      <span style="color: var(--badge-prep);"><i class="fa-solid fa-fire-burner"></i> 2. En Préparation</span>
+      <span class="badge" style="background: var(--badge-prep); padding: 2px 8px; border-radius: 10px; font-size: 11px;">1</span>
+    </div>
+    <div class="ticket-card" id="ticket-CMD-4092">
+      <div class="ticket-header">
+        <span class="ticket-id">#CMD-4092</span>
+        <span class="badge-tag" style="background: rgba(34, 197, 94, 0.2); color: #22C55E;">🥡 CUEILLETTE COMPTOIR</span>
+      </div>
+      <div class="ticket-items">
+        <strong>2x Kebab au Poulet (Pain Naan Fait Maison, Trio)</strong><br>
+        <small style="color: var(--text-muted);">• Sauces: Ail, Harissa • Extra Œuf (+0.99$)</small><br>
+        <strong>1x Lassi Mangue</strong>
+      </div>
+      <button class="btn-action" style="background: #10B981;" onclick="moveTicket('CMD-4092', 'ready')">
+        <i class="fa-solid fa-qrcode"></i> Prêt pour Cueillette Client
+      </button>
+    </div>
+  </div>
+
+  <!-- Column 3: Prêtes pour Retrait / Livreur -->
+  <div class="kanban-col">
+    <div class="col-header">
+      <span style="color: var(--badge-ready);"><i class="fa-solid fa-bag-shopping"></i> 3. Prêt au Comptoir / Livreur</span>
+      <span class="badge" style="background: var(--badge-ready); padding: 2px 8px; border-radius: 10px; font-size: 11px;" id="readyCount">1</span>
+    </div>
+    <div class="ticket-card" id="ticket-ready-container" style="border: 1px solid var(--badge-ready);">
+      <div class="ticket-header">
+        <span class="ticket-id">#CMD-4092</span>
+        <span class="badge-tag" style="background: #10B981; color: #fff;">PRÊT POUR RETRAIT</span>
+      </div>
+      <div style="font-size: 12px; color: var(--text-muted);">Client : <strong>Jean Tremblay (Cueillette)</strong></div>
+      
+      <!-- Generated QR Code & Verification Button -->
+      <div style="text-align: center;">
+        <div class="qr-container">
+          <canvas id="qrCanvas"></canvas>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Code PIN Client :</div>
+        <div class="backup-pin-badge">PIN : 52325</div>
+      </div>
+
+      <!-- Cashier Confirm Pickup Button -->
+      <button class="btn-action" style="background: #22C55E; margin-top: 6px;" onclick="confirmCustomerPickup('CMD-4092')">
+        <i class="fa-solid fa-camera"></i> Scanner QR Client ou Valider Retrait
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+window.onload = function() {
+  QRCode.toCanvas(document.getElementById('qrCanvas'), 'LMDW-CMD-4092-PIN52325', {
+    width: 140,
+    margin: 1
+  });
+};
+
+function moveTicket(orderId, nextState) {
+  if (nextState === 'prep') {
+    alert(`Commande #${orderId} passée EN PRÉPARATION en cuisine!`);
+  } else if (nextState === 'ready') {
+    alert(`Commande #${orderId} marquée comme PRÊTE! Le client ou le livreur a reçu la notification.`);
+  }
+}
+
+function confirmCustomerPickup(orderId) {
+  const pinEntered = prompt("Entrez le code PIN du client (ex: 52325) ou confirmez le scan QR :");
+  if (pinEntered === "52325" || pinEntered === "" || pinEntered) {
+    alert(`✅ Commande #${orderId} remise au client avec succès!\nStatut mis à jour : RÉCUPÉRÉE.`);
+    document.getElementById('ticket-ready-container').style.opacity = '0.5';
+  }
+}
+</script>
+
+</body>
+</html>

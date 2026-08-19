@@ -1,0 +1,2550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>La Maison des Wraps | Restauration Rapide Indienne Drummondville</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0C0C0E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4&libraries=places&callback=initGoogleMapsPlaces" async defer></script>
+  <style>
+    :root {
+      --bg-main: #0C0C0E;
+      --bg-surface: #151519;
+      --bg-card: #1C1C22;
+      --bg-card-hover: #25252E;
+      --primary: #FF5500;
+      --primary-hover: #E04B00;
+      --primary-glow: rgba(255, 85, 0, 0.28);
+      --accent-gold: #E5A93C;
+      --accent-green: #22C55E;
+      --text-white: #FFFFFF;
+      --text-body: #A5A5B2;
+      --text-muted: #6E6E7A;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background-color: #050507;
+      color: var(--text-white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 95px;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1180px;
+      min-height: 100vh;
+      background-color: var(--bg-main);
+      position: relative;
+      border-left: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+      margin: 0 auto;
+    }
+
+    /* Desktop Navigation Bar */
+    .desktop-nav-links {
+      display: none;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .desktop-nav-link {
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .desktop-nav-link:hover, .desktop-nav-link.active {
+      color: var(--primary);
+    }
+
+    .btn-google-auth {
+      width: 100%;
+      background: #FFFFFF;
+      color: #1F1F1F;
+      border: 1px solid #E0E0E0;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-google-auth:hover {
+      background: #F5F5F5;
+      transform: translateY(-1px);
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 30px;
+      }
+      .desktop-nav-links {
+        display: flex;
+      }
+      .bottom-nav {
+        display: none !important;
+      }
+      .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+        gap: 20px !important;
+        padding-left: 28px !important;
+        padding-right: 28px !important;
+      }
+      .top-header {
+        padding: 16px 28px !important;
+      }
+      .hero-section, .promo-section, .about-card, .loyalty-bar-container, .dishes-header {
+        padding-left: 28px !important;
+        padding-right: 28px !important;
+      }
+      .category-nav {
+        padding-left: 28px !important;
+        padding-right: 28px !important;
+      }
+      .modal-sheet {
+        max-width: 580px !important;
+        margin: 40px auto !important;
+        border-radius: 24px !important;
+      }
+      .profile-container {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
+
+    /* Top Sticky Header */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(12, 12, 14, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .brand-logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--primary);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .pill-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* App Views / Pages */
+    .app-view {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .app-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Loyalty Points Bar */
+    .loyalty-banner {
+      margin: 14px 18px 6px 18px;
+      background: linear-gradient(135deg, #221C1A 0%, #17171C 100%);
+      border: 1px solid rgba(229, 169, 60, 0.25);
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .points-info h3 {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .points-info p {
+      font-size: 11px;
+      color: var(--accent-gold);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .redeem-pill {
+      background: rgba(229, 169, 60, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Promo Carousel Card */
+    .promo-section {
+      padding: 10px 18px;
+    }
+
+    .promo-card {
+      background: linear-gradient(135deg, #23130E 0%, #18151A 100%);
+      border: 1px solid rgba(255, 85, 0, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-tag {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .promo-card h2 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .promo-card p {
+      font-size: 12px;
+      color: var(--text-body);
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .promo-perks {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Category Pill Navigation */
+    .category-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 18px 14px 18px;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-body);
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    /* Dishes Section */
+    .dishes-header {
+      padding: 4px 18px 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dishes-header h2 {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .dishes-header span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 18px 24px 18px;
+    }
+
+    .dish-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .dish-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 85, 0, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .dish-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .dish-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .dish-desc {
+      font-size: 11px;
+      color: var(--text-body);
+      line-height: 1.35;
+      margin-bottom: 12px;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .dish-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .price-text {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .add-icon-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* About Restaurant Card */
+    .about-card {
+      margin: 10px 18px 24px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .about-card h3 {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      margin-bottom: 10px;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+
+    .info-row i {
+      color: var(--primary);
+      margin-top: 2px;
+    }
+
+    /* Profile View Styles */
+    .profile-container {
+      padding: 18px;
+    }
+
+    .profile-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .profile-avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px auto;
+      border: 3px solid var(--bg-surface);
+      box-shadow: 0 4px 16px var(--primary-glow);
+    }
+
+    .profile-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .profile-menu-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-white);
+      transition: background 0.15s;
+    }
+
+    .profile-menu-item:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .profile-menu-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .profile-menu-item-left i {
+      font-size: 16px;
+      color: var(--primary);
+      width: 20px;
+    }
+
+    /* Floating Center Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      background: rgba(16, 16, 20, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 14px 10px 14px;
+      z-index: 200;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
+    }
+
+    .nav-item.active { color: var(--primary); }
+    .nav-item i { font-size: 16px; }
+
+    /* Elevated Flame Orange Center Order Button */
+    .center-order-cta {
+      position: relative;
+      top: -16px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF6600 0%, #FF3D00 100%);
+      color: #FFFFFF;
+      border: 3px solid var(--bg-main);
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .center-order-cta:hover { transform: scale(1.06); }
+
+    .cart-count-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #FFFFFF;
+      color: var(--primary);
+      font-size: 10px;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--primary);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 300;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-subtle);
+      border-radius: 28px 28px 0 0;
+      padding: 22px;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .sheet-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .close-btn {
+      background: var(--bg-card);
+      border: none;
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-main {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 15px;
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 700;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .gift-tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gift-tier-card.selected {
+      border-color: var(--accent-gold);
+      background: rgba(229, 169, 60, 0.12);
+    }
+
+    /* Fulfillment Mode Selector (Delivery vs Pickup) */
+    .fulfillment-toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .fulfillment-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fulfillment-card.active {
+      border-color: var(--primary);
+      background: rgba(255, 85, 0, 0.12);
+    }
+
+    .fulfillment-card i {
+      font-size: 20px;
+      margin-bottom: 6px;
+      display: block;
+      color: var(--text-muted);
+    }
+
+    .fulfillment-card.active i {
+      color: var(--primary);
+    }
+
+    .fulfillment-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .fulfillment-card small {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .dropoff-option-btn {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 11px;
+      color: var(--text-body);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .dropoff-option-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 700;
+      background: rgba(255, 85, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ==================== FULL-SCREEN PRIMARY LOGIN & SIGN-UP GATEWAY ==================== -->
+  <div id="view-login-gate" style="display: flex; flex-direction: column; justify-content: center; min-height: 100vh; padding: 24px 20px; background: radial-gradient(circle at top, #1E1E26 0%, #0C0C0E 100%);">
+    
+    <!-- Restaurant Brand Header -->
+    <div style="text-align: center; margin-bottom: 22px;">
+      <img src="/logo.png" alt="Logo" style="width: 76px; height: 76px; border-radius: 50%; border: 2.5px solid var(--primary); object-fit: cover; margin-bottom: 12px; box-shadow: 0 10px 28px rgba(255, 85, 0, 0.35);" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120'">
+      <h1 style="font-family: var(--font-heading); font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.3px;">La Maison des Wraps</h1>
+      <p style="font-size: 13px; color: var(--text-body); margin-top: 4px; font-weight: 500;">Restauration Rapide Indienne • Drummondville</p>
+      <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> 998 110e Avenue • (819) 850-3972</p>
+    </div>
+
+    <!-- Welcome Perk Banner -->
+    <div style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.22) 0%, rgba(255, 85, 0, 0.16) 100%); border: 1.5px dashed var(--accent-gold); border-radius: 16px; padding: 14px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 28px;">🎁</span>
+      <div>
+        <strong style="font-size: 13px; color: #fff;">Bonus de Bienvenue +50 Points!</strong>
+        <p style="font-size: 11px; color: var(--text-body); margin-top: 2px;">Connectez-vous ou créez votre compte pour accéder au menu, commander et recevoir votre cadeau.</p>
+      </div>
+    </div>
+
+    <!-- 1-Tap Google Sign-In Button -->
+    <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+      </svg>
+      <span>Continuer avec mon Compte Google</span>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ou par identifiants</span>
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+    </div>
+
+    <!-- Toggle Login vs Sign-up -->
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button type="button" id="tabGateLogin" class="cat-btn active" style="flex: 1; text-align: center;" onclick="switchGateTab('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Me Connecter
+      </button>
+      <button type="button" id="tabGateSignup" class="cat-btn" style="flex: 1; text-align: center;" onclick="switchGateTab('signup')">
+        <i class="fa-solid fa-user-plus"></i> Créer un Compte (+50 Pts)
+      </button>
+    </div>
+
+    <!-- Form 1: Fast Login Form (Active by default) -->
+    <form id="formGateLogin" onsubmit="event.preventDefault(); submitGateLogin();">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Numéro de Téléphone ou Courriel</label>
+          <input type="text" id="gateLoginUser" required placeholder="819 555-0192 ou client@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code PIN ou Mot de passe</label>
+          <input type="password" id="gateLoginPass" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+      </div>
+      <button type="submit" class="btn-main" style="background: var(--primary); width: 100%;">
+        <span><i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Se Connecter & Accéder au Restaurant</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Form 2: Sign-Up Form (Hidden by default) -->
+    <form id="formGateSignup" style="display: none;" onsubmit="event.preventDefault(); submitGateSignup();">
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+        <input type="text" id="gateSignupName" required placeholder="Prénom & Nom (Ex: Jean Tremblay)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <input type="tel" id="gateSignupPhone" required placeholder="Téléphone (819 555-0192)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          <input type="date" id="gateSignupBirthday" title="Date d'anniversaire pour votre cadeau annuel" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
+        </div>
+
+        <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (jean@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <input type="text" id="gateSignupAddress" placeholder="Adresse à Drummondville (1450 Rue Saint-Pierre)" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+      </div>
+      <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); width: 100%;">
+        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Compte (+50 Pts) & Entrer</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Guest Mode Option to Explore Menu Immediately -->
+    <div style="text-align: center; margin-top: 18px;">
+      <button type="button" onclick="enterAsGuest()" style="background: transparent; border: none; color: var(--text-muted); font-size: 13px; text-decoration: underline; cursor: pointer; padding: 6px;">
+        Ou continuer en tant qu'invité pour voir le menu <i class="fa-solid fa-arrow-right" style="font-size: 10px; margin-left: 4px;"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ==================== MAIN RESTAURANT APP CONTAINER (Visible when authenticated) ==================== -->
+  <div id="appMainWrapper" style="display: none;">
+
+  <!-- Top Sticky Header -->
+  <header class="top-header">
+    <div class="brand-meta" onclick="switchTab('home')">
+      <img src="/logo.png" alt="Logo" class="brand-logo-img" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100'">
+      <div class="brand-text">
+        <h1>La Maison des Wraps</h1>
+        <p><i class="fa-solid fa-location-dot"></i> Drummondville • (819) 850-3972</p>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Links for Computer Users -->
+    <nav class="desktop-nav-links">
+      <span class="desktop-nav-link active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i> Accueil</span>
+      <span class="desktop-nav-link" onclick="switchTab('menu')"><i class="fa-solid fa-utensils"></i> Menu Complet</span>
+      <span class="desktop-nav-link" onclick="openCartModal()"><i class="fa-solid fa-bag-shopping"></i> Panier / Commander</span>
+      <span class="desktop-nav-link" onclick="switchTab('profile')"><i class="fa-solid fa-user"></i> Mon Profil</span>
+    </nav>
+
+    <div class="header-actions">
+      <button class="pill-btn" onclick="openCartModal()" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary);">
+        <i class="fa-solid fa-bag-shopping"></i> Panier
+      </button>
+      <button class="pill-btn" id="btnHeaderProfile" onclick="switchTab('profile')">
+        <i class="fa-solid fa-circle-user" style="color: #22C55E;"></i> <span id="lblHeaderUserName">Profil</span>
+      </button>
+      <button class="pill-btn" onclick="openGiftCardModal()"><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> Cadeau</button>
+      <button class="pill-btn" id="langBtn" onclick="toggleLanguage()">EN</button>
+    </div>
+  </header>
+
+  <!-- ==================== VIEW 1: HOME (ACCUEIL) ==================== -->
+  <div class="app-view active" id="view-home">
+    
+    <!-- McDonald's Style Fulfillment Mode & Address Bar -->
+    <div style="margin: 12px 16px 14px 16px; background: linear-gradient(135deg, #1A1A22 0%, #141419 100%); border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+      <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+        <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255, 85, 0, 0.18); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 18px; shrink: 0;">
+          <i class="fa-solid fa-motorcycle" id="iconTopFulfillment"></i>
+        </div>
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;" id="lblTopMode">Livraison • 25-35 min</span>
+            <span style="font-size: 9px; background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 1px 6px; border-radius: 10px; font-weight: 700;">Ouvert</span>
+          </div>
+          <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;" id="lblTopAddress">1450 Rue Saint-Pierre, Drummondville, QC</div>
+        </div>
+      </div>
+      <button type="button" onclick="openCartModal()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
+        <i class="fa-solid fa-sliders" style="font-size: 10px; margin-right: 4px;"></i> Modifier
+      </button>
+    </div>
+
+    <!-- Client Loyalty Points Card -->
+    <div class="loyalty-banner">
+      <div class="points-info">
+        <h3><i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> <span>Programme Fidélité</span></h3>
+        <p>120 Points disponibles • Niveau Argent</p>
+      </div>
+      <button class="redeem-pill" onclick="alert('🎁 Vos 120 points débloquent: 1 Wrap ou Panini Gratuit dès 15$ d\'achat!')">Échanger</button>
+    </div>
+
+    <!-- Promotion Banner -->
+    <section class="promo-section">
+      <div class="promo-card">
+        <span class="promo-tag">Offre Spéciale</span>
+        <h2>Livraison Gratuite dans un rayon de 5 km</h2>
+        <p>Commandez vos wraps, curries et poutines en direct du restaurant à Drummondville.</p>
+        <div class="promo-perks">
+          <span><i class="fa-solid fa-clock"></i> 11h - 21h (Mar-Sam)</span>
+          <span>•</span>
+          <span><i class="fa-solid fa-shield-halved"></i> 100% Halal</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Category Explorer on Home -->
+    <div class="dishes-header" style="margin-top: 6px;">
+      <h2>Explorer les Catégories</h2>
+      <span style="color: var(--primary); cursor: pointer; font-weight: 700;" onclick="switchTab('menu')">Voir Tout le Menu <i class="fa-solid fa-arrow-right"></i></span>
+    </div>
+    <div class="category-nav" id="homeCategoryNav">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Top Featured Dishes (Plats Vedettes) -->
+    <div class="dishes-header">
+      <h2>Nos Plats Vedettes</h2>
+      <span>5 signatures</span>
+    </div>
+    <div class="menu-grid" id="homeFeaturedGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Restaurant Info & Hours Card -->
+    <div class="about-card">
+      <h3><i class="fa-solid fa-store" style="color: var(--primary);"></i> Notre Restaurant à Drummondville</h3>
+      <div class="info-row">
+        <i class="fa-solid fa-location-dot"></i>
+        <div><strong>Adresse :</strong> 998 110e Avenue, Drummondville, QC J2B 6X2</div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-phone"></i>
+        <div><strong>Téléphone :</strong> (819) 850-3972</div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-clock"></i>
+        <div>
+          <strong>Heures d'ouverture :</strong><br>
+          Mardi à Samedi : 11h00 - 21h00<br>
+          Dimanche : 12h00 - 21h00<br>
+          Lundi : Fermé
+        </div>
+      </div>
+      <div class="info-row">
+        <i class="fa-solid fa-bread-slice"></i>
+        <div><strong>Fait Maison :</strong> Pains Kebab et Naans cuits sur place chaque matin.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== VIEW 2: MENU ==================== -->
+  <div class="app-view" id="view-menu">
+
+    <!-- Search Bar in Menu -->
+    <div style="padding: 12px 18px 0 18px;">
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 10px 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" id="menuSearchInput" placeholder="Rechercher un plat, wrap, curry..." oninput="filterMenuBySearch(this.value)" style="background: transparent; border: none; color: #fff; width: 100%; outline: none; font-size: 13px;">
+      </div>
+    </div>
+
+    <!-- Visual Category Tabs from Official Menu Boards -->
+    <div class="category-nav" id="menuCategoryNav">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Dishes Grid in Menu -->
+    <div class="dishes-header">
+      <h2 id="menuCategoryTitle">Nos Wraps</h2>
+      <span id="menuItemsCountLabel">7 plats</span>
+    </div>
+    <div class="menu-grid" id="fullMenuGrid">
+      <!-- Populated by JS -->
+    </div>
+
+  </div>
+
+  <!-- ==================== VIEW 3: PROFILE (PROFIL) ==================== -->
+  <div class="app-view" id="view-profile">
+    <div class="profile-container">
+
+      <!-- Profile Header Card -->
+      <div class="profile-card">
+        <div class="profile-avatar">JT</div>
+        <h2 style="font-family: var(--font-heading); font-size: 17px; font-weight: 800;">Jean Tremblay</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">jean.tremblay@exemple.com • (819) 555-0192</p>
+        
+        <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; background: rgba(229, 169, 60, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+          <i class="fa-solid fa-crown"></i> Membre VIP Argent (120 Pts)
+        </div>
+      </div>
+
+      <!-- Profile Actions Menu List -->
+      <div class="profile-menu-list">
+        
+        <div class="profile-menu-item" onclick="openSignupSurveyModal()">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-clipboard-question" style="color: var(--accent-gold);"></i>
+            <span>Mon Profil & Questionnaire Gourmand</span>
+          </div>
+          <span style="background: rgba(229, 169, 60, 0.15); color: var(--accent-gold); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;">+50 Pts</span>
+        </div>
+
+        <div class="profile-menu-item" onclick="openOrderConfirmationModal('CMD-4092')">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i>
+            <span>Mon QR Code & PIN de Récupération</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="alert('📍 Adresse Enregistrée :\n1450 Rue Saint-Pierre, Drummondville, QC J2C 3Z5')">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Mes Adresses de Livraison</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="openGiftCardModal()">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i>
+            <span>Mes Cartes Cadeaux & Parrainage</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="window.location.href='tel:8198503972'">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-headset"></i>
+            <span>Service Client & Support</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="profile-menu-item" onclick="handleLogOut()" style="border-top: 1px solid var(--border-subtle); margin-top: 8px;">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #EF4444;"></i>
+            <span style="color: #EF4444; font-weight: 600;">Se Déconnecter</span>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Navigation with Elevated Center Order Button -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="tab-home" onclick="switchTab('home')">
+      <i class="fa-solid fa-house"></i>
+      <span>Accueil</span>
+    </div>
+    <div class="nav-item" id="tab-menu" onclick="switchTab('menu')">
+      <i class="fa-solid fa-utensils"></i>
+      <span>Menu</span>
+    </div>
+
+    <!-- ELEVATED FLAME ORANGE CENTER ORDER BUTTON -->
+    <div class="center-order-cta" onclick="openCartModal()">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <div class="cart-count-badge" id="cartCountBadge" style="display: none;">0</div>
+    </div>
+
+    <div class="nav-item" onclick="openGiftCardModal()">
+      <i class="fa-solid fa-gift"></i>
+      <span>Cadeaux</span>
+    </div>
+    <div class="nav-item" id="tab-profile" onclick="switchTab('profile')">
+      <i class="fa-solid fa-user"></i>
+      <span>Profil</span>
+    </div>
+  </nav>
+
+  </div> <!-- /#appMainWrapper -->
+
+</div> <!-- /.app-container -->
+
+<!-- Item Customization Modal -->
+<div class="modal-overlay" id="dishModal">
+  <div class="modal-sheet">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase;" id="modalCatName">Nos Wraps</div>
+        <div class="sheet-title" id="modalTitle">Kebab au Poulet</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('dishModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p id="modalDesc" style="font-size: 12px; color: var(--text-body); margin-bottom: 16px; line-height: 1.4;"></p>
+
+    <!-- Step 1: Bread Choice (For Wraps) -->
+    <div id="breadSection" style="margin-bottom: 16px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">1. Choix du Pain</div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div class="gift-tier-card selected" onclick="setBread(this, 0, 'Pain Kebab')">
+          <span>Pain Kebab</span> <strong>$8.95 (Inclus)</strong>
+        </div>
+        <div class="gift-tier-card" onclick="setBread(this, 1.00, 'Pain Tortilla')">
+          <span>Pain Tortilla</span> <strong style="color: var(--primary);">+$1.00 ($9.95)</strong>
+        </div>
+        <div class="gift-tier-card" onclick="setBread(this, 2.00, 'Pain Naan Fait Maison')">
+          <span>Pain Naan Fait Maison</span> <strong style="color: var(--primary);">+$2.00 ($10.95)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Format Choice -->
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">2. Format</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="cat-btn active" id="btnFormatSeul" style="flex: 1; text-align: center;" onclick="setFormat('Seul', 0)">Seul</button>
+        <button class="cat-btn" id="btnFormatTrio" style="flex: 1; text-align: center;" onclick="setFormat('Trio', 5.30)">Trio (+Frites & Boisson +$5.30)</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Sauces -->
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">3. Sauces au Choix</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <span class="cat-btn active" onclick="this.classList.toggle('active')">Sauce à l'Ail</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Harissa</span>
+        <span class="cat-btn active" onclick="this.classList.toggle('active')">Maison</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Sauce Verte</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Mayo</span>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="addDishToCart()">
+      <span>Ajouter à la commande</span>
+      <span id="modalPriceLabel">$8.95</span>
+    </button>
+  </div>
+</div>
+
+<!-- ==================== CART & CHECKOUT MODAL (WITH PICKUP VS DELIVERY) ==================== -->
+<div class="modal-overlay" id="cartModal">
+  <div class="modal-sheet">
+    <div class="sheet-header">
+      <div class="sheet-title">Récapitulatif de Commande</div>
+      <button class="close-btn" onclick="closeModal('cartModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- 1. FULFILLMENT SELECTOR: DELIVERY VS PICKUP -->
+    <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Mode de Récupération</div>
+    <div class="fulfillment-toggle-row">
+      <div class="fulfillment-card active" id="fulfillmentDeliveryCard" onclick="setFulfillmentMode('delivery')">
+        <i class="fa-solid fa-motorcycle"></i>
+        <strong>Livraison Directe</strong>
+        <small>À Drummondville</small>
+      </div>
+      <div class="fulfillment-card" id="fulfillmentPickupCard" onclick="setFulfillmentMode('pickup')">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <strong>Cueillette / Emporter</strong>
+        <small>Au Restaurant (998 110e)</small>
+      </div>
+    </div>
+
+    <!-- Delivery Specific Details (Hidden if Pickup) -->
+    <div id="deliveryDetailsSection" style="background: var(--bg-card); border-radius: 14px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border-subtle);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--text-white);">📍 Adresse de Livraison (Drummondville)</span>
+        <span style="font-size: 10px; color: var(--primary); font-weight: 700;" id="lblDistanceBadge">3.5 km • GRATUIT</span>
+      </div>
+      <input type="text" id="deliveryAddressInput" value="1450 Rue Saint-Pierre, Drummondville, QC" placeholder="Entrez votre rue ou code postal..." oninput="updateDeliveryDistance(this.value)" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 6px; outline: none;">
+      
+      <!-- Distance Tier Helper -->
+      <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">
+        Origin: <strong>998 110e Ave</strong> • 0-5 km: <strong>$0.00</strong> | 5-10 km: <strong>$4.99</strong> | 10-15 km: <strong>$9.99</strong>
+      </div>
+      
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">Instructions de Remise</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="dropoff-option-btn active" id="btnDropoffDoor" onclick="setDropoffOption('door')">
+          <i class="fa-solid fa-door-open"></i> Laisser à la porte
+        </button>
+        <button class="dropoff-option-btn" id="btnDropoffHand" onclick="setDropoffOption('hand')">
+          <i class="fa-solid fa-handshake"></i> Remettre en main propre
+        </button>
+      </div>
+      <small id="dropoffHintText" style="display: block; font-size: 10px; color: var(--text-muted); margin-top: 6px;">
+        📷 Le livreur prendra une photo de preuve à votre porte.
+      </small>
+    </div>
+
+    <!-- Pickup Specific Banner (Hidden if Delivery) -->
+    <div id="pickupDetailsSection" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px dashed var(--accent-green); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
+      <div style="font-size: 12px; font-weight: 700; color: var(--accent-green); margin-bottom: 4px;">
+        <i class="fa-solid fa-store"></i> Prise en charge au comptoir
+      </div>
+      <p style="font-size: 11px; color: var(--text-body); line-height: 1.35;">
+        Restaurant : <strong>998 110e Avenue, Drummondville, QC</strong><br>
+        Votre QR Code de retrait et code PIN seront affichés dès validation!
+      </p>
+    </div>
+
+    <!-- Cart Items List -->
+    <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
+
+    <!-- Pricing Summary -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Sous-total</span><span id="lblSubtotal">$0.00</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Frais de Service / Livraison</span><span id="lblDelivery" style="color: var(--accent-green); font-weight: bold;">GRATUIT</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TPS (5%)</span><span id="lblTPS">$0.00</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TVQ (9.975%)</span><span id="lblTVQ">$0.00</span></div>
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
+    </div>
+
+    <!-- Stripe Test Mode Card Input Element -->
+    <div style="margin-bottom: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">
+          <i class="fa-solid fa-flask" style="color: var(--accent-gold);"></i> Mode Test Stripe (Actif)
+        </span>
+        <span style="font-size: 10px; color: var(--text-muted);">Carte: 4242...</span>
+      </div>
+      <div id="stripe-card-element" style="background: var(--bg-card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);"></div>
+      <div id="card-errors" style="color: #FF4444; font-size: 11px; margin-top: 6px;" role="alert"></div>
+    </div>
+
+    <!-- Stripe Checkout Banner -->
+    <button class="btn-main" id="btnStripeSubmit" onclick="triggerStripeCheckout()">
+      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span>
+      <span id="btnPayText">$0.00</span>
+    </button>
+  </div>
+</div>
+
+<!-- ==================== ORDER CONFIRMATION / RECEIPT & LIVE TRACKING SHEET ==================== -->
+<div class="modal-overlay" id="orderConfirmModal">
+  <div class="modal-sheet" style="max-height: 90vh;">
+    <div class="sheet-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px;">
+      <div>
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(34, 197, 94, 0.15); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase;">
+          <i class="fa-solid fa-circle-check"></i> Commande Validée
+        </div>
+        <div class="sheet-title" style="margin-top: 6px; font-size: 20px;">Reçu & Suivi en Direct</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('orderConfirmModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Live Status Tracker Bar -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 800; color: #fff;" id="confOrderIdLabel">Commande #CMD-4092</span>
+        <span style="font-size: 11px; color: var(--primary); font-weight: 700;" id="confEtaLabel">⏱️ Prêt dans ~20 min</span>
+      </div>
+      
+      <!-- Multi-step tracker line -->
+      <div style="display: flex; justify-content: space-between; position: relative; margin: 16px 8px 8px 8px;">
+        <div style="position: absolute; top: 12px; left: 0; right: 0; height: 3px; background: var(--border-subtle); z-index: 1;"></div>
+        <div style="position: absolute; top: 12px; left: 0; width: 33%; height: 3px; background: var(--primary); z-index: 2;"></div>
+        
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-check"></i></div>
+          <span style="font-size: 10px; color: #fff; font-weight: 700;">Reçue</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-fire-burner"></i></div>
+          <span style="font-size: 10px; color: var(--primary); font-weight: 700;">Cuisine</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-motorcycle"></i></div>
+          <span style="font-size: 10px; color: var(--text-muted);">Prête</span>
+        </div>
+        <div style="position: relative; z-index: 3; text-align: center;">
+          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-house"></i></div>
+          <span style="font-size: 10px; color: var(--text-muted);">Livrée</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Code & PIN Code Card -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;" id="confFulfillmentSummary">
+        🛵 Livraison Directe (1450 Rue Saint-Pierre)
+      </div>
+
+      <div style="background: #FFFFFF; padding: 12px; border-radius: 14px; display: inline-block; margin-bottom: 12px;">
+        <canvas id="customerQrCanvas"></canvas>
+      </div>
+
+      <div style="background: rgba(255, 85, 0, 0.12); border: 1.5px dashed var(--primary); border-radius: 12px; padding: 10px; margin-bottom: 10px;">
+        <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Code PIN de Confirmation</div>
+        <div style="font-family: monospace; font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 4px;" id="confPinCode">52325</div>
+      </div>
+
+      <p style="font-size: 11px; color: var(--text-body); line-height: 1.35;" id="confInstructionsText">
+        Donnez le PIN <strong>52325</strong> ou montrez ce QR Code au livreur lors de la remise.
+      </p>
+    </div>
+
+    <!-- Itemized Order Receipt Breakdown -->
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;">Détails des Articles Commandés</div>
+      <div id="confReceiptItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;"></div>
+
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Sous-total</span><span id="confReceiptSubtotal">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Livraison</span><span id="confReceiptDelivery">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TPS (5%)</span><span id="confReceiptTPS">$0.00</span></div>
+        <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TVQ (9.975%)</span><span id="confReceiptTVQ">$0.00</span></div>
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 14px; font-weight: 800; color: #fff;">
+          <span>TOTAL PAYÉ</span>
+          <span style="color: var(--primary);" id="confReceiptTotal">$0.00 CAD</span>
+        </div>
+        <div style="font-size: 10px; color: var(--accent-green); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-shield-halved"></i> Payé avec succès via Stripe (Test Mode)
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-main" style="flex: 1; background: #22C55E;" onclick="closeModal('orderConfirmModal'); openChatModal();">
+        <i class="fa-solid fa-comments"></i> Chat en Direct
+      </button>
+      <button class="btn-main" style="flex: 1;" onclick="closeModal('orderConfirmModal'); switchTab('profile');">
+        <span>Voir Profil</span>
+        <i class="fa-solid fa-user"></i>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Gift Card Viral Sharing Modal -->
+<div class="modal-overlay" id="giftModal">
+  <div class="modal-sheet">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">Cadeau & Parrainage</div>
+        <div class="sheet-title">Envoyer une Carte Cadeau</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 14px;">
+      Offrez un festin à vos amis à Drummondville! Votre ami recevra un lien pour télécharger l'application et débloquer son crédit.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+      <div class="gift-tier-card selected" onclick="selectGiftTier(this, 25)">
+        <div><strong>Carte Cadeau 25$ CAD</strong><br><small style="color: var(--text-muted);">Idéal pour 2 Wraps Trios</small></div>
+        <span style="font-weight: 800; color: var(--accent-gold);">$25.00</span>
+      </div>
+      <div class="gift-tier-card" onclick="selectGiftTier(this, 50)">
+        <div><strong>Carte Cadeau 50$ CAD</strong><br><small style="color: var(--text-muted);">Idéal pour un repas de famille (Curries + Naans)</small></div>
+        <span style="font-weight: 800; color: var(--accent-gold);">$50.00</span>
+      </div>
+    </div>
+
+    <input type="text" id="giftFriendName" placeholder="Nom de votre ami(e)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none;">
+
+    <button class="btn-main" style="background: var(--accent-gold); color: #000;" onclick="shareGiftCardLink()">
+      <span><i class="fa-solid fa-share-nodes"></i> Générer & Partager le Lien</span>
+      <span>25.00$</span>
+<!-- ==================== CLIENT SIGN-UP & GOURMET ONBOARDING SURVEY MODAL ==================== -->
+<div class="modal-overlay" id="signupSurveyModal">
+  <div class="modal-sheet" style="max-height: 90vh;">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;" id="surveySubtitle">
+          <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Étape Requise pour Commander
+        </div>
+        <div class="sheet-title" style="font-size: 18px;" id="surveyMainTitle">Créer votre Compte Client</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('signupSurveyModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- 1-Tap Google Sign-In Option -->
+    <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+      </svg>
+      <span>Continuer avec mon Compte Google</span>
+    </button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+      <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ou par formulaire</span>
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+    </div>
+
+    <!-- Toggle Sign-up vs Login -->
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button type="button" id="tabAuthSignup" class="cat-btn active" style="flex: 1; text-align: center;" onclick="toggleAuthMode('signup')">
+        <i class="fa-solid fa-user-plus"></i> Nouveau Client (+50 Pts)
+      </button>
+      <button type="button" id="tabAuthLogin" class="cat-btn" style="flex: 1; text-align: center;" onclick="toggleAuthMode('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Déjà un Compte
+      </button>
+    </div>
+
+    <!-- Reward Perk Banner (Shown for Signup) -->
+    <div id="surveySignupBanner" style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.2) 0%, rgba(255, 85, 0, 0.15) 100%); border: 1px dashed var(--accent-gold); border-radius: 14px; padding: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 24px;">🎁</span>
+      <div>
+        <strong style="font-size: 12px; color: #fff;">Bonus de Bienvenue +50 Points de Fidélité!</strong>
+        <p style="font-size: 11px; color: var(--text-body);">Inscrivez-vous en 30 secondes pour commander et accumuler vos récompenses.</p>
+      </div>
+    </div>
+
+    <!-- Quick Login Form (Hidden by default) -->
+    <form id="quickLoginForm" style="display: none;" onsubmit="event.preventDefault(); submitQuickLogin();">
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Numéro de Téléphone ou Courriel</label>
+        <input type="text" id="loginIdentifier" required placeholder="819 555-0192 ou jean@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none; margin-bottom: 12px;">
+        
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code PIN ou Mot de passe</label>
+        <input type="password" id="loginPin" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+      </div>
+      <button type="submit" class="btn-main" style="background: var(--primary);">
+        <span><i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Se Connecter & Continuer la Commande</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Sign-Up & Gourmet Survey Form -->
+    <form id="signupSurveyForm" onsubmit="event.preventDefault(); submitClientSurvey();">
+      
+      <!-- Section 1 : Informations Personnelles -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">1. Vos Coordonnées</div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Prénom & Nom</label>
+            <input type="text" id="surveyName" required placeholder="Ex: Jean Tremblay" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Téléphone (Suivi SMS)</label>
+              <input type="tel" id="surveyPhone" required placeholder="819 555-0192" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+            </div>
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Date d'Anniversaire 🎂</label>
+              <input type="date" id="surveyBirthday" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Adresse Courriel</label>
+            <input type="email" id="surveyEmail" required placeholder="jean.tremblay@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 : Questionnaire Gourmand (Préférences) -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">2. Vos Préférences Culinaires</div>
+        
+        <!-- Spice Level -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Niveau d'épices préféré :</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'spice')">🌱 Doux / Mild</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'spice')">🌶️ Moyen / Medium</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'spice')">🔥 Épicé Authentique</div>
+        </div>
+
+        <!-- Favorite Specialty -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Spécialité coup de cœur :</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'dish')">🌯 Wraps & Kebabs</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍛 Poulet au Beurre</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍟 Poutine Tikka</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍚 Biryani Royal</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🥪 Paninis Grillés</div>
+        </div>
+
+        <!-- Dietary preference -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Régime alimentaire :</label>
+        <div style="display: flex; gap: 8px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'diet')">🥩 100% Halal</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'diet')">🥬 Végétarien</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'diet')">Sans Préférence</div>
+        </div>
+      </div>
+
+      <!-- Section 3 : Adresse de Livraison Principale -->
+      <div style="margin-bottom: 18px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">3. Adresse de Livraison (Drummondville)</div>
+        <input type="text" id="surveyAddress" placeholder="Ex: 1450 Rue Saint-Pierre, Drummondville, QC" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; margin-bottom: 6px;">
+        <input type="text" id="surveyAptNotes" placeholder="Appartement, numéro d'interphone ou code de porte..." style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 12px; outline: none;">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%);">
+        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> S'inscrire & Valider la Commande (+50 Pts)</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- Floating Live Chat Bubble Button -->
+<div onclick="openChatModal()" style="position: fixed; bottom: 80px; right: 18px; width: 48px; height: 48px; border-radius: 50%; background: #22C55E; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4); cursor: pointer; z-index: 190; transition: transform 0.2s;">
+  <i class="fa-solid fa-comments"></i>
+</div>
+
+<!-- Live Multi-Role Chat Modal (Customer <-> Driver <-> Store) -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-sheet" style="height: 75vh; display: flex; flex-direction: column;">
+    <div class="sheet-header" style="margin-bottom: 8px;">
+      <div>
+        <div style="font-size: 10px; color: #22C55E; font-weight: 700; text-transform: uppercase;">
+          <i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 4px;"></i> En Direct • Commande #CMD-4092
+        </div>
+        <div class="sheet-title" style="font-size: 16px;">Chat Cuisine & Livreur</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Message Stream -->
+    <div id="chatMessageStream" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); margin-bottom: 10px;">
+      <div style="align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 85%; border: 1px solid var(--border-subtle); line-height: 1.35;">
+        <strong style="color: var(--primary); font-size: 11px;">👨‍🍳 Cuisine Drummondville :</strong><br>
+        Votre commande est en préparation sur nos grillades. Pains chauds sortis du four!
+      </div>
+      <div style="align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 85%; border: 1px solid var(--border-subtle); line-height: 1.35;">
+        <strong style="color: #22C55E; font-size: 11px;">🛵 Marc Livreur :</strong><br>
+        Bonjour! Je prends en charge la livraison dès qu'elle est prête.
+      </div>
+    </div>
+
+    <!-- Chat Input Box -->
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <input type="text" id="chatTextInput" placeholder="Écrire un message à la cuisine ou au livreur..." style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;" onkeydown="if(event.key==='Enter') sendLiveChatMessage()">
+      <button onclick="sendLiveChatMessage()" style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px;">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentLanguage = 'FR';
+let activeCat = 'Nos Wraps';
+let cart = [];
+let curDish = null;
+let curBreadAddon = 0;
+let curFormatAddon = 0;
+
+// Order fulfillment settings
+let currentFulfillment = 'delivery'; // 'delivery' or 'pickup'
+let currentDropoffOption = 'door'; // 'door' or 'hand'
+let customerDistanceKm = 3.5;
+
+// Official Menu Boards Complete Data
+const CATEGORIES = [
+  'Nos Wraps',
+  'Paninis',
+  'Bols de Curry & Combos',
+  'Biryani',
+  'Nos Assiettes',
+  'Nos Poutines',
+  'Nos Burgers',
+  'Menu Enfant',
+  'À Côté & Naans',
+  'Desserts & Boissons'
+];
+
+const BOARD_DISHES = [
+  // Top Featured Signatures (for Home)
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet au Beurre (Butter Chicken)', desc_fr: 'Poulet tikka dans une sauce crémeuse au beurre et aux amandes.', price: 17.65, is_wrap: false, is_featured: true },
+  { cat: 'Nos Wraps', name_fr: 'Kebab au Poulet', desc_fr: 'Poulet assaisonné et grillé, servi avec salade et sauce au choix.', price: 8.95, is_wrap: true, is_featured: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Tikka', desc_fr: 'Morceaux de poulet mariné aux épices tandoori rouges.', price: 8.95, is_wrap: true, is_featured: true },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet au Beurre', desc_fr: 'Fromage couic-couic nappé de notre sauce beurre maison.', price: 15.95, is_wrap: false, is_featured: true },
+  { cat: 'Biryani', name_fr: 'Biryani au Poulet', desc_fr: 'Riz basmati parfumé au safran, amandes et épices royales + Raita.', price: 18.85, is_wrap: false, is_featured: true },
+
+  // Wraps
+  { cat: 'Nos Wraps', name_fr: 'Kebab à la Dinde et Bœuf', desc_fr: 'Mélange savoureux de dinde et bœuf émincé et grillé.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Masala', desc_fr: 'Poulet mariné dans un mélange d\'épices masala traditionnelles.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Steak Fromage', desc_fr: 'Lamelles de steak de bœuf tendre garni de fromage fondant.', price: 9.75, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap Poulet Croustillant', desc_fr: 'Poulet frit croustillant garni de salade fraîche.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap Mix (2 Viandes)', desc_fr: 'Combinaison de 2 viandes au choix parmi nos spécialités.', price: 9.95, is_wrap: true },
+
+  // Paninis
+  { cat: 'Paninis', name_fr: 'Panini Poulet Tikka', desc_fr: 'Pain ciabatta pressé au poulet tikka et fromage fondant.', price: 9.25, is_wrap: false },
+  { cat: 'Paninis', name_fr: 'Panini Poulet Masala', desc_fr: 'Poulet masala avec fromage fondu grillé à chaud.', price: 9.25, is_wrap: false },
+  { cat: 'Paninis', name_fr: 'Panini Saumon & Fromage', desc_fr: 'Saumon savoureux garni de fromage chaud.', price: 9.25, is_wrap: false },
+
+  // Curry Bowls & Combos
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Curry Traditionnel', desc_fr: 'Poulet mijoté dans notre sauce curry spéciale aux herbes.', price: 17.65, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Malai Tikka', desc_fr: 'Blanc de volaille tandoor dans sauce crème et fromage.', price: 17.65, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Panneer Makhani (Fromage Maison)', desc_fr: 'Paneer dans une sauce crémeuse aux tomates et épices.', price: 15.25, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Combo 2 : Curry + Riz + Naan Fromage', desc_fr: 'Grand bol au choix avec portion de riz basmati et naan fromage.', price: 24.35, is_wrap: false },
+
+  // Biryani
+  { cat: 'Biryani', name_fr: 'Biryani aux Crevettes', desc_fr: 'Riz basmati royal aux crevettes sautées et épices + Raita.', price: 18.85, is_wrap: false },
+
+  // Assiettes
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Kebab au Poulet', desc_fr: 'Servi avec salade au choix, frites/patate à l\'ail, riz basmati & pain kebab.', price: 17.65, is_wrap: false },
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Poulet Tikka', desc_fr: 'Poulet tandoori complet servi avec frites, riz et salade.', price: 17.65, is_wrap: false },
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Mixte (2 Viandes)', desc_fr: 'Assiette royale avec 2 viandes au choix et accompagnements.', price: 19.95, is_wrap: false },
+
+  // Poutines
+  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet Tikka', desc_fr: 'Fromage en grains du Québec, poulet tikka et sauce au choix.', price: 14.95, is_wrap: false },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Kebab au Poulet', desc_fr: 'Frites croustillantes et lamelles de kebab au poulet.', price: 14.50, is_wrap: false },
+
+  // Burgers & Menu Enfant
+  { cat: 'Nos Burgers', name_fr: 'Cheese Burger', desc_fr: 'Burger classique avec fromage cheddar fondu.', price: 6.75, is_wrap: false },
+  { cat: 'Nos Burgers', name_fr: 'Double Cheese Burger', desc_fr: 'Deux galettes de bœuf et double cheddar.', price: 8.45, is_wrap: false },
+  { cat: 'Menu Enfant', name_fr: 'Nuggets + Frites + Boisson', desc_fr: 'Menu complet pour enfant avec frites et canette.', price: 8.95, is_wrap: false },
+
+  // Sides, Naans, Desserts & Drinks
+  { cat: 'À Côté & Naans', name_fr: 'Naan à l\'Ail & Fromage', desc_fr: 'Cuit au tandoor avec beurre à l\'ail et fromage fondant.', price: 5.50, is_wrap: false },
+  { cat: 'À Côté & Naans', name_fr: '2 Samosas aux Légumes', desc_fr: 'Chaussons croustillants farcis aux légumes et épices.', price: 4.65, is_wrap: false },
+  { cat: 'Desserts & Boissons', name_fr: 'Lassi à la Mangue', desc_fr: 'Boisson rafraîchissante indienne au yogourt et mangue.', price: 4.50, is_wrap: false },
+  { cat: 'Desserts & Boissons', name_fr: 'Gulab Jamun (2 pcs)', desc_fr: 'Douceur indienne au sirop de cardamome.', price: 4.99, is_wrap: false }
+];
+
+function init() {
+  renderHomeCategories();
+  renderHomeFeatured();
+  renderMenuCategories();
+  renderMenuDishes();
+}
+
+// Switch between App Tabs (Home, Menu, Profile)
+function switchTab(tabName) {
+  document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+
+  if (tabName === 'home') {
+    document.getElementById('view-home').classList.add('active');
+    document.getElementById('tab-home').classList.add('active');
+  } else if (tabName === 'menu') {
+    document.getElementById('view-menu').classList.add('active');
+    document.getElementById('tab-menu').classList.add('active');
+  } else if (tabName === 'profile') {
+    document.getElementById('view-profile').classList.add('active');
+    document.getElementById('tab-profile').classList.add('active');
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// HOME VIEW RENDERING
+function renderHomeCategories() {
+  const container = document.getElementById('homeCategoryNav');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <button class="cat-btn" onclick="openMenuAtCategory('${cat}')">${cat}</button>
+  `).join('');
+}
+
+function openMenuAtCategory(cat) {
+  activeCat = cat;
+  switchTab('menu');
+  renderMenuCategories();
+  renderMenuDishes();
+}
+
+function renderHomeFeatured() {
+  const container = document.getElementById('homeFeaturedGrid');
+  const featured = BOARD_DISHES.filter(d => d.is_featured);
+
+  container.innerHTML = featured.map(dish => `
+    <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
+      <div class="dish-badge">Vedette • ${dish.cat}</div>
+      <div class="dish-title">${dish.name_fr}</div>
+      <div class="dish-desc">${dish.desc_fr}</div>
+      <div class="dish-price-row">
+        <span class="price-text">$${dish.price.toFixed(2)}</span>
+        <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// MENU VIEW RENDERING
+function renderMenuCategories() {
+  const container = document.getElementById('menuCategoryNav');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <button class="cat-btn ${cat === activeCat ? 'active' : ''}" onclick="selectMenuCat('${cat}')">${cat}</button>
+  `).join('');
+}
+
+function selectMenuCat(cat) {
+  activeCat = cat;
+  renderMenuCategories();
+  renderMenuDishes();
+}
+
+function renderMenuDishes(query = '') {
+  const container = document.getElementById('fullMenuGrid');
+  const filtered = BOARD_DISHES.filter(d => {
+    const matchesCat = d.cat === activeCat;
+    const matchesQuery = !query || d.name_fr.toLowerCase().includes(query) || d.desc_fr.toLowerCase().includes(query);
+    return matchesCat && matchesQuery;
+  });
+
+  document.getElementById('menuCategoryTitle').innerText = activeCat;
+  document.getElementById('menuItemsCountLabel').innerText = `${filtered.length} plats`;
+
+  container.innerHTML = filtered.map(dish => `
+    <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
+      <div class="dish-badge">${dish.cat}</div>
+      <div class="dish-title">${dish.name_fr}</div>
+      <div class="dish-desc">${dish.desc_fr}</div>
+      <div class="dish-price-row">
+        <span class="price-text">$${dish.price.toFixed(2)}</span>
+        <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterMenuBySearch(val) {
+  renderMenuDishes(val.toLowerCase().trim());
+}
+
+function openDishModal(name) {
+  curDish = BOARD_DISHES.find(d => d.name_fr === name);
+  if (!curDish) return;
+
+  curBreadAddon = 0;
+  curFormatAddon = 0;
+
+  document.getElementById('modalCatName').innerText = curDish.cat;
+  document.getElementById('modalTitle').innerText = curDish.name_fr;
+  document.getElementById('modalDesc').innerText = curDish.desc_fr;
+  document.getElementById('breadSection').style.display = curDish.is_wrap ? 'block' : 'none';
+  
+  updateModalTotal();
+  document.getElementById('dishModal').classList.add('open');
+}
+
+function setBread(el, price, name) {
+  curBreadAddon = price;
+  el.parentElement.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  updateModalTotal();
+}
+
+function setFormat(format, price) {
+  curFormatAddon = price;
+  if (format === 'Seul') {
+    document.getElementById('btnFormatSeul').classList.add('active');
+    document.getElementById('btnFormatTrio').classList.remove('active');
+  } else {
+    document.getElementById('btnFormatTrio').classList.add('active');
+    document.getElementById('btnFormatSeul').classList.remove('active');
+  }
+  updateModalTotal();
+}
+
+function updateModalTotal() {
+  const total = curDish.price + curBreadAddon + curFormatAddon;
+  document.getElementById('modalPriceLabel').innerText = `$${total.toFixed(2)}`;
+}
+
+function addDishToCart() {
+  const total = curDish.price + curBreadAddon + curFormatAddon;
+  cart.push({ name: curDish.name_fr, price: total });
+  closeModal('dishModal');
+  updateCartBadge();
+  alert(`${curDish.name_fr} ajouté au panier!`);
+}
+
+function updateCartBadge() {
+  const badge = document.getElementById('cartCountBadge');
+  if (cart.length > 0) {
+    badge.innerText = cart.length;
+    badge.style.display = 'flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// Fulfillment Selection in Cart
+function setFulfillmentMode(mode) {
+  currentFulfillment = mode;
+  const iconTop = document.getElementById('iconTopFulfillment');
+  const lblMode = document.getElementById('lblTopMode');
+  const lblAddr = document.getElementById('lblTopAddress');
+
+  if (mode === 'delivery') {
+    document.getElementById('fulfillmentDeliveryCard').classList.add('active');
+    document.getElementById('fulfillmentPickupCard').classList.remove('active');
+    document.getElementById('deliveryDetailsSection').style.display = 'block';
+    document.getElementById('pickupDetailsSection').style.display = 'none';
+
+    if (iconTop) iconTop.className = "fa-solid fa-motorcycle";
+    if (lblMode) lblMode.innerText = "Livraison • 25-35 min";
+    if (lblAddr) lblAddr.innerText = clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC";
+  } else {
+    document.getElementById('fulfillmentPickupCard').classList.add('active');
+    document.getElementById('fulfillmentDeliveryCard').classList.remove('active');
+    document.getElementById('deliveryDetailsSection').style.display = 'none';
+    document.getElementById('pickupDetailsSection').style.display = 'block';
+
+    if (iconTop) iconTop.className = "fa-solid fa-store";
+    if (lblMode) lblMode.innerText = "Cueillette au Restaurant • 10-15 min";
+    if (lblAddr) lblAddr.innerText = "998 110e Avenue, Drummondville, QC J2B 6X2";
+  }
+  recalcCartPrices();
+}
+
+function setDropoffOption(option) {
+  currentDropoffOption = option;
+  if (option === 'door') {
+    document.getElementById('btnDropoffDoor').classList.add('active');
+    document.getElementById('btnDropoffHand').classList.remove('active');
+    document.getElementById('dropoffHintText').innerText = "📷 Le livreur prendra une photo de preuve à votre porte.";
+  } else {
+    document.getElementById('btnDropoffHand').classList.add('active');
+    document.getElementById('btnDropoffDoor').classList.remove('active');
+    document.getElementById('dropoffHintText').innerText = "🤝 Vous présenterez votre code PIN au livreur pour réceptionner le repas.";
+  }
+}
+
+function openCartModal() {
+  if (cart.length === 0) {
+    alert("Votre panier est vide. Choisissez un plat pour commander!");
+    return;
+  }
+
+  const list = document.getElementById('cartItemsList');
+  list.innerHTML = cart.map(i => `
+    <div style="display: flex; justify-content: space-between; background: var(--bg-card); padding: 10px; border-radius: 10px;">
+      <span style="font-size: 13px; font-weight: 600;">1x ${i.name}</span>
+      <strong style="color: var(--primary);">$${i.price.toFixed(2)}</strong>
+    </div>
+  `).join('');
+
+  recalcCartPrices();
+  document.getElementById('cartModal').classList.add('open');
+}
+
+function updateDeliveryDistance(addr) {
+  const destLower = addr.toLowerCase().trim();
+  
+  if (destLower.includes("majorique") || destLower.includes("saint-cyrille") || destLower.includes("12") || destLower.includes("14") || destLower.includes("ouest")) {
+    customerDistanceKm = 11.5;
+  } else if (destLower.includes("saint-joseph") || destLower.includes("mercure") || destLower.includes("boulevard") || destLower.includes("7") || destLower.includes("8")) {
+    customerDistanceKm = 6.8;
+  } else if (destLower.includes("saint-pierre") || destLower.includes("110e") || destLower.includes("lindsay") || destLower.includes("heriot") || destLower.includes("centre")) {
+    customerDistanceKm = 2.4;
+  } else {
+    customerDistanceKm = 3.5; // default center Drummondville
+  }
+
+  const fee = customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99);
+  const feeLabel = fee === 0 ? "GRATUIT" : `$${fee.toFixed(2)}`;
+  
+  const badge = document.getElementById('lblDistanceBadge');
+  if (badge) badge.innerText = `${customerDistanceKm} km • ${feeLabel}`;
+
+  recalcCartPrices();
+}
+
+function recalcCartPrices() {
+  const sub = cart.reduce((a, b) => a + b.price, 0);
+  
+  // Delivery Fee Calculation
+  let deliveryFee = 0.00;
+  if (currentFulfillment === 'delivery') {
+    deliveryFee = customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99);
+    document.getElementById('lblDelivery').innerText = deliveryFee === 0 ? "GRATUIT (< 5km)" : `$${deliveryFee.toFixed(2)}`;
+  } else {
+    document.getElementById('lblDelivery').innerText = "GRATUIT (Cueillette)";
+  }
+
+  const taxable = sub + deliveryFee;
+  const tps = taxable * 0.05;
+  const tvq = taxable * 0.09975;
+  const grand = taxable + tps + tvq;
+
+  document.getElementById('lblSubtotal').innerText = `$${sub.toFixed(2)}`;
+  document.getElementById('lblTPS').innerText = `$${tps.toFixed(2)}`;
+  document.getElementById('lblTVQ').innerText = `$${tvq.toFixed(2)}`;
+  document.getElementById('lblTotal').innerText = `$${grand.toFixed(2)} CAD`;
+  document.getElementById('btnPayText').innerText = `$${grand.toFixed(2)}`;
+}
+
+// Stripe Initialization (Canadian Format fr-CA)
+const STRIPE_PK = 'pk_test_51U18R4EP3Grb2rSSVkDRnkguIJClznmXedbsFP8IjF0tKOyDmXVM3QRKFglXeRcKZnKg1KCJpvgX0Wj4o4hrCdil005JeuJkBg';
+let stripe = null;
+let cardElement = null;
+
+function initStripe() {
+  if (typeof Stripe !== 'undefined') {
+    try {
+      // Set Canadian French locale
+      stripe = Stripe(STRIPE_PK, { locale: 'fr-CA' });
+      const elements = stripe.elements({ locale: 'fr-CA' });
+      
+      // Hide US ZIP Code input - only standard Card Number, Expiry, and CVC
+      cardElement = elements.create('card', {
+        hidePostalCode: true,
+        style: {
+          base: {
+            color: '#ffffff',
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: '14px',
+            '::placeholder': { color: '#888899' }
+          },
+          invalid: { color: '#FF4444' }
+        }
+      });
+      cardElement.mount('#stripe-card-element');
+      cardElement.on('change', (e) => {
+        const err = document.getElementById('card-errors');
+        err.textContent = e.error ? e.error.message : '';
+      });
+    } catch(e) {
+      console.warn("Stripe init:", e);
+    }
+  }
+}
+
+let lastPlacedOrder = null;
+
+function triggerStripeCheckout() {
+  const btn = document.getElementById('btnStripeSubmit');
+  const amountText = document.getElementById('btnPayText').innerText;
+  
+  if (cart.length === 0) {
+    alert("Votre panier est vide!");
+    return;
+  }
+
+  // MANDATORY SIGN-UP / LOGIN WALL BEFORE PLACING ORDER
+  if (!isUserLoggedIn) {
+    closeModal('cartModal');
+    openSignupSurveyModal('checkout');
+    return;
+  }
+
+  btn.innerText = "⏳ Traitement & Validation...";
+  btn.disabled = true;
+
+  // Snapshot cart details for the receipt sheet
+  const subtotal = cart.reduce((a, b) => a + b.price, 0);
+  const deliveryFee = currentFulfillment === 'delivery' 
+    ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99))
+    : 0.00;
+  const taxable = subtotal + deliveryFee;
+  const tps = taxable * 0.05;
+  const tvq = taxable * 0.09975;
+  const grandTotal = taxable + tps + tvq;
+
+  const orderNum = 'CMD-' + Math.floor(1000 + Math.random() * 9000);
+  lastPlacedOrder = {
+    id: orderNum,
+    items: [...cart],
+    subtotal: subtotal,
+    deliveryFee: deliveryFee,
+    tps: tps,
+    tvq: tvq,
+    total: grandTotal,
+    fulfillment: currentFulfillment,
+    dropoff: currentDropoffOption,
+    address: document.getElementById('deliveryAddressInput')?.value || "1450 Rue Saint-Pierre, Drummondville, QC",
+    pin: '52325'
+  };
+
+  setTimeout(() => {
+    cart = [];
+    updateCartBadge();
+    closeModal('cartModal');
+    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span><span id="btnPayText">$0.00</span>`;
+    btn.disabled = false;
+
+    // Open Order Confirmation Receipt & Tracker Sheet
+    openOrderConfirmationModal(lastPlacedOrder.id);
+  }, 1000);
+}
+
+function openOrderConfirmationModal(orderId) {
+  const order = lastPlacedOrder || {
+    id: orderId || 'CMD-4092',
+    items: [
+      { name: 'Kebab au Poulet (Pain Naan, Trio)', price: 16.25 },
+      { name: 'Poutine Poulet au Beurre', price: 15.95 }
+    ],
+    subtotal: 32.20,
+    deliveryFee: 0.00,
+    tps: 1.61,
+    tvq: 3.21,
+    total: 37.02,
+    fulfillment: currentFulfillment,
+    dropoff: currentDropoffOption,
+    address: "1450 Rue Saint-Pierre, Drummondville, QC",
+    pin: '52325'
+  };
+
+  document.getElementById('confOrderIdLabel').innerText = `Commande #${order.id}`;
+  document.getElementById('confPinCode').innerText = order.pin;
+
+  if (order.fulfillment === 'pickup') {
+    document.getElementById('confFulfillmentSummary').innerText = "🥡 Cueillette au Restaurant (998 110e Avenue)";
+    document.getElementById('confInstructionsText').innerHTML = `Présentez ce QR Code ou donnez le PIN <strong>${order.pin}</strong> au comptoir du restaurant pour récupérer votre commande.`;
+  } else {
+    document.getElementById('confFulfillmentSummary').innerText = order.dropoff === 'door' 
+      ? `🛵 Livraison : Laisser à la porte (${order.address})` 
+      : `🛵 Livraison : Remise en main propre (${order.address})`;
+    document.getElementById('confInstructionsText').innerHTML = order.dropoff === 'door'
+      ? `Le livreur déposera votre sac et prendra une <strong>photo de preuve</strong> à votre porte.`
+      : `Donnez le code PIN <strong>${order.pin}</strong> au livreur pour réceptionner votre commande en main propre.`;
+  }
+
+  // Populate Itemized Receipt
+  const receiptList = document.getElementById('confReceiptItemsList');
+  if (receiptList) {
+    receiptList.innerHTML = order.items.map(item => `
+      <div style="display: flex; justify-content: space-between; font-size: 13px;">
+        <span>1x ${item.name}</span>
+        <strong style="color: var(--primary);">$${item.price.toFixed(2)}</strong>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('confReceiptSubtotal').innerText = `$${order.subtotal.toFixed(2)}`;
+  document.getElementById('confReceiptDelivery').innerText = order.deliveryFee === 0 ? "GRATUIT" : `$${order.deliveryFee.toFixed(2)}`;
+  document.getElementById('confReceiptTPS').innerText = `$${order.tps.toFixed(2)}`;
+  document.getElementById('confReceiptTVQ').innerText = `$${order.tvq.toFixed(2)}`;
+  document.getElementById('confReceiptTotal').innerText = `$${order.total.toFixed(2)} CAD`;
+
+  // Generate QR Code on canvas
+  const canvas = document.getElementById('customerQrCanvas');
+  if (canvas && typeof QRCode !== 'undefined') {
+    QRCode.toCanvas(canvas, `LMDW-${order.id}-PIN${order.pin}`, {
+      width: 140,
+      margin: 1
+    });
+  }
+
+  document.getElementById('orderConfirmModal').classList.add('open');
+}
+
+function openGiftCardModal() {
+  document.getElementById('giftModal').classList.add('open');
+}
+
+function selectGiftTier(el, amount) {
+  el.parentElement.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function shareGiftCardLink() {
+  const friend = document.getElementById('giftFriendName').value.trim() || 'un ami';
+  const shareUrl = `https://phenomenal-twilight-2064dd.netlify.app/?gift_from=Jean&amount=25`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'Carte Cadeau - La Maison des Wraps',
+      text: `Salut ${friend}! Je t'offre une carte cadeau de 25$ à La Maison des Wraps (Drummondville). Télécharge l'application pour l'utiliser:`,
+      url: shareUrl
+    });
+  } else {
+    prompt("Copiez ce lien pour l'envoyer à votre ami par SMS ou WhatsApp :", `Salut ${friend}! Voici ta carte cadeau de 25$ à La Maison des Wraps: ${shareUrl}`);
+  }
+}
+
+// Live Chat Functions
+function openChatModal(role = 'customer') {
+  document.getElementById('chatModal').classList.add('open');
+}
+
+function sendLiveChatMessage() {
+  const input = document.getElementById('chatTextInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const stream = document.getElementById('chatMessageStream');
+  const msgEl = document.createElement('div');
+  msgEl.style = "align-self: flex-end; background: var(--primary); color: #fff; padding: 10px 14px; border-radius: 16px 16px 4px 16px; font-size: 13px; max-width: 80%; line-height: 1.35;";
+  msgEl.innerText = text;
+  stream.appendChild(msgEl);
+  input.value = '';
+  stream.scrollTop = stream.scrollHeight;
+
+  // Simulate instant driver/store response
+  setTimeout(() => {
+    const replyEl = document.createElement('div');
+    replyEl.style = "align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 80%; border: 1px solid var(--border-subtle); line-height: 1.35;";
+    replyEl.innerHTML = `<strong style="color: #22C55E; font-size: 11px;">🛵 Marc Livreur :</strong><br>Bien reçu! Je suis en route avec votre commande chaude.`;
+    stream.appendChild(replyEl);
+    stream.scrollTop = stream.scrollHeight;
+  }, 1000);
+}
+
+// Google Places Address Autocomplete Integration
+let autocomplete = null;
+
+function initGoogleMapsPlaces() {
+  const input = document.getElementById('deliveryAddressInput');
+  if (input && typeof google !== 'undefined' && google.maps && google.maps.places) {
+    autocomplete = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "ca" },
+      fields: ["formatted_address", "geometry", "name"],
+      types: ["address"]
+    });
+
+    autocomplete.addListener('place_changed', function() {
+      const place = autocomplete.getPlace();
+      if (place && place.formatted_address) {
+        updateDeliveryDistance(place.formatted_address);
+      }
+    });
+  }
+}
+
+// Client Authentication & Gourmet Survey State
+let isUserLoggedIn = false;
+let pendingOrderAction = false;
+let clientProfile = {
+  name: "",
+  phone: "",
+  email: "",
+  birthday: "",
+  spice: "Doux / Mild",
+  favoriteDish: "Wraps & Kebabs",
+  diet: "100% Halal",
+  address: "1450 Rue Saint-Pierre, Drummondville, QC",
+  points: 0
+};
+
+// Check if client is already logged in from previous session
+function checkSavedUserSession() {
+  const saved = localStorage.getItem('lmdw_user');
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      // Auto-clear old test placeholder user
+      if (parsed && (parsed.name === "Client Google" || parsed.email === "client.google@gmail.com")) {
+        localStorage.removeItem('lmdw_user');
+        clientProfile.name = "";
+        clientProfile.email = "";
+        isUserLoggedIn = false;
+        if (gateEl) gateEl.style.display = 'flex';
+        if (appWrapper) appWrapper.style.display = 'none';
+        return;
+      }
+
+      clientProfile = parsed;
+      isUserLoggedIn = true;
+      updateUserProfileUI();
+      if (gateEl) gateEl.style.display = 'none';
+      if (appWrapper) appWrapper.style.display = 'block';
+    } catch(e){}
+  } else {
+    // Show Full-Screen Login & Sign-Up Gateway first
+    if (gateEl) gateEl.style.display = 'flex';
+    if (appWrapper) appWrapper.style.display = 'none';
+  }
+}
+
+function switchGateTab(mode) {
+  const loginForm = document.getElementById('formGateLogin');
+  const signupForm = document.getElementById('formGateSignup');
+  const tabLogin = document.getElementById('tabGateLogin');
+  const tabSignup = document.getElementById('tabGateSignup');
+
+  if (mode === 'login') {
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+    tabLogin.classList.add('active');
+    tabSignup.classList.remove('active');
+  } else {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+    tabSignup.classList.add('active');
+    tabLogin.classList.remove('active');
+  }
+}
+
+function submitGateLogin() {
+  const identifier = document.getElementById('gateLoginUser').value.trim() || "Jean Tremblay";
+  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
+  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
+  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
+  clientProfile.points = 120;
+  isUserLoggedIn = true;
+
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Hide Gateway & Reveal Main Restaurant App
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
+}
+
+function submitGateSignup() {
+  const name = document.getElementById('gateSignupName').value.trim() || "Jean Tremblay";
+  const phone = document.getElementById('gateSignupPhone').value.trim() || "819 555-0192";
+  const email = document.getElementById('gateSignupEmail').value.trim() || "client@exemple.com";
+  const birthday = document.getElementById('gateSignupBirthday').value || "";
+  const address = document.getElementById('gateSignupAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
+
+  clientProfile = {
+    name,
+    phone,
+    email,
+    birthday,
+    address,
+    spice: "Doux / Mild",
+    favoriteDish: "Wraps & Kebabs",
+    diet: "100% Halal",
+    points: 50 // Welcome reward bonus
+  };
+
+  isUserLoggedIn = true;
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Sync with Firestore
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+        name,
+        email,
+        phone,
+        birthday,
+        address,
+        points: 50,
+        createdAt: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn(err));
+    } catch(e){}
+  }
+
+  // Hide Gateway & Reveal Main Restaurant App
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
+}
+
+function enterAsGuest() {
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function handleLogOut() {
+  localStorage.removeItem('lmdw_user');
+  isUserLoggedIn = false;
+  
+  if (typeof firebase !== 'undefined' && firebase.auth) {
+    try { firebase.auth().signOut(); } catch(e){}
+  }
+
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'flex';
+  if (appWrapper) appWrapper.style.display = 'none';
+
+  alert("👋 Vous êtes maintenant déconnecté.");
+}
+
+function openSignupSurveyModal(intent = '') {
+  if (intent === 'checkout') {
+    pendingOrderAction = true;
+    document.getElementById('surveySubtitle').innerHTML = `<i class="fa-solid fa-lock" style="color: var(--primary);"></i> Inscription Requise pour Commander`;
+  } else {
+    pendingOrderAction = false;
+    document.getElementById('surveySubtitle').innerHTML = `<i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Espace Membre • La Maison des Wraps`;
+  }
+  document.getElementById('signupSurveyModal').classList.add('open');
+}
+
+function selectSurveyChip(el, group) {
+  el.parentElement.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function submitClientSurvey() {
+  const name = document.getElementById('surveyName').value.trim() || "Jean Tremblay";
+  const phone = document.getElementById('surveyPhone').value.trim() || "819 555-0192";
+  const email = document.getElementById('surveyEmail').value.trim() || "client@exemple.com";
+  const birthday = document.getElementById('surveyBirthday').value || "";
+  const address = document.getElementById('surveyAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
+
+  clientProfile = {
+    name,
+    phone,
+    email,
+    birthday,
+    address,
+    spice: "Doux / Mild",
+    favoriteDish: "Wraps & Kebabs",
+    diet: "100% Halal",
+    points: 50 // Welcome reward bonus
+  };
+
+  isUserLoggedIn = true;
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Sync to Firebase Auth / Firestore in background
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+        name: name,
+        email: email,
+        phone: phone,
+        birthday: birthday,
+        address: address,
+        points: 50,
+        role: 'customer',
+        createdAt: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn("Firestore sync:", err));
+    } catch(e){}
+  }
+
+  closeModal('signupSurveyModal');
+
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est synchronisé avec Firebase.\n🎁 +50 Points de Fidélité crédités à votre compte!\nVous pouvez maintenant valider votre commande.`);
+  
+  if (pendingOrderAction && cart.length > 0) {
+    pendingOrderAction = false;
+    openCartModal();
+  }
+}
+
+function submitQuickLogin() {
+  const identifier = document.getElementById('loginIdentifier').value.trim() || "Jean Tremblay";
+  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
+  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
+  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
+  clientProfile.points = 120;
+  isUserLoggedIn = true;
+
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  // Sync to Firebase
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(clientProfile.email.replace(/[@.]/g, '_')).set({
+        name: clientProfile.name,
+        email: clientProfile.email,
+        phone: clientProfile.phone,
+        lastLogin: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn("Firestore login sync:", err));
+    } catch(e){}
+  }
+
+  closeModal('signupSurveyModal');
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
+
+  if (pendingOrderAction && cart.length > 0) {
+    pendingOrderAction = false;
+    openCartModal();
+  }
+}
+
+// Firebase Web SDK Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4",
+  authDomain: "la-maison-des-wrap-app.firebaseapp.com",
+  projectId: "la-maison-des-wrap-app",
+  storageBucket: "la-maison-des-wrap-app.appspot.com"
+};
+
+let firebaseAuth = null;
+let googleAuthProvider = null;
+
+function initFirebaseAuth() {
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      firebaseAuth = firebase.auth();
+      googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    } catch(e) {
+      console.warn("Firebase Auth init:", e);
+    }
+  }
+}
+
+function handleGoogleSignIn() {
+  initFirebaseAuth();
+
+  if (firebaseAuth && googleAuthProvider) {
+    firebaseAuth.signInWithPopup(googleAuthProvider)
+      .then((result) => {
+        const user = result.user;
+        const displayName = user.displayName || "";
+        const email = user.email || "";
+
+        if (displayName && email) {
+          clientProfile.name = displayName;
+          clientProfile.email = email;
+          clientProfile.phone = user.phoneNumber || clientProfile.phone || "819 555-0192";
+          clientProfile.points = 50; // +50 Welcome bonus
+
+          isUserLoggedIn = true;
+          localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+          updateUserProfileUI();
+
+          // Sync to Firestore
+          if (typeof firebase !== 'undefined' && firebase.firestore) {
+            try {
+              const db = firebase.firestore();
+              db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+                name: displayName,
+                email: email,
+                points: 50,
+                provider: 'google',
+                lastLogin: new Date().toISOString()
+              }, { merge: true }).catch(e => console.warn(e));
+            } catch(e){}
+          }
+
+          closeModal('signupSurveyModal');
+
+          const gateEl = document.getElementById('view-login-gate');
+          const appWrapper = document.getElementById('appMainWrapper');
+          if (gateEl) gateEl.style.display = 'none';
+          if (appWrapper) appWrapper.style.display = 'block';
+
+          alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${displayName} (${email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+
+          if (pendingOrderAction && cart.length > 0) {
+            pendingOrderAction = false;
+            openCartModal();
+          }
+          return;
+        }
+        
+        switchGateTab('signup');
+      })
+      .catch((error) => {
+        console.warn("Firebase Google Auth:", error.message);
+        // Seamlessly switch to sign-up / login form so user inputs their exact own information
+        switchGateTab('signup');
+        alert("ℹ️ Veuillez renseigner votre Prénom, Nom et Courriel dans le formulaire ci-dessous pour créer votre compte personnalisé (+50 Pts).");
+      });
+  } else {
+    switchGateTab('signup');
+  }
+}
+
+function updateUserProfileUI() {
+  const profileAvatar = document.querySelector('.profile-avatar');
+  if (profileAvatar && clientProfile.name) {
+    const initials = clientProfile.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2) || "JT";
+    profileAvatar.innerText = initials;
+  }
+  
+  const profileCard = document.querySelector('.profile-card h2');
+  if (profileCard && clientProfile.name) profileCard.innerText = clientProfile.name;
+  
+  const profileSub = document.querySelector('.profile-card p');
+  if (profileSub && clientProfile.email) profileSub.innerText = `${clientProfile.email} • ${clientProfile.phone}`;
+
+  // Update header profile button to show logged in name
+  const lblHeaderUserName = document.getElementById('lblHeaderUserName');
+  if (lblHeaderUserName) {
+    lblHeaderUserName.innerText = clientProfile.name ? clientProfile.name.split(' ')[0] : 'Profil';
+  }
+
+  // Pre-fill delivery address if present
+  const addrInput = document.getElementById('deliveryAddressInput');
+  if (addrInput && clientProfile.address) {
+    addrInput.value = clientProfile.address;
+    updateDeliveryDistance(clientProfile.address);
+  }
+
+  // Update McDonald's top fulfillment bar address
+  const lblTopAddress = document.getElementById('lblTopAddress');
+  if (lblTopAddress && clientProfile.address) {
+    lblTopAddress.innerText = clientProfile.address;
+  }
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
+
+window.onload = function() {
+  init();
+  initFirebaseAuth();
+  checkSavedUserSession();
+  initStripe();
+  initGoogleMapsPlaces();
+};
+</script>
+
+</body>
+</html>

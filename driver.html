@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portail Livreur - La Maison des Wraps</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF5500">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #FF5500;
+      --bg-dark: #121212;
+      --surface-card: #1E1E22;
+      --surface-elevated: #26262C;
+      --border: #32323A;
+      --text-main: #FFFFFF;
+      --text-muted: #A0A0A5;
+      --badge-ready: #10B981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    header {
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .driver-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .driver-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .main-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .pin-input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .pin-input {
+      flex: 1;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-align: center;
+      padding: 10px;
+      outline: none;
+    }
+    .pin-input:focus { border-color: var(--primary); }
+    .status-pill {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10B981;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="driver-badge">
+    <div class="driver-avatar">🛵</div>
+    <div>
+      <div style="font-weight: 800; font-size: 15px;">Marc Livreur (In-House)</div>
+      <div style="font-size: 11px; color: var(--primary);">Honda Civic Noir • En service</div>
+    </div>
+  </div>
+  <div>
+    <a href="/index.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none; border: 1px solid var(--border); padding: 4px 10px; border-radius: 8px;">Client</a>
+  </div>
+</header>
+
+<div class="main-content">
+
+  <!-- Step 1: Scan / Pickup Card at Kitchen -->
+  <div class="card" id="pickupStepCard">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="status-pill">PRÊT AU RESTAURANT</span>
+      <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
+    </div>
+    
+    <div style="font-size: 13px;">
+      📍 <strong>Prise en charge :</strong> 998 110e Avenue, Drummondville<br>
+      🏁 <strong>Destination :</strong> 1450 Rue Saint-Pierre, Drummondville (3.5 km)
+    </div>
+
+    <!-- Scanner Button -->
+    <button class="btn-primary" onclick="simulateCameraScan()">
+      <i class="fa-solid fa-camera"></i> 1. Scanner le QR Code en Cuisine
+    </button>
+
+    <!-- Manual PIN Backup Form -->
+    <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px; border: 1px dashed var(--border);">
+      <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">
+        ⚠️ Le scan ne fonctionne pas ? Entrez le code à 5 chiffres de la cuisine :
+      </div>
+      <div class="pin-input-group">
+        <input type="text" id="manualPinInput" class="pin-input" placeholder="52325" maxlength="5">
+        <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyManualPin()">Valider</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Active Delivery Transit Card (Appears after pickup) -->
+  <div class="card" id="deliveryTransitCard" style="display: none; border-color: var(--primary);">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span style="font-size: 11px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: 800;">EN ROUTE VERS LE CLIENT</span>
+      <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
+    </div>
+
+    <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px;">
+      <div style="font-size: 14px; font-weight: 700;">Client: Jean Tremblay</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">📍 1450 Rue Saint-Pierre, Drummondville, QC</div>
+      <div style="font-size: 11px; color: #FF9800; margin-top: 4px;" id="driverInstructionBadge">
+        📝 Option Client : <strong>Laisser à la porte</strong>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <!-- GPS Navigation Button -->
+      <a href="https://maps.google.com/?q=1450+Rue+Saint-Pierre,+Drummondville,+QC" target="_blank" class="btn-outline" style="flex: 1; border-color: #3B82F6; color: #3B82F6;">
+        <i class="fa-solid fa-location-arrow"></i> Ouvrir GPS
+      </a>
+      <!-- Call Customer Button -->
+      <a href="tel:8195550192" class="btn-outline" style="flex: 1; border-color: #10B981; color: #10B981;">
+        <i class="fa-solid fa-phone"></i> Appeler Client
+      </a>
+    </div>
+
+    <!-- Complete Delivery Method 1: Photo Proof for "Leave at door" -->
+    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
+      <div style="font-size: 12px; font-weight: 700; color: #22C55E; margin-bottom: 6px;">
+        📷 Option 1 : Preuve Photo (Laisser à la porte)
+      </div>
+      <button class="btn-primary" style="background: #10B981; width: 100%;" onclick="completeDeliveryWithPhoto()">
+        <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
+      </button>
+    </div>
+
+    <!-- Complete Delivery Method 2: PIN Validation for "Hand it to me" -->
+    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px;">
+      <div style="font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+        🤝 Option 2 : Remise en main propre (Code PIN du Client)
+      </div>
+      <div class="pin-input-group">
+        <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="52325" maxlength="5">
+        <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin()">Valider</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function simulateCameraScan() {
+  alert("📸 Caméra Activée!\n\nQR Code 'LMDW-CMD-4092-PIN52325' scanné en cuisine avec succès!\nCommande assignée à Marc Livreur.");
+  startDelivery();
+}
+
+function verifyManualPin() {
+  const pin = document.getElementById('manualPinInput').value.trim();
+  if (pin === "52325" || pin.length === 5) {
+    alert(`✅ Code PIN #${pin} validé avec succès!\nCommande #CMD-4092 récupérée en cuisine par le livreur.`);
+    startDelivery();
+  } else {
+    alert("❌ Code invalide. Veuillez entrer le code à 5 chiffres (ex: 52325).");
+  }
+}
+
+function startDelivery() {
+  document.getElementById('pickupStepCard').style.display = 'none';
+  document.getElementById('deliveryTransitCard').style.display = 'flex';
+}
+
+function completeDeliveryWithPhoto() {
+  alert("📸 Photo de preuve de livraison capturée à la porte!\n\nCommande #CMD-4092 marquée comme LIVRÉE à l'adresse 1450 Rue Saint-Pierre!\nLe client a reçu la confirmation avec la photo.");
+}
+
+function verifyCustomerDeliveryPin() {
+  const pin = document.getElementById('customerDeliveryPinInput').value.trim();
+  if (pin === "52325" || pin.length === 5) {
+    alert(`🎉 Code PIN Client #${pin} validé avec succès!\n\nRemise en main propre confirmée pour Jean Tremblay!\nCommande terminée.`);
+  } else {
+    alert("❌ Code PIN client incorrect. Demandez au client son code PIN de l'application (ex: 52325).");
+  }
+}
+</script>
+
+</body>
+</html>
