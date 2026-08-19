@@ -969,8 +969,16 @@
 
     <!-- Delivery Specific Details (Hidden if Pickup) -->
     <div id="deliveryDetailsSection" style="background: var(--bg-card); border-radius: 14px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border-subtle);">
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">📍 Adresse de Livraison</div>
-      <input type="text" id="deliveryAddressInput" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 10px; outline: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--text-white);">📍 Adresse de Livraison (Drummondville)</span>
+        <span style="font-size: 10px; color: var(--primary); font-weight: 700;" id="lblDistanceBadge">3.5 km • GRATUIT</span>
+      </div>
+      <input type="text" id="deliveryAddressInput" value="1450 Rue Saint-Pierre, Drummondville, QC" placeholder="Entrez votre rue ou code postal..." oninput="updateDeliveryDistance(this.value)" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 6px; outline: none;">
+      
+      <!-- Distance Tier Helper -->
+      <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">
+        Origin: <strong>998 110e Ave</strong> • 0-5 km: <strong>$0.00</strong> | 5-10 km: <strong>$4.99</strong> | 10-15 km: <strong>$9.99</strong>
+      </div>
       
       <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">Instructions de Remise</div>
       <div style="display: flex; gap: 8px;">
@@ -1417,6 +1425,28 @@ function openCartModal() {
 
   recalcCartPrices();
   document.getElementById('cartModal').classList.add('open');
+}
+
+function updateDeliveryDistance(addr) {
+  const destLower = addr.toLowerCase().trim();
+  
+  if (destLower.includes("majorique") || destLower.includes("saint-cyrille") || destLower.includes("12") || destLower.includes("14") || destLower.includes("ouest")) {
+    customerDistanceKm = 11.5;
+  } else if (destLower.includes("saint-joseph") || destLower.includes("mercure") || destLower.includes("boulevard") || destLower.includes("7") || destLower.includes("8")) {
+    customerDistanceKm = 6.8;
+  } else if (destLower.includes("saint-pierre") || destLower.includes("110e") || destLower.includes("lindsay") || destLower.includes("heriot") || destLower.includes("centre")) {
+    customerDistanceKm = 2.4;
+  } else {
+    customerDistanceKm = 3.5; // default center Drummondville
+  }
+
+  const fee = customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99);
+  const feeLabel = fee === 0 ? "GRATUIT" : `$${fee.toFixed(2)}`;
+  
+  const badge = document.getElementById('lblDistanceBadge');
+  if (badge) badge.innerText = `${customerDistanceKm} km • ${feeLabel}`;
+
+  recalcCartPrices();
 }
 
 function recalcCartPrices() {
