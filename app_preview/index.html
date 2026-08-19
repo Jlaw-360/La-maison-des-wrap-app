@@ -905,18 +905,26 @@
       <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
     </div>
 
-    <!-- Stripe Card Input Element -->
+    <!-- Stripe Test Mode Card Input Element -->
     <div style="margin-bottom: 14px;">
-      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">
-        <i class="fa-solid fa-credit-card" style="color: var(--primary);"></i> Informations de Paiement Sécurisé
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">
+          <i class="fa-solid fa-flask" style="color: var(--accent-gold);"></i> Mode Test Stripe (Actif)
+        </span>
+        <span style="font-size: 10px; color: var(--text-muted);">Carte de test: 4242...</span>
       </div>
       <div id="stripe-card-element" style="background: var(--bg-card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);"></div>
       <div id="card-errors" style="color: #FF4444; font-size: 11px; margin-top: 6px;" role="alert"></div>
+      
+      <!-- Quick Test Helper Button -->
+      <div style="margin-top: 8px; background: rgba(229, 169, 60, 0.1); border: 1px dashed rgba(229, 169, 60, 0.4); padding: 8px 12px; border-radius: 10px; font-size: 11px; color: var(--accent-gold); display: flex; justify-content: space-between; align-items: center;">
+        <span>💳 Testez avec <code>4242 4242 4242 4242</code> | Exp: <code>12/34</code> | CVC: <code>123</code></span>
+      </div>
     </div>
 
     <!-- Stripe Checkout Banner -->
     <button class="btn-main" id="btnStripeSubmit" onclick="triggerStripeCheckout()">
-      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Payer par Carte / Apple Pay</span>
+      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Valider la Commande Test Stripe</span>
       <span id="btnPayText">$0.00</span>
     </button>
   </div>
@@ -953,6 +961,46 @@
       <span><i class="fa-solid fa-share-nodes"></i> Générer & Partager le Lien</span>
       <span>25.00$</span>
     </button>
+  </div>
+</div>
+
+<!-- Floating Live Chat Bubble Button -->
+<div onclick="openChatModal()" style="position: fixed; bottom: 80px; right: 18px; width: 48px; height: 48px; border-radius: 50%; background: #22C55E; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4); cursor: pointer; z-index: 190; transition: transform 0.2s;">
+  <i class="fa-solid fa-comments"></i>
+</div>
+
+<!-- Live Multi-Role Chat Modal (Customer <-> Driver <-> Store) -->
+<div class="modal-overlay" id="chatModal">
+  <div class="modal-sheet" style="height: 75vh; display: flex; flex-direction: column;">
+    <div class="sheet-header" style="margin-bottom: 8px;">
+      <div>
+        <div style="font-size: 10px; color: #22C55E; font-weight: 700; text-transform: uppercase;">
+          <i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 4px;"></i> En Direct • Commande #CMD-4092
+        </div>
+        <div class="sheet-title" style="font-size: 16px;">Chat Cuisine & Livreur</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('chatModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Message Stream -->
+    <div id="chatMessageStream" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px 0; border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); margin-bottom: 10px;">
+      <div style="align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 85%; border: 1px solid var(--border-subtle); line-height: 1.35;">
+        <strong style="color: var(--primary); font-size: 11px;">👨‍🍳 Cuisine Drummondville :</strong><br>
+        Votre commande est en préparation sur nos grillades. Pains chauds sortis du four!
+      </div>
+      <div style="align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 85%; border: 1px solid var(--border-subtle); line-height: 1.35;">
+        <strong style="color: #22C55E; font-size: 11px;">🛵 Marc Livreur :</strong><br>
+        Bonjour! Je prends en charge la livraison dès qu'elle est prête.
+      </div>
+    </div>
+
+    <!-- Chat Input Box -->
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <input type="text" id="chatTextInput" placeholder="Écrire un message à la cuisine ou au livreur..." style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;" onkeydown="if(event.key==='Enter') sendLiveChatMessage()">
+      <button onclick="sendLiveChatMessage()" style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px;">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1216,8 +1264,8 @@ function openCartModal() {
   document.getElementById('cartModal').classList.add('open');
 }
 
-// Stripe Initialization
-const STRIPE_PK = 'pk_live_51U18R4EP3Grb2rSSxwG3CjaGa537qkkW71swZGJ2hHmoXVO1H4bVZq3DkZmsJfxAO1nsAmp0CO7ENcsXeNa15WiR00ZmvJsPeQ';
+// Initialize Stripe with Test Publishable Key for testing
+const STRIPE_PK = 'pk_test_51U18R4EP3Grb2rSSVkDRnkguIJClznmXedbsFP8IjF0tKOyDmXVM3QRKFglXeRcKZnKg1KCJpvgX0Wj4o4hrCdil005JeuJkBg';
 let stripe = null;
 let cardElement = null;
 
@@ -1251,15 +1299,15 @@ function initStripe() {
 function triggerStripeCheckout() {
   const btn = document.getElementById('btnStripeSubmit');
   const amountText = document.getElementById('btnPayText').innerText;
-  btn.innerText = "⏳ Traitement du Paiement...";
+  btn.innerText = "⏳ Validation Test Stripe...";
   btn.disabled = true;
 
   setTimeout(() => {
-    alert(`🎉 Paiement Stripe Réussi!\n\nMontant : ${amountText}\nTransaction sécurisée traitée avec succès pour La Maison des Wraps.\nCommande transmise à la cuisine!`);
+    alert(`🎉 Paiement Test Stripe Réussi!\n\nMontant : ${amountText}\nStatut : Test Réussi (Transaction autorisée)\n\nLa commande #CMD-4092 a été envoyée en direct à la cuisine de Drummondville!`);
     cart = [];
     updateCartBadge();
     closeModal('cartModal');
-    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Payer par Carte / Apple Pay</span><span id="btnPayText">$0.00</span>`;
+    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Valider la Commande Test Stripe</span><span id="btnPayText">$0.00</span>`;
     btn.disabled = false;
   }, 1200);
 }
@@ -1286,6 +1334,34 @@ function shareGiftCardLink() {
   } else {
     prompt("Copiez ce lien pour l'envoyer à votre ami par SMS ou WhatsApp :", `Salut ${friend}! Voici ta carte cadeau de 25$ à La Maison des Wraps: ${shareUrl}`);
   }
+}
+
+// Live Chat Functions
+function openChatModal(role = 'customer') {
+  document.getElementById('chatModal').classList.add('open');
+}
+
+function sendLiveChatMessage() {
+  const input = document.getElementById('chatTextInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const stream = document.getElementById('chatMessageStream');
+  const msgEl = document.createElement('div');
+  msgEl.style = "align-self: flex-end; background: var(--primary); color: #fff; padding: 10px 14px; border-radius: 16px 16px 4px 16px; font-size: 13px; max-width: 80%; line-height: 1.35;";
+  msgEl.innerText = text;
+  stream.appendChild(msgEl);
+  input.value = '';
+  stream.scrollTop = stream.scrollHeight;
+
+  // Simulate instant driver/store response
+  setTimeout(() => {
+    const replyEl = document.createElement('div');
+    replyEl.style = "align-self: flex-start; background: var(--bg-card); color: #fff; padding: 10px 14px; border-radius: 16px 16px 16px 4px; font-size: 13px; max-width: 80%; border: 1px solid var(--border-subtle); line-height: 1.35;";
+    replyEl.innerHTML = `<strong style="color: #22C55E; font-size: 11px;">🛵 Marc Livreur :</strong><br>Bien reçu! Je suis en route avec votre commande chaude.`;
+    stream.appendChild(replyEl);
+    stream.scrollTop = stream.scrollHeight;
+  }, 1000);
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
