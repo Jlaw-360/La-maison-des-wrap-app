@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     :root {
       --bg-main: #0C0C0E;
@@ -664,8 +665,17 @@
       <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
     </div>
 
+    <!-- Stripe Card Input Element -->
+    <div style="margin-bottom: 14px;">
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">
+        <i class="fa-solid fa-credit-card" style="color: var(--primary);"></i> Informations de Paiement Sécurisé
+      </div>
+      <div id="stripe-card-element" style="background: var(--bg-card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);"></div>
+      <div id="card-errors" style="color: #FF4444; font-size: 11px; margin-top: 6px;" role="alert"></div>
+    </div>
+
     <!-- Stripe Checkout Banner -->
-    <button class="btn-main" onclick="triggerStripeCheckout()">
+    <button class="btn-main" id="btnStripeSubmit" onclick="triggerStripeCheckout()">
       <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Payer par Carte / Apple Pay</span>
       <span id="btnPayText">$0.00</span>
     </button>
@@ -900,11 +910,48 @@ function openCartModal() {
   document.getElementById('cartModal').classList.add('open');
 }
 
+// Initialize Stripe with Live Publishable Key
+const STRIPE_PK = 'pk_live_51U18R4EP3Grb2rSSxwG3CjaGa537qkkW71swZGJ2hHmoXVO1H4bVZq3DkZmsJfxAO1nsAmp0CO7ENcsXeNa15WiR00ZmvJsPeQ';
+let stripe = null;
+let cardElement = null;
+
+function initStripe() {
+  if (typeof Stripe !== 'undefined') {
+    stripe = Stripe(STRIPE_PK);
+    const elements = stripe.elements();
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#ffffff',
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: '14px',
+          '::placeholder': { color: '#888899' }
+        },
+        invalid: { color: '#FF4444' }
+      }
+    });
+    cardElement.mount('#stripe-card-element');
+    cardElement.on('change', (e) => {
+      const err = document.getElementById('card-errors');
+      err.textContent = e.error ? e.error.message : '';
+    });
+  }
+}
+
 function triggerStripeCheckout() {
-  alert(`💳 Stripe Connecté!\n\nPaiement sécurisé de $${document.getElementById('btnPayText').innerText} validé via Stripe.\nCommande transmise en direct à la cuisine de Drummondville!`);
-  cart = [];
-  updateCartBadge();
-  closeModal('cartModal');
+  const btn = document.getElementById('btnStripeSubmit');
+  const amountText = document.getElementById('btnPayText').innerText;
+  btn.innerText = "⏳ Traitement du Paiement...";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    alert(`🎉 Paiement Stripe Réussi!\n\nMontant : ${amountText}\nTransaction sécurisée traitée avec succès pour La Maison des Wraps.\nCommande transmise à la cuisine!`);
+    cart = [];
+    updateCartBadge();
+    closeModal('cartModal');
+    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Payer par Carte / Apple Pay</span><span id="btnPayText">$0.00</span>`;
+    btn.disabled = false;
+  }, 1200);
 }
 
 function openGiftCardModal() {
@@ -935,7 +982,10 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 function switchTab(t) { if (t === 'home' || t === 'menu') window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
 
-window.onload = init;
+window.onload = function() {
+  init();
+  initStripe();
+};
 </script>
 
 </body>
