@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4&libraries=places&callback=initGoogleMapsPlaces" async defer></script>
   <style>
     :root {
       --bg-main: #0C0C0E;
@@ -1605,12 +1606,34 @@ function sendLiveChatMessage() {
   }, 1000);
 }
 
+// Google Places Address Autocomplete Integration
+let autocomplete = null;
+
+function initGoogleMapsPlaces() {
+  const input = document.getElementById('deliveryAddressInput');
+  if (input && typeof google !== 'undefined' && google.maps && google.maps.places) {
+    autocomplete = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "ca" },
+      fields: ["formatted_address", "geometry", "name"],
+      types: ["address"]
+    });
+
+    autocomplete.addListener('place_changed', function() {
+      const place = autocomplete.getPlace();
+      if (place && place.formatted_address) {
+        updateDeliveryDistance(place.formatted_address);
+      }
+    });
+  }
+}
+
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
 
 window.onload = function() {
   init();
   initStripe();
+  initGoogleMapsPlaces();
 };
 </script>
 
