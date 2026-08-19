@@ -861,6 +861,13 @@
       </button>
     </form>
 
+    <!-- Guest Mode Option to Explore Menu Immediately -->
+    <div style="text-align: center; margin-top: 18px;">
+      <button type="button" onclick="enterAsGuest()" style="background: transparent; border: none; color: var(--text-muted); font-size: 13px; text-decoration: underline; cursor: pointer; padding: 6px;">
+        Ou continuer en tant qu'invité pour voir le menu <i class="fa-solid fa-arrow-right" style="font-size: 10px; margin-left: 4px;"></i>
+      </button>
+    </div>
+
   </div>
 
   <!-- ==================== MAIN RESTAURANT APP CONTAINER (Visible when authenticated) ==================== -->
@@ -2197,6 +2204,7 @@ function submitGateLogin() {
   if (gateEl) gateEl.style.display = 'none';
   if (appWrapper) appWrapper.style.display = 'block';
 
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
 }
 
@@ -2245,7 +2253,16 @@ function submitGateSignup() {
   if (gateEl) gateEl.style.display = 'none';
   if (appWrapper) appWrapper.style.display = 'block';
 
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
+}
+
+function enterAsGuest() {
+  const gateEl = document.getElementById('view-login-gate');
+  const appWrapper = document.getElementById('appMainWrapper');
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function handleLogOut() {
