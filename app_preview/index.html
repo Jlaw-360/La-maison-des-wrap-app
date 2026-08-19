@@ -701,6 +701,7 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="pill-btn" onclick="openSignupSurveyModal()"><i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Inscription</button>
       <button class="pill-btn" onclick="openGiftCardModal()"><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> Cadeau</button>
       <button class="pill-btn" id="langBtn" onclick="toggleLanguage()">EN</button>
     </div>
@@ -823,6 +824,14 @@
       <!-- Profile Actions Menu List -->
       <div class="profile-menu-list">
         
+        <div class="profile-menu-item" onclick="openSignupSurveyModal()">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-clipboard-question" style="color: var(--accent-gold);"></i>
+            <span>Mon Profil & Questionnaire Gourmand</span>
+          </div>
+          <span style="background: rgba(229, 169, 60, 0.15); color: var(--accent-gold); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;">+50 Pts</span>
+        </div>
+
         <div class="profile-menu-item" onclick="openOrderConfirmationModal('CMD-4092')">
           <div class="profile-menu-item-left">
             <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i>
@@ -1166,7 +1175,103 @@
     <button class="btn-main" style="background: var(--accent-gold); color: #000;" onclick="shareGiftCardLink()">
       <span><i class="fa-solid fa-share-nodes"></i> Générer & Partager le Lien</span>
       <span>25.00$</span>
-    </button>
+<!-- ==================== CLIENT SIGN-UP & GOURMET ONBOARDING SURVEY MODAL ==================== -->
+<div class="modal-overlay" id="signupSurveyModal">
+  <div class="modal-sheet" style="max-height: 90vh;">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">
+          <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Espace Membre • La Maison des Wraps
+        </div>
+        <div class="sheet-title" style="font-size: 18px;">Inscription & Questionnaire Client</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('signupSurveyModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Reward Perk Banner -->
+    <div style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.2) 0%, rgba(255, 85, 0, 0.15) 100%); border: 1px dashed var(--accent-gold); border-radius: 14px; padding: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 24px;">🎁</span>
+      <div>
+        <strong style="font-size: 12px; color: #fff;">Bonus de Bienvenue +50 Points!</strong>
+        <p style="font-size: 11px; color: var(--text-body);">Remplissez vos préférences pour recevoir 50 points de fidélité immédiatement.</p>
+      </div>
+    </div>
+
+    <form id="signupSurveyForm" onsubmit="event.preventDefault(); submitClientSurvey();">
+      
+      <!-- Section 1 : Informations Personnelles -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">1. Vos Coordonnées</div>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Prénom & Nom</label>
+            <input type="text" id="surveyName" required placeholder="Ex: Jean Tremblay" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Téléphone (Suivi SMS)</label>
+              <input type="tel" id="surveyPhone" required placeholder="819 555-0192" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+            </div>
+            <div>
+              <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Date d'Anniversaire 🎂</label>
+              <input type="date" id="surveyBirthday" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Adresse Courriel</label>
+            <input type="email" id="surveyEmail" required placeholder="jean.tremblay@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 : Questionnaire Gourmand (Préférences) -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">2. Vos Préférences Culinaires</div>
+        
+        <!-- Spice Level -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Niveau d'épices préféré :</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'spice')">🌱 Doux / Mild</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'spice')">🌶️ Moyen / Medium</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'spice')">🔥 Épicé Authentique</div>
+        </div>
+
+        <!-- Favorite Specialty -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Spécialité coup de cœur :</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'dish')">🌯 Wraps & Kebabs</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍛 Poulet au Beurre</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍟 Poutine Tikka</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🍚 Biryani Royal</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'dish')">🥪 Paninis Grillés</div>
+        </div>
+
+        <!-- Dietary preference -->
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 6px;">Régime alimentaire :</label>
+        <div style="display: flex; gap: 8px;">
+          <div class="cat-btn active" onclick="selectSurveyChip(this, 'diet')">🥩 100% Halal</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'diet')">🥬 Végétarien</div>
+          <div class="cat-btn" onclick="selectSurveyChip(this, 'diet')">Sans Préférence</div>
+        </div>
+      </div>
+
+      <!-- Section 3 : Adresse de Livraison Principale -->
+      <div style="margin-bottom: 18px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">3. Adresse de Livraison (Drummondville)</div>
+        <input type="text" id="surveyAddress" placeholder="Ex: 1450 Rue Saint-Pierre, Drummondville, QC" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; margin-bottom: 6px;">
+        <input type="text" id="surveyAptNotes" placeholder="Appartement, numéro d'interphone ou code de porte..." style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 12px; outline: none;">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%);">
+        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Profil (+50 Pts)</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+    </form>
   </div>
 </div>
 
@@ -1759,6 +1864,62 @@ function initGoogleMapsPlaces() {
       }
     });
   }
+}
+
+// Client Sign-Up & Gourmet Survey Functions
+let clientProfile = {
+  name: "Jean Tremblay",
+  phone: "819 555-0192",
+  email: "jean.tremblay@exemple.com",
+  birthday: "",
+  spice: "Doux / Mild",
+  favoriteDish: "Wraps & Kebabs",
+  diet: "100% Halal",
+  address: "1450 Rue Saint-Pierre, Drummondville, QC",
+  points: 120
+};
+
+function openSignupSurveyModal() {
+  document.getElementById('signupSurveyModal').classList.add('open');
+}
+
+function selectSurveyChip(el, group) {
+  el.parentElement.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function submitClientSurvey() {
+  const name = document.getElementById('surveyName').value.trim() || clientProfile.name;
+  const phone = document.getElementById('surveyPhone').value.trim() || clientProfile.phone;
+  const email = document.getElementById('surveyEmail').value.trim() || clientProfile.email;
+  const birthday = document.getElementById('surveyBirthday').value || "";
+  const address = document.getElementById('surveyAddress').value.trim() || clientProfile.address;
+
+  clientProfile.name = name;
+  clientProfile.phone = phone;
+  clientProfile.email = email;
+  clientProfile.birthday = birthday;
+  clientProfile.address = address;
+  clientProfile.points += 50; // Welcome reward bonus
+
+  // Update Profile Screen UI dynamically
+  const profileAvatar = document.querySelector('.profile-avatar');
+  if (profileAvatar) {
+    const initials = name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2) || "JT";
+    profileAvatar.innerText = initials;
+  }
+  
+  const profileCard = document.querySelector('.profile-card h2');
+  if (profileCard) profileCard.innerText = name;
+  
+  const profileSub = document.querySelector('.profile-card p');
+  if (profileSub) profileSub.innerText = `${email} • ${phone}`;
+
+  closeModal('signupSurveyModal');
+
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre profil et questionnaire gourmand ont été enregistrés avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte (Total: ${clientProfile.points} Pts)!`);
+  
+  switchTab('profile');
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
