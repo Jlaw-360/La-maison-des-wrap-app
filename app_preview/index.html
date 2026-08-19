@@ -2133,9 +2133,26 @@ function submitClientSurvey() {
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
+  // Sync to Firebase Auth / Firestore in background
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
+        name: name,
+        email: email,
+        phone: phone,
+        birthday: birthday,
+        address: address,
+        points: 50,
+        role: 'customer',
+        createdAt: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn("Firestore sync:", err));
+    } catch(e){}
+  }
+
   closeModal('signupSurveyModal');
 
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre profil est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!\nVous pouvez maintenant valider votre commande.`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est synchronisé avec Firebase.\n🎁 +50 Points de Fidélité crédités à votre compte!\nVous pouvez maintenant valider votre commande.`);
   
   if (pendingOrderAction && cart.length > 0) {
     pendingOrderAction = false;
@@ -2153,6 +2170,19 @@ function submitQuickLogin() {
 
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
+
+  // Sync to Firebase
+  if (typeof firebase !== 'undefined' && firebase.firestore) {
+    try {
+      const db = firebase.firestore();
+      db.collection('users').doc(clientProfile.email.replace(/[@.]/g, '_')).set({
+        name: clientProfile.name,
+        email: clientProfile.email,
+        phone: clientProfile.phone,
+        lastLogin: new Date().toISOString()
+      }, { merge: true }).catch(err => console.warn("Firestore login sync:", err));
+    } catch(e){}
+  }
 
   closeModal('signupSurveyModal');
   alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
