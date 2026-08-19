@@ -2435,74 +2435,19 @@ function handleGoogleSignIn() {
             pendingOrderAction = false;
             openCartModal();
           }
-        } else {
-          // If profile info is missing, prompt user to enter their details
-          promptUserForOwnDetails();
+          return;
         }
+        
+        switchGateTab('signup');
       })
       .catch((error) => {
         console.warn("Firebase Google Auth:", error.message);
-        promptUserForOwnDetails();
+        // Seamlessly switch to sign-up / login form so user inputs their exact own information
+        switchGateTab('signup');
+        alert("ℹ️ Veuillez renseigner votre Prénom, Nom et Courriel dans le formulaire ci-dessous pour créer votre compte personnalisé (+50 Pts).");
       });
   } else {
-    promptUserForOwnDetails();
-  }
-}
-
-function promptUserForOwnDetails() {
-  // Let the user enter their own name & email
-  const userEnteredName = prompt("Veuillez entrer votre Prénom & Nom pour votre compte :", "");
-  if (!userEnteredName || !userEnteredName.trim()) {
-    // If user cancelled, switch to the sign-up form on the gate
     switchGateTab('signup');
-    return;
-  }
-
-  const userEnteredEmail = prompt("Veuillez entrer votre adresse Courriel :", `${userEnteredName.toLowerCase().replace(/\s+/g, '.')}@gmail.com`);
-  const userEnteredPhone = prompt("Veuillez entrer votre Numéro de Téléphone (pour le suivi de commande) :", "819 555-0192");
-
-  clientProfile = {
-    name: userEnteredName.trim(),
-    email: (userEnteredEmail && userEnteredEmail.trim()) || "client@gmail.com",
-    phone: (userEnteredPhone && userEnteredPhone.trim()) || "819 555-0192",
-    birthday: "",
-    address: "1450 Rue Saint-Pierre, Drummondville, QC",
-    spice: "Moyen / Medium",
-    favoriteDish: "Poulet au Beurre",
-    diet: "100% Halal",
-    points: 50 // +50 Welcome Bonus
-  };
-
-  isUserLoggedIn = true;
-  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-  updateUserProfileUI();
-
-  // Sync to Firestore
-  if (typeof firebase !== 'undefined' && firebase.firestore) {
-    try {
-      const db = firebase.firestore();
-      db.collection('users').doc(clientProfile.email.replace(/[@.]/g, '_')).set({
-        name: clientProfile.name,
-        email: clientProfile.email,
-        phone: clientProfile.phone,
-        points: 50,
-        createdAt: new Date().toISOString()
-      }, { merge: true }).catch(e => console.warn(e));
-    } catch(e){}
-  }
-
-  closeModal('signupSurveyModal');
-
-  const gateEl = document.getElementById('view-login-gate');
-  const appWrapper = document.getElementById('appMainWrapper');
-  if (gateEl) gateEl.style.display = 'none';
-  if (appWrapper) appWrapper.style.display = 'block';
-
-  alert(`👋 Bienvenue, ${clientProfile.name}!\nVotre compte est activé avec succès.\n🎁 +50 Points de Fidélité crédités.`);
-
-  if (pendingOrderAction && cart.length > 0) {
-    pendingOrderAction = false;
-    openCartModal();
   }
 }
 

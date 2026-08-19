@@ -1,4 +1,21 @@
 {
+  "auth": {
+    "authorizedDomains": [
+      "localhost",
+      "la-maison-des-wrap-app.firebaseapp.com",
+      "la-maison-des-wrap-app.web.app",
+      "la-maison-des-wrap-app.vercel.app",
+      "phenomenal-twilight-2064dd.netlify.app"
+    ],
+    "providers": {
+      "anonymous": true,
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "La Maison des Wraps",
+        "supportEmail": "contact@lamaisondeswraps.ca"
+      }
+    }
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
