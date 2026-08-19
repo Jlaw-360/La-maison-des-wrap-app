@@ -1180,23 +1180,49 @@
   <div class="modal-sheet" style="max-height: 90vh;">
     <div class="sheet-header">
       <div>
-        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">
-          <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Espace Membre • La Maison des Wraps
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;" id="surveySubtitle">
+          <i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Étape Requise pour Commander
         </div>
-        <div class="sheet-title" style="font-size: 18px;">Inscription & Questionnaire Client</div>
+        <div class="sheet-title" style="font-size: 18px;" id="surveyMainTitle">Créer votre Compte Client</div>
       </div>
       <button class="close-btn" onclick="closeModal('signupSurveyModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <!-- Reward Perk Banner -->
-    <div style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.2) 0%, rgba(255, 85, 0, 0.15) 100%); border: 1px dashed var(--accent-gold); border-radius: 14px; padding: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+    <!-- Toggle Sign-up vs Login -->
+    <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <button type="button" id="tabAuthSignup" class="cat-btn active" style="flex: 1; text-align: center;" onclick="toggleAuthMode('signup')">
+        <i class="fa-solid fa-user-plus"></i> Nouveau Client (+50 Pts)
+      </button>
+      <button type="button" id="tabAuthLogin" class="cat-btn" style="flex: 1; text-align: center;" onclick="toggleAuthMode('login')">
+        <i class="fa-solid fa-right-to-bracket"></i> Déjà un Compte
+      </button>
+    </div>
+
+    <!-- Reward Perk Banner (Shown for Signup) -->
+    <div id="surveySignupBanner" style="background: linear-gradient(135deg, rgba(229, 169, 60, 0.2) 0%, rgba(255, 85, 0, 0.15) 100%); border: 1px dashed var(--accent-gold); border-radius: 14px; padding: 12px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
       <span style="font-size: 24px;">🎁</span>
       <div>
-        <strong style="font-size: 12px; color: #fff;">Bonus de Bienvenue +50 Points!</strong>
-        <p style="font-size: 11px; color: var(--text-body);">Remplissez vos préférences pour recevoir 50 points de fidélité immédiatement.</p>
+        <strong style="font-size: 12px; color: #fff;">Bonus de Bienvenue +50 Points de Fidélité!</strong>
+        <p style="font-size: 11px; color: var(--text-body);">Inscrivez-vous en 30 secondes pour commander et accumuler vos récompenses.</p>
       </div>
     </div>
 
+    <!-- Quick Login Form (Hidden by default) -->
+    <form id="quickLoginForm" style="display: none;" onsubmit="event.preventDefault(); submitQuickLogin();">
+      <div style="margin-bottom: 16px;">
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Numéro de Téléphone ou Courriel</label>
+        <input type="text" id="loginIdentifier" required placeholder="819 555-0192 ou jean@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none; margin-bottom: 12px;">
+        
+        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Code PIN ou Mot de passe</label>
+        <input type="password" id="loginPin" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+      </div>
+      <button type="submit" class="btn-main" style="background: var(--primary);">
+        <span><i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Se Connecter & Continuer la Commande</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </form>
+
+    <!-- Sign-Up & Gourmet Survey Form -->
     <form id="signupSurveyForm" onsubmit="event.preventDefault(); submitClientSurvey();">
       
       <!-- Section 1 : Informations Personnelles -->
@@ -1267,7 +1293,7 @@
 
       <!-- Submit Button -->
       <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%);">
-        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Profil (+50 Pts)</span>
+        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> S'inscrire & Valider la Commande (+50 Pts)</span>
         <i class="fa-solid fa-arrow-right"></i>
       </button>
 
@@ -1691,6 +1717,13 @@ function triggerStripeCheckout() {
     return;
   }
 
+  // MANDATORY SIGN-UP / LOGIN WALL BEFORE PLACING ORDER
+  if (!isUserLoggedIn) {
+    closeModal('cartModal');
+    openSignupSurveyModal('checkout');
+    return;
+  }
+
   btn.innerText = "⏳ Traitement & Validation...";
   btn.disabled = true;
 
@@ -1866,20 +1899,66 @@ function initGoogleMapsPlaces() {
   }
 }
 
-// Client Sign-Up & Gourmet Survey Functions
+// Client Authentication & Gourmet Survey State
+let isUserLoggedIn = false;
+let pendingOrderAction = false;
 let clientProfile = {
-  name: "Jean Tremblay",
-  phone: "819 555-0192",
-  email: "jean.tremblay@exemple.com",
+  name: "",
+  phone: "",
+  email: "",
   birthday: "",
   spice: "Doux / Mild",
   favoriteDish: "Wraps & Kebabs",
   diet: "100% Halal",
   address: "1450 Rue Saint-Pierre, Drummondville, QC",
-  points: 120
+  points: 0
 };
 
-function openSignupSurveyModal() {
+// Check if client is already logged in from previous session
+function checkSavedUserSession() {
+  const saved = localStorage.getItem('lmdw_user');
+  if (saved) {
+    try {
+      clientProfile = JSON.parse(saved);
+      isUserLoggedIn = true;
+      updateUserProfileUI();
+    } catch(e){}
+  }
+}
+
+function toggleAuthMode(mode) {
+  const signupForm = document.getElementById('signupSurveyForm');
+  const loginForm = document.getElementById('quickLoginForm');
+  const banner = document.getElementById('surveySignupBanner');
+  const tabSignup = document.getElementById('tabAuthSignup');
+  const tabLogin = document.getElementById('tabAuthLogin');
+  const mainTitle = document.getElementById('surveyMainTitle');
+
+  if (mode === 'signup') {
+    signupForm.style.display = 'block';
+    loginForm.style.display = 'none';
+    banner.style.display = 'flex';
+    tabSignup.classList.add('active');
+    tabLogin.classList.remove('active');
+    mainTitle.innerText = "Créer votre Compte Client";
+  } else {
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+    banner.style.display = 'none';
+    tabLogin.classList.add('active');
+    tabSignup.classList.remove('active');
+    mainTitle.innerText = "Connexion à votre Compte";
+  }
+}
+
+function openSignupSurveyModal(intent = '') {
+  if (intent === 'checkout') {
+    pendingOrderAction = true;
+    document.getElementById('surveySubtitle').innerHTML = `<i class="fa-solid fa-lock" style="color: var(--primary);"></i> Inscription Requise pour Commander`;
+  } else {
+    pendingOrderAction = false;
+    document.getElementById('surveySubtitle').innerHTML = `<i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> Espace Membre • La Maison des Wraps`;
+  }
   document.getElementById('signupSurveyModal').classList.add('open');
 }
 
@@ -1889,37 +1968,84 @@ function selectSurveyChip(el, group) {
 }
 
 function submitClientSurvey() {
-  const name = document.getElementById('surveyName').value.trim() || clientProfile.name;
-  const phone = document.getElementById('surveyPhone').value.trim() || clientProfile.phone;
-  const email = document.getElementById('surveyEmail').value.trim() || clientProfile.email;
+  const name = document.getElementById('surveyName').value.trim() || "Jean Tremblay";
+  const phone = document.getElementById('surveyPhone').value.trim() || "819 555-0192";
+  const email = document.getElementById('surveyEmail').value.trim() || "client@exemple.com";
   const birthday = document.getElementById('surveyBirthday').value || "";
-  const address = document.getElementById('surveyAddress').value.trim() || clientProfile.address;
+  const address = document.getElementById('surveyAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
 
-  clientProfile.name = name;
-  clientProfile.phone = phone;
-  clientProfile.email = email;
-  clientProfile.birthday = birthday;
-  clientProfile.address = address;
-  clientProfile.points += 50; // Welcome reward bonus
+  clientProfile = {
+    name,
+    phone,
+    email,
+    birthday,
+    address,
+    spice: "Doux / Mild",
+    favoriteDish: "Wraps & Kebabs",
+    diet: "100% Halal",
+    points: 50 // Welcome reward bonus
+  };
 
-  // Update Profile Screen UI dynamically
+  isUserLoggedIn = true;
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  closeModal('signupSurveyModal');
+
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre profil est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!\nVous pouvez maintenant valider votre commande.`);
+  
+  if (pendingOrderAction && cart.length > 0) {
+    pendingOrderAction = false;
+    openCartModal();
+  }
+}
+
+function submitQuickLogin() {
+  const identifier = document.getElementById('loginIdentifier').value.trim() || "Jean Tremblay";
+  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
+  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
+  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
+  clientProfile.points = 120;
+  isUserLoggedIn = true;
+
+  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  updateUserProfileUI();
+
+  closeModal('signupSurveyModal');
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
+
+  if (pendingOrderAction && cart.length > 0) {
+    pendingOrderAction = false;
+    openCartModal();
+  }
+}
+
+function updateUserProfileUI() {
   const profileAvatar = document.querySelector('.profile-avatar');
-  if (profileAvatar) {
-    const initials = name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2) || "JT";
+  if (profileAvatar && clientProfile.name) {
+    const initials = clientProfile.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2) || "JT";
     profileAvatar.innerText = initials;
   }
   
   const profileCard = document.querySelector('.profile-card h2');
-  if (profileCard) profileCard.innerText = name;
+  if (profileCard && clientProfile.name) profileCard.innerText = clientProfile.name;
   
   const profileSub = document.querySelector('.profile-card p');
-  if (profileSub) profileSub.innerText = `${email} • ${phone}`;
+  if (profileSub && clientProfile.email) profileSub.innerText = `${clientProfile.email} • ${clientProfile.phone}`;
 
-  closeModal('signupSurveyModal');
+  // Update header sign-up button to show logged in name
+  const signupHeaderBtn = document.querySelector('.header-actions button:first-child');
+  if (signupHeaderBtn && clientProfile.name) {
+    signupHeaderBtn.innerHTML = `<i class="fa-solid fa-circle-user" style="color: #22C55E;"></i> ${clientProfile.name.split(' ')[0]}`;
+    signupHeaderBtn.onclick = () => switchTab('profile');
+  }
 
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre profil et questionnaire gourmand ont été enregistrés avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte (Total: ${clientProfile.points} Pts)!`);
-  
-  switchTab('profile');
+  // Pre-fill delivery address if present
+  const addrInput = document.getElementById('deliveryAddressInput');
+  if (addrInput && clientProfile.address) {
+    addrInput.value = clientProfile.address;
+    updateDeliveryDistance(clientProfile.address);
+  }
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -1927,6 +2053,7 @@ function toggleLanguage() { alert("Bascule de langue : Français / English synch
 
 window.onload = function() {
   init();
+  checkSavedUserSession();
   initStripe();
   initGoogleMapsPlaces();
 };
