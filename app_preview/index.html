@@ -2136,7 +2136,19 @@ function checkSavedUserSession() {
 
   if (saved) {
     try {
-      clientProfile = JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Auto-clear old test placeholder user
+      if (parsed && (parsed.name === "Client Google" || parsed.email === "client.google@gmail.com")) {
+        localStorage.removeItem('lmdw_user');
+        clientProfile.name = "";
+        clientProfile.email = "";
+        isUserLoggedIn = false;
+        if (gateEl) gateEl.style.display = 'flex';
+        if (appWrapper) appWrapper.style.display = 'none';
+        return;
+      }
+
+      clientProfile = parsed;
       isUserLoggedIn = true;
       updateUserProfileUI();
       if (gateEl) gateEl.style.display = 'none';
