@@ -246,17 +246,34 @@
 
 <script>
 let users = [
-  { uid: "usr_001", name: "Jean Tremblay", email: "jean.tremblay@exemple.com", phone: "819 555-0192", role: "customer", points: 120 },
-  { uid: "usr_002", name: "Sophie Gagnon", email: "sophie.g@exemple.com", phone: "819 555-0331", role: "customer", points: 45 },
-  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@lamaisondeswraps.ca", phone: "819 555-0841", role: "driver", points: 0 },
-  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", phone: "819 850-3972", role: "store", points: 0 },
-  { uid: "usr_005", name: "Alexandre Cuisinier", email: "alex.cuisinier@exemple.com", phone: "819 555-9922", role: "store", points: 0 },
-  { uid: "usr_006", name: "Nouveau Inscription", email: "nouveau.client@gmail.com", phone: "819 555-7788", role: "customer", points: 0 }
+  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@lamaisondeswraps.ca", phone: "819 555-0841", role: "driver", points: 0, address: "Drummondville, QC" },
+  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", phone: "819 850-3972", role: "store", points: 0, address: "998 110e Avenue, Drummondville, QC" }
 ];
 
+function loadRegisteredClients() {
+  const savedUser = localStorage.getItem('lmdw_user');
+  if (savedUser) {
+    try {
+      const u = JSON.parse(savedUser);
+      if (u && u.name && !users.find(x => x.email === u.email)) {
+        users.unshift({
+          uid: 'client_' + Date.now(),
+          name: u.name,
+          email: u.email || "Non renseigné",
+          phone: u.phone || "Non renseigné",
+          role: "customer",
+          points: u.points || 50,
+          address: u.address || "Drummondville, QC"
+        });
+      }
+    } catch(e){}
+  }
+}
+
 function renderUsers() {
+  loadRegisteredClients();
   const container = document.getElementById('userListContainer');
-  const query = document.getElementById('searchUser').value.toLowerCase().trim();
+  const query = (document.getElementById('searchUser').value || "").toLowerCase().trim();
 
   const filtered = users.filter(u => 
     u.name.toLowerCase().includes(query) || 
@@ -266,7 +283,7 @@ function renderUsers() {
 
   container.innerHTML = filtered.map(u => {
     let roleBadgeColor = '#3B82F6';
-    let roleLabel = 'Client (Par défaut)';
+    let roleLabel = 'Client';
     if (u.role === 'store') { roleBadgeColor = '#E5A93C'; roleLabel = 'Employé Cuisine'; }
     if (u.role === 'driver') { roleBadgeColor = '#22C55E'; roleLabel = 'Employé Livreur'; }
     if (u.role === 'admin') { roleBadgeColor = '#FF5500'; roleLabel = 'Administrateur'; }
@@ -274,10 +291,10 @@ function renderUsers() {
     return `
       <div class="user-row">
         <div class="user-info">
-          <div class="user-avatar">${u.name.charAt(0)}</div>
+          <div class="user-avatar">${u.name.charAt(0).toUpperCase()}</div>
           <div class="user-details">
-            <h3>${u.name}</h3>
-            <p>${u.email} • ${u.phone} • <strong style="color: ${roleBadgeColor};">${roleLabel}</strong></p>
+            <h3>${u.name} <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 2px 6px; border-radius: 6px; margin-left: 6px;">${u.points} Pts</span></h3>
+            <p>${u.email} • ${u.phone} • <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> ${u.address || 'Drummondville, QC'}</p>
           </div>
         </div>
 
@@ -304,7 +321,7 @@ function saveUserRole(uid) {
   
   if (user) {
     user.role = newRole;
-    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nLorsque cet utilisateur se connectera, l'application le redirigera automatiquement vers son portail (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
+    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nL'utilisateur sera redirigé vers son portail dédié (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
     renderUsers();
   }
 }
