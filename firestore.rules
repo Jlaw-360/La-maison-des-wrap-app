@@ -7,61 +7,73 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+
+    function isAdmin() {
+      return isRole('admin');
+    }
+
+    function isStaff() {
+      return isAdmin() || isRole('store') || isRole('driver');
+    }
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // 1. Collection 'menu_items'
-    // - Create: Authenticated Users
-    // - Read: Everyone (Publicly accessible so guests can browse the menu)
-    // - Write: Authenticated Users
-    // - Delete: No One
+    // 1. Menu Items & Dishes - Publicly viewable, editable only by Admin/Store
     match /menu_items/{itemId} {
       allow read: if true;
-      allow create, update: if isAuthenticated();
-      allow delete: if false;
+      allow write: if isStaff();
+    }
+    match /dishes/{dishId} {
+      allow read: if true;
+      allow write: if isStaff();
     }
 
-    // 2. Collection 'users'
-    // - Create: Everyone (Allows new sign-ups)
-    // - Read: Authenticated Users
-    // - Write: User Document Owner (Users can only update their own profile)
-    // - Delete: No One
+    // 2. Restaurant Info, Hours, Delivery Zones & Taxes - Public read, Admin write
+    match /restaurant_info/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /loyalty_rewards/{rewardId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. User Profiles - Self-registration default 'customer', role escalation blocked
     match /users/{userId} {
-      allow create: if true;
-      allow read: if isAuthenticated();
-      allow update: if isOwner(userId);
-      allow delete: if false;
+      allow read: if isOwner(userId) || isStaff();
+      // On create, user role must be 'customer' unless created by Admin
+      allow create: if request.resource.data.role == 'customer' || isAdmin();
+      // On update, users cannot change their own role to admin/store/driver
+      allow update: if isOwner(userId) && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])) || isAdmin();
+      allow delete: if isAdmin();
     }
 
-    // 3. Collection 'orders'
-    // - Create: Authenticated Users (Customers place orders)
-    // - Read: Authenticated Users (Customers view their orders; kitchen and drivers view assigned orders)
-    // - Write: Authenticated Users (Kitchen updates prep status; drivers update delivery progress)
-    // - Delete: No One
+    // 4. Orders - Customers create their orders; Kitchen and Drivers update status
     match /orders/{orderId} {
+      allow read: if isAuthenticated() && (resource.data.customer_id == request.auth.uid || isStaff());
       allow create: if isAuthenticated();
-      allow read: if isAuthenticated();
-      allow update: if isAuthenticated();
-      allow delete: if false;
+      allow update: if isStaff() || (isOwner(resource.data.customer_id) && resource.data.status == 'received');
+      allow delete: if isAdmin();
     }
 
-    // 4. Collection 'chats'
-    // - Create: Authenticated Users
-    // - Read: Authenticated Users
-    // - Write: Authenticated Users
-    // - Delete: No One
+    // 5. Multi-Role Live Chats & Doorstep Proof Messages
     match /chats/{chatId} {
-      allow create: if isAuthenticated();
-      allow read: if isAuthenticated();
-      allow update: if isAuthenticated();
-      allow delete: if false;
+      allow read, write: if isAuthenticated();
     }
-    
-    // Nested Chat Messages (if subcollection used)
-    match /orders/{orderId}/chats/{messageId} {
-      allow create, read, update: if isAuthenticated();
-      allow delete: if false;
+    match /orders/{orderId}/messages/{messageId} {
+      allow read, write: if isAuthenticated();
+    }
+    match /chats/{chatId}/messages/{messageId} {
+      allow read, write: if isAuthenticated();
     }
   }
 }
