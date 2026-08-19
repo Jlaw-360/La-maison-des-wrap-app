@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <style>
     :root {
       --bg-main: #0C0C0E;
@@ -620,6 +621,69 @@
       border-color: var(--accent-gold);
       background: rgba(229, 169, 60, 0.12);
     }
+
+    /* Fulfillment Mode Selector (Delivery vs Pickup) */
+    .fulfillment-toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .fulfillment-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fulfillment-card.active {
+      border-color: var(--primary);
+      background: rgba(255, 85, 0, 0.12);
+    }
+
+    .fulfillment-card i {
+      font-size: 20px;
+      margin-bottom: 6px;
+      display: block;
+      color: var(--text-muted);
+    }
+
+    .fulfillment-card.active i {
+      color: var(--primary);
+    }
+
+    .fulfillment-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .fulfillment-card small {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .dropoff-option-btn {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 11px;
+      color: var(--text-body);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .dropoff-option-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 700;
+      background: rgba(255, 85, 0, 0.1);
+    }
   </style>
 </head>
 <body>
@@ -758,10 +822,10 @@
       <!-- Profile Actions Menu List -->
       <div class="profile-menu-list">
         
-        <div class="profile-menu-item" onclick="alert('📦 Commande Active #CMD-4092:\nStatut: En préparation en cuisine\nLivreur assigné: Marc Livreur (Honda Civic)')">
+        <div class="profile-menu-item" onclick="openOrderConfirmationModal('CMD-4092')">
           <div class="profile-menu-item-left">
-            <i class="fa-solid fa-receipt"></i>
-            <span>Historique des Commandes</span>
+            <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i>
+            <span>Mon QR Code & PIN de Récupération</span>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
@@ -788,13 +852,6 @@
             <span>Service Client & Support</span>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
-        </div>
-
-        <div class="profile-menu-item" onclick="alert('🔒 Déconnexion sécurisée.')" style="border-color: rgba(255, 68, 68, 0.3);">
-          <div class="profile-menu-item-left">
-            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FF4444;"></i>
-            <span style="color: #FF4444;">Se Déconnecter</span>
-          </div>
         </div>
 
       </div>
@@ -887,7 +944,7 @@
   </div>
 </div>
 
-<!-- Cart & Stripe Payment Modal -->
+<!-- ==================== CART & CHECKOUT MODAL (WITH PICKUP VS DELIVERY) ==================== -->
 <div class="modal-overlay" id="cartModal">
   <div class="modal-sheet">
     <div class="sheet-header">
@@ -895,11 +952,58 @@
       <button class="close-btn" onclick="closeModal('cartModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
+    <!-- 1. FULFILLMENT SELECTOR: DELIVERY VS PICKUP -->
+    <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Mode de Récupération</div>
+    <div class="fulfillment-toggle-row">
+      <div class="fulfillment-card active" id="fulfillmentDeliveryCard" onclick="setFulfillmentMode('delivery')">
+        <i class="fa-solid fa-motorcycle"></i>
+        <strong>Livraison Directe</strong>
+        <small>À Drummondville</small>
+      </div>
+      <div class="fulfillment-card" id="fulfillmentPickupCard" onclick="setFulfillmentMode('pickup')">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <strong>Cueillette / Emporter</strong>
+        <small>Au Restaurant (998 110e)</small>
+      </div>
+    </div>
+
+    <!-- Delivery Specific Details (Hidden if Pickup) -->
+    <div id="deliveryDetailsSection" style="background: var(--bg-card); border-radius: 14px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">📍 Adresse de Livraison</div>
+      <input type="text" id="deliveryAddressInput" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 10px; outline: none;">
+      
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">Instructions de Remise</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="dropoff-option-btn active" id="btnDropoffDoor" onclick="setDropoffOption('door')">
+          <i class="fa-solid fa-door-open"></i> Laisser à la porte
+        </button>
+        <button class="dropoff-option-btn" id="btnDropoffHand" onclick="setDropoffOption('hand')">
+          <i class="fa-solid fa-handshake"></i> Remettre en main propre
+        </button>
+      </div>
+      <small id="dropoffHintText" style="display: block; font-size: 10px; color: var(--text-muted); margin-top: 6px;">
+        📷 Le livreur prendra une photo de preuve à votre porte.
+      </small>
+    </div>
+
+    <!-- Pickup Specific Banner (Hidden if Delivery) -->
+    <div id="pickupDetailsSection" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px dashed var(--accent-green); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
+      <div style="font-size: 12px; font-weight: 700; color: var(--accent-green); margin-bottom: 4px;">
+        <i class="fa-solid fa-store"></i> Prise en charge au comptoir
+      </div>
+      <p style="font-size: 11px; color: var(--text-body); line-height: 1.35;">
+        Restaurant : <strong>998 110e Avenue, Drummondville, QC</strong><br>
+        Votre QR Code de retrait et code PIN seront affichés dès validation!
+      </p>
+    </div>
+
+    <!-- Cart Items List -->
     <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
 
+    <!-- Pricing Summary -->
     <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
       <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Sous-total</span><span id="lblSubtotal">$0.00</span></div>
-      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Livraison (Drummondville < 5km)</span><span id="lblDelivery" style="color: var(--accent-green); font-weight: bold;">GRATUIT</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Frais de Service / Livraison</span><span id="lblDelivery" style="color: var(--accent-green); font-weight: bold;">GRATUIT</span></div>
       <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TPS (5%)</span><span id="lblTPS">$0.00</span></div>
       <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TVQ (9.975%)</span><span id="lblTVQ">$0.00</span></div>
       <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
@@ -911,21 +1015,49 @@
         <span style="font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">
           <i class="fa-solid fa-flask" style="color: var(--accent-gold);"></i> Mode Test Stripe (Actif)
         </span>
-        <span style="font-size: 10px; color: var(--text-muted);">Carte de test: 4242...</span>
+        <span style="font-size: 10px; color: var(--text-muted);">Carte: 4242...</span>
       </div>
       <div id="stripe-card-element" style="background: var(--bg-card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);"></div>
       <div id="card-errors" style="color: #FF4444; font-size: 11px; margin-top: 6px;" role="alert"></div>
-      
-      <!-- Quick Test Helper Button -->
-      <div style="margin-top: 8px; background: rgba(229, 169, 60, 0.1); border: 1px dashed rgba(229, 169, 60, 0.4); padding: 8px 12px; border-radius: 10px; font-size: 11px; color: var(--accent-gold); display: flex; justify-content: space-between; align-items: center;">
-        <span>💳 Testez avec <code>4242 4242 4242 4242</code> | Exp: <code>12/34</code> | CVC: <code>123</code></span>
-      </div>
     </div>
 
     <!-- Stripe Checkout Banner -->
     <button class="btn-main" id="btnStripeSubmit" onclick="triggerStripeCheckout()">
-      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Valider la Commande Test Stripe</span>
+      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span>
       <span id="btnPayText">$0.00</span>
+    </button>
+  </div>
+</div>
+
+<!-- ==================== ORDER CONFIRMATION / QR CODE & PIN MODAL ==================== -->
+<div class="modal-overlay" id="orderConfirmModal">
+  <div class="modal-sheet" style="text-align: center;">
+    <div class="sheet-header">
+      <div class="sheet-title" style="color: var(--accent-green);">🎉 Commande Confirmée!</div>
+      <button class="close-btn" onclick="closeModal('orderConfirmModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div style="font-size: 13px; font-weight: 700; margin-bottom: 2px;">Numéro de Commande : <span style="color: var(--primary);" id="confOrderId">#CMD-4092</span></div>
+    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="confFulfillmentSummary">Cueillette au Restaurant (998 110e Avenue)</div>
+
+    <!-- Generated QR Code for Customer Verification -->
+    <div style="background: #FFFFFF; padding: 14px; border-radius: 16px; display: inline-block; margin-bottom: 14px;">
+      <canvas id="customerQrCanvas"></canvas>
+    </div>
+
+    <!-- 5-Digit PIN Fallback Code -->
+    <div style="background: rgba(255, 85, 0, 0.12); border: 1.5px dashed var(--primary); border-radius: 14px; padding: 12px; margin-bottom: 16px;">
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 2px;">Code PIN de Confirmation :</div>
+      <div style="font-family: monospace; font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: 4px;" id="confPinCode">52325</div>
+    </div>
+
+    <p style="font-size: 12px; color: var(--text-body); line-height: 1.4; margin-bottom: 18px;" id="confInstructionsText">
+      Présentez ce QR Code ou donnez le PIN <strong>52325</strong> au restaurant lors de la récupération.
+    </p>
+
+    <button class="btn-main" onclick="closeModal('orderConfirmModal'); switchTab('profile');">
+      <span>Voir dans mon Profil</span>
+      <i class="fa-solid fa-arrow-right"></i>
     </button>
   </div>
 </div>
@@ -1012,6 +1144,11 @@ let curDish = null;
 let curBreadAddon = 0;
 let curFormatAddon = 0;
 
+// Order fulfillment settings
+let currentFulfillment = 'delivery'; // 'delivery' or 'pickup'
+let currentDropoffOption = 'door'; // 'door' or 'hand'
+let customerDistanceKm = 3.5;
+
 // Official Menu Boards Complete Data
 const CATEGORIES = [
   'Nos Wraps',
@@ -1085,11 +1222,9 @@ function init() {
 
 // Switch between App Tabs (Home, Menu, Profile)
 function switchTab(tabName) {
-  // Hide all views
   document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
 
-  // Show active view
   if (tabName === 'home') {
     document.getElementById('view-home').classList.add('active');
     document.getElementById('tab-home').classList.add('active');
@@ -1236,6 +1371,36 @@ function updateCartBadge() {
   }
 }
 
+// Fulfillment Selection in Cart
+function setFulfillmentMode(mode) {
+  currentFulfillment = mode;
+  if (mode === 'delivery') {
+    document.getElementById('fulfillmentDeliveryCard').classList.add('active');
+    document.getElementById('fulfillmentPickupCard').classList.remove('active');
+    document.getElementById('deliveryDetailsSection').style.display = 'block';
+    document.getElementById('pickupDetailsSection').style.display = 'none';
+  } else {
+    document.getElementById('fulfillmentPickupCard').classList.add('active');
+    document.getElementById('fulfillmentDeliveryCard').classList.remove('active');
+    document.getElementById('deliveryDetailsSection').style.display = 'none';
+    document.getElementById('pickupDetailsSection').style.display = 'block';
+  }
+  recalcCartPrices();
+}
+
+function setDropoffOption(option) {
+  currentDropoffOption = option;
+  if (option === 'door') {
+    document.getElementById('btnDropoffDoor').classList.add('active');
+    document.getElementById('btnDropoffHand').classList.remove('active');
+    document.getElementById('dropoffHintText').innerText = "📷 Le livreur prendra une photo de preuve à votre porte.";
+  } else {
+    document.getElementById('btnDropoffHand').classList.add('active');
+    document.getElementById('btnDropoffDoor').classList.remove('active');
+    document.getElementById('dropoffHintText').innerText = "🤝 Vous présenterez votre code PIN au livreur pour réceptionner le repas.";
+  }
+}
+
 function openCartModal() {
   if (cart.length === 0) {
     alert("Votre panier est vide. Choisissez un plat pour commander!");
@@ -1250,21 +1415,35 @@ function openCartModal() {
     </div>
   `).join('');
 
+  recalcCartPrices();
+  document.getElementById('cartModal').classList.add('open');
+}
+
+function recalcCartPrices() {
   const sub = cart.reduce((a, b) => a + b.price, 0);
-  const tps = sub * 0.05;
-  const tvq = sub * 0.09975;
-  const grand = sub + tps + tvq;
+  
+  // Delivery Fee Calculation
+  let deliveryFee = 0.00;
+  if (currentFulfillment === 'delivery') {
+    deliveryFee = customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99);
+    document.getElementById('lblDelivery').innerText = deliveryFee === 0 ? "GRATUIT (< 5km)" : `$${deliveryFee.toFixed(2)}`;
+  } else {
+    document.getElementById('lblDelivery').innerText = "GRATUIT (Cueillette)";
+  }
+
+  const taxable = sub + deliveryFee;
+  const tps = taxable * 0.05;
+  const tvq = taxable * 0.09975;
+  const grand = taxable + tps + tvq;
 
   document.getElementById('lblSubtotal').innerText = `$${sub.toFixed(2)}`;
   document.getElementById('lblTPS').innerText = `$${tps.toFixed(2)}`;
   document.getElementById('lblTVQ').innerText = `$${tvq.toFixed(2)}`;
   document.getElementById('lblTotal').innerText = `$${grand.toFixed(2)} CAD`;
   document.getElementById('btnPayText').innerText = `$${grand.toFixed(2)}`;
-
-  document.getElementById('cartModal').classList.add('open');
 }
 
-// Initialize Stripe with Test Publishable Key for testing
+// Stripe Initialization
 const STRIPE_PK = 'pk_test_51U18R4EP3Grb2rSSVkDRnkguIJClznmXedbsFP8IjF0tKOyDmXVM3QRKFglXeRcKZnKg1KCJpvgX0Wj4o4hrCdil005JeuJkBg';
 let stripe = null;
 let cardElement = null;
@@ -1303,13 +1482,41 @@ function triggerStripeCheckout() {
   btn.disabled = true;
 
   setTimeout(() => {
-    alert(`🎉 Paiement Test Stripe Réussi!\n\nMontant : ${amountText}\nStatut : Test Réussi (Transaction autorisée)\n\nLa commande #CMD-4092 a été envoyée en direct à la cuisine de Drummondville!`);
     cart = [];
     updateCartBadge();
     closeModal('cartModal');
-    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Valider la Commande Test Stripe</span><span id="btnPayText">$0.00</span>`;
+    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span><span id="btnPayText">$0.00</span>`;
     btn.disabled = false;
+
+    // Open Order Confirmation with QR Code & PIN
+    openOrderConfirmationModal('CMD-4092');
   }, 1200);
+}
+
+function openOrderConfirmationModal(orderId) {
+  document.getElementById('confOrderId').innerText = `#${orderId}`;
+  const pin = '52325';
+  document.getElementById('confPinCode').innerText = pin;
+
+  if (currentFulfillment === 'pickup') {
+    document.getElementById('confFulfillmentSummary').innerText = "🥡 Cueillette au Restaurant (998 110e Avenue)";
+    document.getElementById('confInstructionsText').innerHTML = `Présentez ce QR Code ou donnez le PIN <strong>${pin}</strong> au comptoir du restaurant pour récupérer votre commande.`;
+  } else {
+    document.getElementById('confFulfillmentSummary').innerText = currentDropoffOption === 'door' 
+      ? "🛵 Livraison : Laisser à la porte" 
+      : "🛵 Livraison : Remise en main propre";
+    document.getElementById('confInstructionsText').innerHTML = currentDropoffOption === 'door'
+      ? `Le livreur déposera votre sac et prendra une <strong>photo de preuve</strong> à votre porte.`
+      : `Donnez le code PIN <strong>${pin}</strong> au livreur pour réceptionner votre commande en main propre.`;
+  }
+
+  // Generate QR Code on canvas
+  QRCode.toCanvas(document.getElementById('customerQrCanvas'), `LMDW-${orderId}-PIN${pin}`, {
+    width: 140,
+    margin: 1
+  });
+
+  document.getElementById('orderConfirmModal').classList.add('open');
 }
 
 function openGiftCardModal() {

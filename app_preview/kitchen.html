@@ -144,6 +144,13 @@
       gap: 6px;
     }
     .nav-btn:hover { color: #fff; border-color: var(--primary); }
+    .badge-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -156,6 +163,7 @@
   <div class="nav-links">
     <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> App Client</a>
     <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> App Livreur</a>
+    <a href="/admin.html" class="nav-btn"><i class="fa-solid fa-crown"></i> Admin</a>
   </div>
 </header>
 
@@ -170,7 +178,7 @@
     <div class="ticket-card" id="ticket-CMD-4093">
       <div class="ticket-header">
         <span class="ticket-id">#CMD-4093</span>
-        <span style="font-size: 11px; color: var(--text-muted);">Il y a 3 min</span>
+        <span class="badge-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">🛵 LIVRAISON</span>
       </div>
       <div class="ticket-items">
         <strong>1x Wrap Poulet Tikka (Pain Tortilla, Trio)</strong><br>
@@ -192,7 +200,7 @@
     <div class="ticket-card" id="ticket-CMD-4092">
       <div class="ticket-header">
         <span class="ticket-id">#CMD-4092</span>
-        <span style="font-size: 11px; color: var(--badge-prep); font-weight: bold;">En cuisson</span>
+        <span class="badge-tag" style="background: rgba(34, 197, 94, 0.2); color: #22C55E;">🥡 CUEILLETTE COMPTOIR</span>
       </div>
       <div class="ticket-items">
         <strong>2x Kebab au Poulet (Pain Naan Fait Maison, Trio)</strong><br>
@@ -200,36 +208,37 @@
         <strong>1x Lassi Mangue</strong>
       </div>
       <button class="btn-action" style="background: #10B981;" onclick="moveTicket('CMD-4092', 'ready')">
-        <i class="fa-solid fa-qrcode"></i> Prêt (Générer QR & Code PIN)
+        <i class="fa-solid fa-qrcode"></i> Prêt pour Cueillette Client
       </button>
     </div>
   </div>
 
-  <!-- Column 3: Prêtes pour Livreur -->
+  <!-- Column 3: Prêtes pour Retrait / Livreur -->
   <div class="kanban-col">
     <div class="col-header">
-      <span style="color: var(--badge-ready);"><i class="fa-solid fa-motorcycle"></i> 3. Prêt pour Livreur</span>
+      <span style="color: var(--badge-ready);"><i class="fa-solid fa-bag-shopping"></i> 3. Prêt au Comptoir / Livreur</span>
       <span class="badge" style="background: var(--badge-ready); padding: 2px 8px; border-radius: 10px; font-size: 11px;" id="readyCount">1</span>
     </div>
     <div class="ticket-card" id="ticket-ready-container" style="border: 1px solid var(--badge-ready);">
       <div class="ticket-header">
         <span class="ticket-id">#CMD-4092</span>
-        <span style="font-size: 11px; color: var(--badge-ready); font-weight: bold;">PRÊT AU COMPTOIR</span>
+        <span class="badge-tag" style="background: #10B981; color: #fff;">PRÊT POUR RETRAIT</span>
       </div>
-      <div style="font-size: 12px; color: var(--text-muted);">Livreur: <strong>Marc Livreur (In-House)</strong></div>
+      <div style="font-size: 12px; color: var(--text-muted);">Client : <strong>Jean Tremblay (Cueillette)</strong></div>
       
-      <!-- Generated QR Code for Driver Pickup -->
+      <!-- Generated QR Code & Verification Button -->
       <div style="text-align: center;">
         <div class="qr-container">
           <canvas id="qrCanvas"></canvas>
         </div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Code PIN de Secours (Si le scan échoue) :</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Code PIN Client :</div>
         <div class="backup-pin-badge">PIN : 52325</div>
       </div>
 
-      <div style="font-size: 11px; color: var(--text-muted); text-align: center;">
-        Le livreur scanne ce code avec son téléphone pour récupérer la commande.
-      </div>
+      <!-- Cashier Confirm Pickup Button -->
+      <button class="btn-action" style="background: #22C55E; margin-top: 6px;" onclick="confirmCustomerPickup('CMD-4092')">
+        <i class="fa-solid fa-camera"></i> Scanner QR Client ou Valider Retrait
+      </button>
     </div>
   </div>
 
@@ -247,7 +256,15 @@ function moveTicket(orderId, nextState) {
   if (nextState === 'prep') {
     alert(`Commande #${orderId} passée EN PRÉPARATION en cuisine!`);
   } else if (nextState === 'ready') {
-    alert(`Commande #${orderId} marquée comme PRÊTE! QR Code et Code PIN #52325 générés pour le livreur.`);
+    alert(`Commande #${orderId} marquée comme PRÊTE! Le client ou le livreur a reçu la notification.`);
+  }
+}
+
+function confirmCustomerPickup(orderId) {
+  const pinEntered = prompt("Entrez le code PIN du client (ex: 52325) ou confirmez le scan QR :");
+  if (pinEntered === "52325" || pinEntered === "" || pinEntered) {
+    alert(`✅ Commande #${orderId} remise au client avec succès!\nStatut mis à jour : RÉCUPÉRÉE.`);
+    document.getElementById('ticket-ready-container').style.opacity = '0.5';
   }
 }
 </script>
