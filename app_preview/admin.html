@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panneau d'Administration - La Maison des Wraps</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0C0C0E">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg-main: #0C0C0E;
+      --bg-surface: #151519;
+      --bg-card: #1C1C22;
+      --primary: #FF5500;
+      --accent-gold: #E5A93C;
+      --accent-green: #22C55E;
+      --accent-blue: #3B82F6;
+      --border: rgba(255, 255, 255, 0.08);
+      --text-white: #FFFFFF;
+      --text-muted: #8E8E9A;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-main);
+      color: var(--text-white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .admin-container {
+      max-width: 900px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 18px;
+      flex: 1;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat-card h4 { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+    .stat-card .val { font-family: var(--font-heading); font-size: 22px; font-weight: 800; }
+    
+    .users-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+    }
+    .table-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      max-width: 320px;
+    }
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+    .user-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .user-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 85, 0, 0.15);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .user-details h3 {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .user-details p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .role-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+    }
+    .role-select:focus { border-color: var(--primary); }
+    .save-role-btn {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-links { display: flex; gap: 8px; }
+    .nav-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover { color: #fff; border-color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand-title">
+    <span style="font-size: 20px;">👑</span>
+    <span>Administration • Gestion des Rôles & Employés</span>
+  </div>
+  <div class="nav-links">
+    <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> Client</a>
+    <a href="/kitchen.html" class="nav-btn"><i class="fa-solid fa-fire-burner"></i> Cuisine</a>
+    <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> Livreur</a>
+  </div>
+</header>
+
+<div class="admin-container">
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h4>Clients Inscrits</h4>
+      <div class="val" style="color: var(--accent-blue);" id="statCustomers">34</div>
+    </div>
+    <div class="stat-card">
+      <h4>Employés Cuisine</h4>
+      <div class="val" style="color: var(--accent-gold);" id="statKitchen">2</div>
+    </div>
+    <div class="stat-card">
+      <h4>Employés Livreurs</h4>
+      <div class="val" style="color: var(--accent-green);" id="statDrivers">3</div>
+    </div>
+    <div class="stat-card">
+      <h4>Commandes du Jour</h4>
+      <div class="val" style="color: var(--primary);">18</div>
+    </div>
+  </div>
+
+  <!-- Role Management Table -->
+  <div class="users-table-card">
+    <div class="table-header-row">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">Attribution des Rôles Utilisateurs</h2>
+        <p style="font-size: 11px; color: var(--text-muted);">Tous les nouveaux inscrits sont des Clients par défaut. L'administrateur peut promouvoir un compte en Employé Cuisine ou Livreur.</p>
+      </div>
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" id="searchUser" placeholder="Rechercher par nom, courriel..." oninput="filterUsers()">
+      </div>
+    </div>
+
+    <!-- User Rows -->
+    <div class="user-list" id="userListContainer">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+</div>
+
+<script>
+let users = [
+  { uid: "usr_001", name: "Jean Tremblay", email: "jean.tremblay@exemple.com", phone: "819 555-0192", role: "customer", points: 120 },
+  { uid: "usr_002", name: "Sophie Gagnon", email: "sophie.g@exemple.com", phone: "819 555-0331", role: "customer", points: 45 },
+  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@lamaisondeswraps.ca", phone: "819 555-0841", role: "driver", points: 0 },
+  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", phone: "819 850-3972", role: "store", points: 0 },
+  { uid: "usr_005", name: "Alexandre Cuisinier", email: "alex.cuisinier@exemple.com", phone: "819 555-9922", role: "store", points: 0 },
+  { uid: "usr_006", name: "Nouveau Inscription", email: "nouveau.client@gmail.com", phone: "819 555-7788", role: "customer", points: 0 }
+];
+
+function renderUsers() {
+  const container = document.getElementById('userListContainer');
+  const query = document.getElementById('searchUser').value.toLowerCase().trim();
+
+  const filtered = users.filter(u => 
+    u.name.toLowerCase().includes(query) || 
+    u.email.toLowerCase().includes(query) || 
+    u.phone.includes(query)
+  );
+
+  container.innerHTML = filtered.map(u => {
+    let roleBadgeColor = '#3B82F6';
+    let roleLabel = 'Client (Par défaut)';
+    if (u.role === 'store') { roleBadgeColor = '#E5A93C'; roleLabel = 'Employé Cuisine'; }
+    if (u.role === 'driver') { roleBadgeColor = '#22C55E'; roleLabel = 'Employé Livreur'; }
+    if (u.role === 'admin') { roleBadgeColor = '#FF5500'; roleLabel = 'Administrateur'; }
+
+    return `
+      <div class="user-row">
+        <div class="user-info">
+          <div class="user-avatar">${u.name.charAt(0)}</div>
+          <div class="user-details">
+            <h3>${u.name}</h3>
+            <p>${u.email} • ${u.phone} • <strong style="color: ${roleBadgeColor};">${roleLabel}</strong></p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <select class="role-select" id="select_${u.uid}">
+            <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>👤 Client</option>
+            <option value="store" ${u.role === 'store' ? 'selected' : ''}>👨‍🍳 Employé Cuisine</option>
+            <option value="driver" ${u.role === 'driver' ? 'selected' : ''}>🛵 Employé Livreur</option>
+            <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>👑 Administrateur</option>
+          </select>
+          <button class="save-role-btn" onclick="saveUserRole('${u.uid}')">
+            <i class="fa-solid fa-floppy-disk"></i> Modifier Rôle
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function saveUserRole(uid) {
+  const select = document.getElementById(`select_${uid}`);
+  const newRole = select.value;
+  const user = users.find(u => u.uid === uid);
+  
+  if (user) {
+    user.role = newRole;
+    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nLorsque cet utilisateur se connectera, l'application le redirigera automatiquement vers son portail (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
+    renderUsers();
+  }
+}
+
+function filterUsers() {
+  renderUsers();
+}
+
+window.onload = renderUsers;
+</script>
+
+</body>
+</html>
