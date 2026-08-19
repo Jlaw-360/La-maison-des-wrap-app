@@ -852,8 +852,8 @@
           <input type="date" id="gateSignupBirthday" title="Date d'anniversaire pour votre cadeau annuel" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
         </div>
 
-        <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (jean@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
-        <input type="text" id="gateSignupAddress" placeholder="Adresse à Drummondville (1450 Rue Saint-Pierre)" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (ex: nom@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <input type="text" id="gateSignupAddress" placeholder="Votre adresse à Drummondville (Rue, Numéro, Code Postal)" value="" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
       </div>
       <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); width: 100%;">
         <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Compte (+50 Pts) & Entrer</span>
@@ -2164,7 +2164,7 @@ let clientProfile = {
   spice: "Doux / Mild",
   favoriteDish: "Wraps & Kebabs",
   diet: "100% Halal",
-  address: "1450 Rue Saint-Pierre, Drummondville, QC",
+  address: "",
   points: 0
 };
 
@@ -2178,7 +2178,7 @@ function checkSavedUserSession() {
     try {
       const parsed = JSON.parse(saved);
       // Auto-clear old test placeholder user
-      if (parsed && (parsed.name === "Client Google" || parsed.email === "client.google@gmail.com")) {
+      if (parsed && (parsed.name === "Client Google" || parsed.email === "client.google@gmail.com" || parsed.name === "Jean Tremblay")) {
         localStorage.removeItem('lmdw_user');
         clientProfile.name = "";
         clientProfile.email = "";
@@ -2221,11 +2221,15 @@ function switchGateTab(mode) {
 }
 
 function submitGateLogin() {
-  const identifier = document.getElementById('gateLoginUser').value.trim() || "Jean Tremblay";
+  const identifier = document.getElementById('gateLoginUser').value.trim();
+  if (!identifier) {
+    alert("Veuillez entrer votre numéro de téléphone ou courriel.");
+    return;
+  }
   clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
-  clientProfile.email = identifier.includes('@') ? identifier : "client@exemple.com";
-  clientProfile.phone = identifier.includes('@') ? "819 555-0192" : identifier;
-  clientProfile.points = 120;
+  clientProfile.email = identifier.includes('@') ? identifier : "";
+  clientProfile.phone = identifier.includes('@') ? "" : identifier;
+  clientProfile.points = 50;
   isUserLoggedIn = true;
 
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
@@ -2238,15 +2242,19 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
 }
 
 function submitGateSignup() {
-  const name = document.getElementById('gateSignupName').value.trim() || "Jean Tremblay";
-  const phone = document.getElementById('gateSignupPhone').value.trim() || "819 555-0192";
-  const email = document.getElementById('gateSignupEmail').value.trim() || "client@exemple.com";
+  const name = document.getElementById('gateSignupName').value.trim();
+  const phone = document.getElementById('gateSignupPhone').value.trim();
+  const email = document.getElementById('gateSignupEmail').value.trim();
   const birthday = document.getElementById('gateSignupBirthday').value || "";
-  const address = document.getElementById('gateSignupAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
+  const address = document.getElementById('gateSignupAddress').value.trim();
+
+  if (!name || !email) {
+    alert("Veuillez renseigner votre Nom et Courriel.");
+    return;
+  }
 
   clientProfile = {
     name,
