@@ -836,6 +836,7 @@
         </div>
 
         <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (ex: nom@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <input type="password" id="gateSignupPass" required placeholder="Créer un Code PIN ou Mot de passe (ex: 1234)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
         <input type="text" id="gateSignupAddress" placeholder="Votre adresse à Drummondville (Rue, Numéro, Code Postal)" value="" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
       </div>
       <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); width: 100%;">
@@ -2186,18 +2187,55 @@ function switchGateTab(mode) {
   }
 }
 
+function getRegisteredAccounts() {
+  try {
+    const raw = localStorage.getItem('lmdw_registered_accounts');
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveRegisteredAccount(acc) {
+  try {
+    const list = getRegisteredAccounts();
+    const existingIdx = list.findIndex(x => (x.email && x.email.toLowerCase() === acc.email.toLowerCase()) || (x.phone && x.phone === acc.phone));
+    if (existingIdx >= 0) {
+      list[existingIdx] = acc;
+    } else {
+      list.push(acc);
+    }
+    localStorage.setItem('lmdw_registered_accounts', JSON.stringify(list));
+  } catch(e){}
+}
+
 function submitGateLogin() {
-  const identifier = document.getElementById('gateLoginUser').value.trim();
-  if (!identifier) {
-    alert("Veuillez entrer votre numéro de téléphone ou courriel.");
+  const identifier = document.getElementById('gateLoginUser').value.trim().toLowerCase();
+  const pass = document.getElementById('gateLoginPass').value.trim();
+
+  if (!identifier || !pass) {
+    alert("Veuillez entrer votre courriel/téléphone et votre mot de passe/PIN.");
     return;
   }
-  clientProfile.name = identifier.includes('@') ? identifier.split('@')[0] : identifier;
-  clientProfile.email = identifier.includes('@') ? identifier : "";
-  clientProfile.phone = identifier.includes('@') ? "" : identifier;
-  clientProfile.points = 50;
-  isUserLoggedIn = true;
 
+  const accounts = getRegisteredAccounts();
+  const found = accounts.find(a => 
+    (a.email && a.email.toLowerCase() === identifier) || (a.phone && a.phone === identifier)
+  );
+
+  if (!found) {
+    alert("❌ Compte introuvable dans notre base de données.\n\nCe courriel ou numéro n'est pas encore enregistré. Veuillez cliquer sur l'onglet 'Créer un Compte' pour vous inscrire et recevoir vos 50 points.");
+    return;
+  }
+
+  if (found.pass && found.pass !== pass) {
+    alert("❌ Mot de passe ou code PIN incorrect. Veuillez réessayer.");
+    return;
+  }
+
+  // Valid credentials verified in database
+  clientProfile = found;
+  isUserLoggedIn = true;
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
@@ -2208,17 +2246,19 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
 }
 
 function submitGateSignup() {
   const name = document.getElementById('gateSignupName').value.trim();
   const phone = document.getElementById('gateSignupPhone').value.trim();
-  const email = document.getElementById('gateSignupEmail').value.trim();
+  const email = document.getElementById('gateSignupEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('gateSignupPass').value.trim();
   const birthday = document.getElementById('gateSignupBirthday').value || "";
   const address = document.getElementById('gateSignupAddress').value.trim();
 
-  if (!name || !email) {
-    alert("Veuillez renseigner votre Nom et Courriel.");
+  if (!name || !email || !pass) {
+    alert("Veuillez renseigner votre Nom, Courriel et créer un Code PIN / Mot de passe.");
     return;
   }
 
@@ -2226,6 +2266,7 @@ function submitGateSignup() {
     name,
     phone,
     email,
+    pass,
     birthday,
     address,
     spice: "Doux / Mild",
@@ -2234,6 +2275,7 @@ function submitGateSignup() {
     points: 50 // Welcome reward bonus
   };
 
+  saveRegisteredAccount(clientProfile);
   isUserLoggedIn = true;
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
@@ -2246,6 +2288,7 @@ function submitGateSignup() {
         name,
         email,
         phone,
+        pass,
         birthday,
         address,
         points: 50,
@@ -2261,7 +2304,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est créé avec succès.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est enregistré avec succès dans la base de données.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
 }
 
 function enterAsGuest() {
