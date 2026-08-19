@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4&libraries=places&callback=initGoogleMapsPlaces" async defer></script>
   <style>
     :root {
@@ -2281,38 +2284,85 @@ function submitQuickLogin() {
   }
 }
 
+// Firebase Web SDK Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4",
+  authDomain: "la-maison-des-wrap-app.firebaseapp.com",
+  projectId: "la-maison-des-wrap-app",
+  storageBucket: "la-maison-des-wrap-app.appspot.com"
+};
+
+let firebaseAuth = null;
+let googleAuthProvider = null;
+
+function initFirebaseAuth() {
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      firebaseAuth = firebase.auth();
+      googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    } catch(e) {
+      console.warn("Firebase Auth init:", e);
+    }
+  }
+}
+
 function handleGoogleSignIn() {
-  // 1-Tap Google Sign-In Authentication
-  const simulatedGoogleUser = {
-    name: "Alexandre Roy",
-    email: "alexandre.roy.drummond@gmail.com",
-    phone: "819 818-4421",
-    birthday: "1994-06-15",
-    address: "1450 Rue Saint-Pierre, Drummondville, QC",
-    spice: "Moyen / Medium",
-    favoriteDish: "Poulet au Beurre",
-    diet: "100% Halal",
-    points: 50 // +50 Welcome Bonus Points
-  };
+  initFirebaseAuth();
 
-  clientProfile = simulatedGoogleUser;
-  isUserLoggedIn = true;
-  localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
-  updateUserProfileUI();
+  if (firebaseAuth && googleAuthProvider) {
+    firebaseAuth.signInWithPopup(googleAuthProvider)
+      .then((result) => {
+        const user = result.user;
+        const displayName = user.displayName || "Client";
+        const email = user.email || "";
 
-  closeModal('signupSurveyModal');
+        clientProfile = {
+          name: displayName,
+          email: email,
+          phone: user.phoneNumber || clientProfile.phone || "819 555-0192",
+          birthday: "",
+          address: "1450 Rue Saint-Pierre, Drummondville, QC",
+          spice: "Moyen / Medium",
+          favoriteDish: "Poulet au Beurre",
+          diet: "100% Halal",
+          points: 50 // +50 Welcome Bonus Points
+        };
 
-  // Hide Gateway & Reveal Main App
-  const gateEl = document.getElementById('view-auth-gate');
-  const appWrapper = document.getElementById('appMainWrapper');
-  if (gateEl) gateEl.style.display = 'none';
-  if (appWrapper) appWrapper.style.display = 'block';
+        isUserLoggedIn = true;
+        localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+        updateUserProfileUI();
 
-  alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${clientProfile.name} (${clientProfile.email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+        closeModal('signupSurveyModal');
 
-  if (pendingOrderAction && cart.length > 0) {
-    pendingOrderAction = false;
-    openCartModal();
+        // Hide Gateway & Reveal Main App
+        const gateEl = document.getElementById('view-auth-gate');
+        const appWrapper = document.getElementById('appMainWrapper');
+        if (gateEl) gateEl.style.display = 'none';
+        if (appWrapper) appWrapper.style.display = 'block';
+
+        alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${displayName} (${email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+
+        if (pendingOrderAction && cart.length > 0) {
+          pendingOrderAction = false;
+          openCartModal();
+        }
+      })
+      .catch((error) => {
+        console.error("Firebase Google Auth:", error);
+        if (error.code === 'auth/popup-closed-by-user') {
+          // User simply closed the popup
+          return;
+        }
+        
+        // If domain unauthorized or popup blocked, inform client clearly
+        alert("ℹ️ Connexion Google Firebase :\n" + (error.message || "Veuillez activer le fournisseur Google dans la console Firebase.") + "\n\nRedirection vers le formulaire d'inscription...");
+        openSignupSurveyModal();
+      });
+  } else {
+    alert("Initialisation du service Google Firebase en cours... Veuillez réessayer.");
   }
 }
 
@@ -2349,6 +2399,7 @@ function toggleLanguage() { alert("Bascule de langue : Français / English synch
 
 window.onload = function() {
   init();
+  initFirebaseAuth();
   checkSavedUserSession();
   initStripe();
   initGoogleMapsPlaces();
