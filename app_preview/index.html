@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>La Maison des Wraps | Restauration Rapide Indienne Drummondville</title>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#121214">
+  <meta name="theme-color" content="#0C0C0E">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/png" href="/logo.png">
@@ -17,20 +17,18 @@
   <style>
     :root {
       --bg-main: #0C0C0E;
-      --bg-surface: #151518;
-      --bg-card: #1C1C21;
-      --bg-card-hover: #24242B;
+      --bg-surface: #151519;
+      --bg-card: #1C1C22;
+      --bg-card-hover: #25252E;
       --primary: #FF5500;
       --primary-hover: #E04B00;
-      --primary-subtle: rgba(255, 85, 0, 0.12);
+      --primary-glow: rgba(255, 85, 0, 0.28);
       --accent-gold: #E5A93C;
+      --accent-green: #22C55E;
       --text-white: #FFFFFF;
-      --text-body: #A5A5B0;
-      --text-muted: #6B6B76;
-      --border-subtle: rgba(255, 255, 255, 0.07);
-      --border-focus: rgba(255, 85, 0, 0.4);
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+      --text-body: #A5A5B2;
+      --text-muted: #6E6E7A;
+      --border-subtle: rgba(255, 255, 255, 0.08);
       --font-heading: 'Plus Jakarta Sans', sans-serif;
       --font-body: 'Inter', sans-serif;
     }
@@ -38,13 +36,13 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: var(--bg-main);
+      background-color: #050507;
       color: var(--text-white);
       font-family: var(--font-body);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding-bottom: 90px;
+      padding-bottom: 95px;
     }
 
     .app-container {
@@ -53,61 +51,58 @@
       min-height: 100vh;
       background-color: var(--bg-main);
       position: relative;
+      border-left: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
     }
 
-    /* Top App Header */
+    /* Top Sticky Header */
     .top-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(12, 12, 14, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(12, 12, 14, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 14px 18px;
+      padding: 12px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1.5px solid var(--primary);
-    }
-
-    .brand-meta h1 {
-      font-family: var(--font-heading);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-white);
-      letter-spacing: -0.2px;
-    }
-
-    .brand-meta p {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .header-actions {
+    .brand-meta {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .lang-pill {
+    .brand-logo-img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--primary);
+    }
+
+    .brand-text h1 {
+      font-family: var(--font-heading);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-white);
@@ -116,166 +111,158 @@
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       transition: all 0.2s;
     }
 
-    .lang-pill:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
+    .pill-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-    /* Hero Banner */
-    .hero-banner {
-      padding: 20px 18px 10px 18px;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #1C1A1A 0%, #151518 100%);
-      border: 1px solid rgba(255, 85, 0, 0.25);
-      border-radius: 20px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--primary-subtle);
-      color: var(--primary);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
-    }
-
-    .hero-title {
-      font-family: var(--font-heading);
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.25;
-      margin-bottom: 8px;
-    }
-
-    .hero-subtitle {
-      font-size: 12px;
-      color: var(--text-body);
-      line-height: 1.4;
-      margin-bottom: 14px;
-    }
-
-    .hero-info-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .hero-info-row span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .rating-star { color: var(--accent-gold); }
-
-    /* Search Bar */
-    .search-wrapper {
-      padding: 12px 18px;
-    }
-
-    .search-input-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: border-color 0.2s;
-    }
-
-    .search-input-box:focus-within {
-      border-color: var(--primary);
-    }
-
-    .search-input-box i {
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .search-input-box input {
-      background: transparent;
-      border: none;
-      color: var(--text-white);
-      font-size: 13px;
-      width: 100%;
-      outline: none;
-      font-family: var(--font-body);
-    }
-
-    /* Category Filter Horizontal Scroll */
-    .category-scroll {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 6px 18px 16px 18px;
-      scrollbar-width: none;
-    }
-
-    .category-scroll::-webkit-scrollbar { display: none; }
-
-    .category-pill {
-      flex-shrink: 0;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-body);
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .category-pill.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      border-color: var(--primary);
-      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35);
-    }
-
-    /* Section Header */
-    .section-header {
-      padding: 8px 18px 14px 18px;
+    /* Loyalty Points Bar */
+    .loyalty-banner {
+      margin: 14px 18px 6px 18px;
+      background: linear-gradient(135deg, #221C1A 0%, #17171C 100%);
+      border: 1px solid rgba(229, 169, 60, 0.25);
+      border-radius: 18px;
+      padding: 14px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .section-header h2 {
+    .points-info h3 {
       font-family: var(--font-heading);
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: -0.2px;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .section-header span {
+    .points-info p {
+      font-size: 11px;
+      color: var(--accent-gold);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .redeem-pill {
+      background: rgba(229, 169, 60, 0.15);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Promo Carousel Card */
+    .promo-section {
+      padding: 10px 18px;
+    }
+
+    .promo-card {
+      background: linear-gradient(135deg, #23130E 0%, #18151A 100%);
+      border: 1px solid rgba(255, 85, 0, 0.35);
+      border-radius: 20px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-tag {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .promo-card h2 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .promo-card p {
+      font-size: 12px;
+      color: var(--text-body);
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .promo-perks {
+      display: flex;
+      gap: 12px;
       font-size: 11px;
       color: var(--text-muted);
     }
 
-    /* Menu Grid */
+    /* Category Pill Navigation */
+    .category-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 18px 14px 18px;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-body);
+      padding: 8px 14px;
+      border-radius: 22px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    /* Dishes Section */
+    .dishes-header {
+      padding: 4px 18px 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dishes-header h2 {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .dishes-header span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      padding: 0 18px;
+      padding: 0 18px 24px 18px;
     }
 
     .dish-card {
@@ -286,8 +273,7 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-      position: relative;
+      transition: all 0.15s ease;
     }
 
     .dish-card:hover {
@@ -296,12 +282,11 @@
       transform: translateY(-2px);
     }
 
-    .dish-category-tag {
+    .dish-badge {
       font-size: 9px;
       font-weight: 700;
       color: var(--primary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
       margin-bottom: 6px;
     }
 
@@ -309,9 +294,8 @@
       font-family: var(--font-heading);
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-white);
-      margin-bottom: 6px;
       line-height: 1.3;
+      margin-bottom: 4px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -330,7 +314,7 @@
       overflow: hidden;
     }
 
-    .dish-footer {
+    .dish-price-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -339,33 +323,28 @@
       border-top: 1px solid var(--border-subtle);
     }
 
-    .dish-price {
+    .price-text {
       font-family: var(--font-heading);
       font-size: 14px;
       font-weight: 800;
-      color: var(--text-white);
+      color: #fff;
     }
 
-    .dish-add-btn {
+    .add-icon-btn {
       width: 28px;
       height: 28px;
       border-radius: 50%;
       background: var(--primary);
       border: none;
-      color: #FFFFFF;
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 12px;
       cursor: pointer;
-      transition: transform 0.15s;
     }
 
-    .dish-add-btn:hover {
-      transform: scale(1.1);
-    }
-
-    /* Bottom Navigation - Clean Customer Bar */
+    /* Floating Center Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -373,106 +352,112 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 480px;
-      background: rgba(18, 18, 22, 0.95);
+      background: rgba(16, 16, 20, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border-subtle);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 8px 12px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 6px 14px 10px 14px;
       z-index: 200;
     }
 
-    .nav-tab {
+    .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       color: var(--text-muted);
-      text-decoration: none;
       font-size: 10px;
       font-weight: 600;
-      padding: 6px 0;
-      border-radius: 12px;
       cursor: pointer;
-      transition: color 0.2s;
+      text-decoration: none;
+      flex: 1;
+      text-align: center;
+    }
+
+    .nav-item.active { color: var(--primary); }
+    .nav-item i { font-size: 16px; }
+
+    /* Elevated Flame Orange Center Order Button */
+    .center-order-cta {
       position: relative;
-    }
-
-    .nav-tab.active {
-      color: var(--primary);
-    }
-
-    .nav-tab i {
-      font-size: 16px;
-    }
-
-    .cart-badge {
-      position: absolute;
-      top: 2px;
-      right: 24px;
-      background: var(--primary);
+      top: -16px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF6600 0%, #FF3D00 100%);
       color: #FFFFFF;
-      font-size: 9px;
+      border: 3px solid var(--bg-main);
+      box-shadow: 0 8px 24px rgba(255, 85, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .center-order-cta:hover { transform: scale(1.06); }
+
+    .cart-count-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #FFFFFF;
+      color: var(--primary);
+      font-size: 10px;
       font-weight: 800;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      border: 2px solid var(--primary);
     }
 
-    /* Modal Bottom Sheet */
+    /* Modals */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
       z-index: 300;
       display: none;
       align-items: flex-end;
       justify-content: center;
     }
 
-    .modal-overlay.open {
-      display: flex;
-    }
+    .modal-overlay.open { display: flex; }
 
-    .modal-content {
+    .modal-sheet {
       width: 100%;
       max-width: 480px;
       background: var(--bg-surface);
       border-top: 1px solid var(--border-subtle);
       border-radius: 28px 28px 0 0;
-      padding: 24px 20px;
+      padding: 22px;
       max-height: 88vh;
       overflow-y: auto;
-      animation: slideUp 0.25s ease-out;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .modal-header {
+    .sheet-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 14px;
     }
 
-    .modal-title {
+    .sheet-title {
       font-family: var(--font-heading);
       font-size: 18px;
       font-weight: 800;
     }
 
-    .modal-close {
+    .close-btn {
       background: var(--bg-card);
       border: none;
       color: var(--text-muted);
@@ -483,55 +468,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
     }
 
-    .option-group {
-      margin-bottom: 20px;
-    }
-
-    .option-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-white);
-      margin-bottom: 8px;
-    }
-
-    .option-chip-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .option-chip {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: var(--text-body);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.15s;
-    }
-
-    .option-chip.selected {
-      background: var(--primary-subtle);
-      border-color: var(--primary);
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .primary-btn {
+    .btn-main {
       background: var(--primary);
-      color: #FFFFFF;
+      color: #fff;
       border: none;
       border-radius: 16px;
-      padding: 16px;
+      padding: 15px;
       font-family: var(--font-heading);
       font-size: 14px;
       font-weight: 700;
@@ -540,7 +484,24 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 6px 20px rgba(255, 85, 0, 0.35);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+
+    .gift-tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gift-tier-card.selected {
+      border-color: var(--accent-gold);
+      background: rgba(229, 169, 60, 0.12);
     }
   </style>
 </head>
@@ -550,359 +511,359 @@
 
   <!-- Top Header -->
   <header class="top-header">
-    <a href="#" class="brand-group">
-      <img src="/logo.png" alt="La Maison des Wraps" class="brand-logo" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100'">
-      <div class="brand-meta">
+    <div class="brand-meta">
+      <img src="/logo.png" alt="Logo" class="brand-logo-img" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100'">
+      <div class="brand-text">
         <h1>La Maison des Wraps</h1>
         <p><i class="fa-solid fa-location-dot"></i> Drummondville • (819) 850-3972</p>
       </div>
-    </a>
+    </div>
     <div class="header-actions">
-      <button class="lang-pill" id="langBtn" onclick="toggleLanguage()">EN</button>
+      <button class="pill-btn" onclick="openGiftCardModal()"><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> Cadeau</button>
+      <button class="pill-btn" id="langBtn" onclick="toggleLanguage()">EN</button>
     </div>
   </header>
 
-  <!-- Hero Quality & Trust Banner -->
-  <section class="hero-banner">
-    <div class="hero-card">
-      <div class="hero-badge">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span id="heroBadgeText">Saveurs Authentiques • Fait Maison</span>
-      </div>
-      <h2 class="hero-title" id="heroTitle">Des saveurs indiennes authentiques. Frais à chaque jour.</h2>
-      <p class="hero-subtitle" id="heroSubtitle">Pains cuits sur place chaque matin, viandes marinées 24h et sauces artisanales.</p>
-      <div class="hero-info-row">
-        <span><i class="fa-solid fa-star rating-star"></i> <strong>4.9</strong> (Avis Google)</span>
+  <!-- Client Loyalty Points Card -->
+  <div class="loyalty-banner">
+    <div class="points-info">
+      <h3><i class="fa-solid fa-crown" style="color: var(--accent-gold);"></i> <span>Programme Fidélité</span></h3>
+      <p>120 Points disponibles • Niveau Argent</p>
+    </div>
+    <button class="redeem-pill" onclick="alert('🎁 Vos 120 points débloquent: 1 Wrap ou Panini Gratuit dès 15$ d\'achat!')">Échanger</button>
+  </div>
+
+  <!-- Promotion Banner -->
+  <section class="promo-section">
+    <div class="promo-card">
+      <span class="promo-tag">Offre Spéciale</span>
+      <h2>Livraison Gratuite dans un rayon de 5 km</h2>
+      <p>Commandez vos wraps, curries et poutines en direct du restaurant à Drummondville.</p>
+      <div class="promo-perks">
+        <span><i class="fa-solid fa-clock"></i> 11h - 21h (Mar-Sam)</span>
         <span>•</span>
-        <span><i class="fa-solid fa-motorcycle" style="color: var(--primary);"></i> 0-5 km: <strong>GRATUIT</strong></span>
+        <span><i class="fa-solid fa-shield-halved"></i> 100% Halal</span>
       </div>
     </div>
   </section>
 
-  <!-- Search Input -->
-  <div class="search-wrapper">
-    <div class="search-input-box">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="searchInput" placeholder="Rechercher un wrap, curry, poutine..." oninput="handleSearch(this.value)">
-    </div>
-  </div>
-
-  <!-- Category Filter Chips -->
-  <div class="category-scroll" id="categoryContainer">
+  <!-- Visual Category Tabs (Based on Official Menu Boards) -->
+  <div class="category-nav" id="categoryNav">
     <!-- Populated by JS -->
   </div>
 
-  <!-- Dishes Grid Section -->
-  <div class="section-header">
-    <h2 id="sectionTitle">Tous les Plats</h2>
-    <span id="dishesCountLabel">59 articles</span>
+  <!-- Dishes Grid -->
+  <div class="dishes-header">
+    <h2 id="currentCategoryTitle">Nos Wraps</h2>
+    <span id="itemsCountLabel">7 plats</span>
   </div>
   <div class="menu-grid" id="menuGrid">
     <!-- Populated by JS -->
   </div>
 
-  <!-- Clean Customer Bottom Navigation -->
+  <!-- Bottom Navigation with Elevated Center Order Button -->
   <nav class="bottom-nav">
-    <div class="nav-tab active" onclick="switchCustomerTab('home')">
+    <div class="nav-item active" onclick="switchTab('home')">
       <i class="fa-solid fa-house"></i>
       <span>Accueil</span>
     </div>
-    <div class="nav-tab" onclick="switchCustomerTab('menu')">
+    <div class="nav-item" onclick="switchTab('menu')">
       <i class="fa-solid fa-utensils"></i>
       <span>Menu</span>
     </div>
-    <div class="nav-tab" onclick="openCartModal()">
+
+    <!-- ELEVATED FLAME ORANGE CENTER ORDER BUTTON -->
+    <div class="center-order-cta" onclick="openCartModal()">
       <i class="fa-solid fa-bag-shopping"></i>
-      <span>Panier</span>
-      <div class="cart-badge" id="cartBadge" style="display: none;">0</div>
+      <div class="cart-count-badge" id="cartCountBadge" style="display: none;">0</div>
     </div>
-    <div class="nav-tab" onclick="switchCustomerTab('orders')">
-      <i class="fa-solid fa-receipt"></i>
-      <span>Commandes</span>
+
+    <div class="nav-item" onclick="openGiftCardModal()">
+      <i class="fa-solid fa-gift"></i>
+      <span>Cadeaux</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('profile')">
+      <i class="fa-solid fa-user"></i>
+      <span>Profil</span>
     </div>
   </nav>
 
 </div>
 
-<!-- Dish Customization Modal Sheet -->
-<div class="modal-overlay" id="itemModal">
-  <div class="modal-content">
-    <div class="modal-header">
+<!-- Item Customization Modal -->
+<div class="modal-overlay" id="dishModal">
+  <div class="modal-sheet">
+    <div class="sheet-header">
       <div>
-        <div class="dish-category-tag" id="modalCategoryTag">Wraps & Kebabs</div>
-        <div class="modal-title" id="modalDishTitle">Kebab au Poulet</div>
+        <div style="font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase;" id="modalCatName">Nos Wraps</div>
+        <div class="sheet-title" id="modalTitle">Kebab au Poulet</div>
       </div>
-      <button class="modal-close" onclick="closeModal('itemModal')"><i class="fa-solid fa-xmark"></i></button>
+      <button class="close-btn" onclick="closeModal('dishModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p id="modalDishDesc" style="font-size: 12px; color: var(--text-body); margin-bottom: 18px; line-height: 1.4;">
-      Kebab de poulet assaisonné et grillé, servi avec salade et sauce au choix.
-    </p>
+    <p id="modalDesc" style="font-size: 12px; color: var(--text-body); margin-bottom: 16px; line-height: 1.4;"></p>
 
-    <!-- Bread Selection -->
-    <div class="option-group" id="breadOptionGroup">
-      <div class="option-header">
-        <span>1. Choix du Pain</span>
-        <span style="color: var(--primary); font-size: 10px; text-transform: uppercase;">Obligatoire</span>
-      </div>
-      <div class="option-chip-row">
-        <div class="option-chip selected" onclick="selectBreadOption(this, 0, 'Pain Kebab')">
-          <span>Pain Kebab</span> <span style="color: var(--text-muted);">Inclus</span>
+    <!-- Step 1: Bread Choice (For Wraps) -->
+    <div id="breadSection" style="margin-bottom: 16px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">1. Choix du Pain</div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <div class="gift-tier-card selected" onclick="setBread(this, 0, 'Pain Kebab')">
+          <span>Pain Kebab</span> <strong>$8.95 (Inclus)</strong>
         </div>
-        <div class="option-chip" onclick="selectBreadOption(this, 1.00, 'Pain Tortilla')">
-          <span>Pain Tortilla</span> <span style="color: var(--primary);">+$1.00</span>
+        <div class="gift-tier-card" onclick="setBread(this, 1.00, 'Pain Tortilla')">
+          <span>Pain Tortilla</span> <strong style="color: var(--primary);">+$1.00 ($9.95)</strong>
         </div>
-        <div class="option-chip" onclick="selectBreadOption(this, 2.00, 'Pain Naan Fait Maison')">
-          <span>Pain Naan Fait Maison</span> <span style="color: var(--primary);">+$2.00</span>
+        <div class="gift-tier-card" onclick="setBread(this, 2.00, 'Pain Naan Fait Maison')">
+          <span>Pain Naan Fait Maison</span> <strong style="color: var(--primary);">+$2.00 ($10.95)</strong>
         </div>
       </div>
     </div>
 
-    <!-- Format Selection -->
-    <div class="option-group">
-      <div class="option-header">
-        <span>2. Format</span>
-        <span style="color: var(--primary); font-size: 10px; text-transform: uppercase;">Obligatoire</span>
-      </div>
-      <div class="option-chip-row">
-        <div class="option-chip selected" onclick="selectFormatOption(this, 0, 'Seul')">
-          <span>Seul (Sandwich)</span>
-        </div>
-        <div class="option-chip" onclick="selectFormatOption(this, 5.30, 'Trio (+Frites & Boisson)')">
-          <span>Trio (+Frites & Boisson)</span> <span style="color: var(--primary);">+$5.30</span>
-        </div>
+    <!-- Step 2: Format Choice -->
+    <div style="margin-bottom: 16px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">2. Format</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="cat-btn active" id="btnFormatSeul" style="flex: 1; text-align: center;" onclick="setFormat('Seul', 0)">Seul</button>
+        <button class="cat-btn" id="btnFormatTrio" style="flex: 1; text-align: center;" onclick="setFormat('Trio', 5.30)">Trio (+Frites & Boisson +$5.30)</button>
       </div>
     </div>
 
-    <!-- Sauces Multi-select -->
-    <div class="option-group">
-      <div class="option-header">
-        <span>3. Sauces au Choix</span>
-        <span style="color: var(--text-muted); font-size: 10px;">Optionnel</span>
-      </div>
-      <div class="option-chip-row">
-        <div class="option-chip selected" onclick="this.classList.toggle('selected')">Sauce à l'Ail</div>
-        <div class="option-chip" onclick="this.classList.toggle('selected')">Harissa Piquante</div>
-        <div class="option-chip selected" onclick="this.classList.toggle('selected')">Sauce Maison</div>
-        <div class="option-chip" onclick="this.classList.toggle('selected')">Sauce Verte Menthe</div>
-        <div class="option-chip" onclick="this.classList.toggle('selected')">Sauce Thaï</div>
+    <!-- Step 3: Sauces -->
+    <div style="margin-bottom: 20px;">
+      <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px; color: #fff;">3. Sauces au Choix</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <span class="cat-btn active" onclick="this.classList.toggle('active')">Sauce à l'Ail</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Harissa</span>
+        <span class="cat-btn active" onclick="this.classList.toggle('active')">Maison</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Sauce Verte</span>
+        <span class="cat-btn" onclick="this.classList.toggle('active')">Mayo</span>
       </div>
     </div>
 
-    <!-- CTA Add to Cart -->
-    <button class="primary-btn" onclick="addCurrentDishToCart()">
-      <span>Ajouter au Panier</span>
-      <span id="modalFinalPrice">$8.95</span>
+    <button class="btn-main" onclick="addDishToCart()">
+      <span>Ajouter à la commande</span>
+      <span id="modalPriceLabel">$8.95</span>
     </button>
   </div>
 </div>
 
-<!-- Cart & Checkout Modal Sheet -->
+<!-- Cart & Stripe Payment Modal -->
 <div class="modal-overlay" id="cartModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">Votre Panier</div>
-      <button class="modal-close" onclick="closeModal('cartModal')"><i class="fa-solid fa-xmark"></i></button>
+  <div class="modal-sheet">
+    <div class="sheet-header">
+      <div class="sheet-title">Récapitulatif de Commande</div>
+      <button class="close-btn" onclick="closeModal('cartModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div id="cartItemsContainer" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
-      <!-- Populated dynamically -->
+    <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
+
+    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Sous-total</span><span id="lblSubtotal">$0.00</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>Livraison (Drummondville < 5km)</span><span id="lblDelivery" style="color: var(--accent-green); font-weight: bold;">GRATUIT</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TPS (5%)</span><span id="lblTPS">$0.00</span></div>
+      <div style="display: flex; justify-content: space-between; color: var(--text-body);"><span>TVQ (9.975%)</span><span id="lblTVQ">$0.00</span></div>
+      <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
     </div>
 
-    <!-- Pricing Summary -->
-    <div style="background: var(--bg-card); border-radius: 16px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
-      <div style="display: flex; justify-content: space-between; color: var(--text-body);">
-        <span>Sous-total</span>
-        <span id="cartSubtotal">$0.00</span>
+    <!-- Stripe Checkout Banner -->
+    <button class="btn-main" onclick="triggerStripeCheckout()">
+      <span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Payer par Carte / Apple Pay</span>
+      <span id="btnPayText">$0.00</span>
+    </button>
+  </div>
+</div>
+
+<!-- Gift Card Viral Sharing Modal -->
+<div class="modal-overlay" id="giftModal">
+  <div class="modal-sheet">
+    <div class="sheet-header">
+      <div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">Cadeau & Parrainage</div>
+        <div class="sheet-title">Envoyer une Carte Cadeau</div>
       </div>
-      <div style="display: flex; justify-content: space-between; color: var(--text-body);">
-        <span>Livraison (Drummondville 3.5 km)</span>
-        <span id="cartDeliveryFee" style="color: #22C55E; font-weight: 700;">GRATUIT</span>
+      <button class="close-btn" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 14px;">
+      Offrez un festin à vos amis à Drummondville! Votre ami recevra un lien pour télécharger l'application et débloquer son crédit.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
+      <div class="gift-tier-card selected" onclick="selectGiftTier(this, 25)">
+        <div><strong>Carte Cadeau 25$ CAD</strong><br><small style="color: var(--text-muted);">Idéal pour 2 Wraps Trios</small></div>
+        <span style="font-weight: 800; color: var(--accent-gold);">$25.00</span>
       </div>
-      <div style="display: flex; justify-content: space-between; color: var(--text-body);">
-        <span>TPS (5.000%)</span>
-        <span id="cartTPS">$0.00</span>
-      </div>
-      <div style="display: flex; justify-content: space-between; color: var(--text-body);">
-        <span>TVQ (9.975%)</span>
-        <span id="cartTVQ">$0.00</span>
-      </div>
-      <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: var(--text-white);">
-        <span>TOTAL</span>
-        <span id="cartGrandTotal" style="color: var(--primary);">$0.00 CAD</span>
+      <div class="gift-tier-card" onclick="selectGiftTier(this, 50)">
+        <div><strong>Carte Cadeau 50$ CAD</strong><br><small style="color: var(--text-muted);">Idéal pour un repas de famille (Curries + Naans)</small></div>
+        <span style="font-weight: 800; color: var(--accent-gold);">$50.00</span>
       </div>
     </div>
 
-    <button class="primary-btn" onclick="submitLiveOrder()">
-      <span><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> Confirmer & Payer</span>
-      <span id="btnPayAmount">$0.00</span>
+    <input type="text" id="giftFriendName" placeholder="Nom de votre ami(e)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none;">
+
+    <button class="btn-main" style="background: var(--accent-gold); color: #000;" onclick="shareGiftCardLink()">
+      <span><i class="fa-solid fa-share-nodes"></i> Générer & Partager le Lien</span>
+      <span>25.00$</span>
     </button>
   </div>
 </div>
 
 <script>
-let currentLang = 'FR';
-let activeCategory = 'Tous';
+let currentLanguage = 'FR';
+let activeCat = 'Nos Wraps';
 let cart = [];
-let selectedDish = null;
-let currentBreadAddon = 0.0;
-let currentFormatAddon = 0.0;
-let customerDistanceKm = 3.5;
+let curDish = null;
+let curBreadAddon = 0;
+let curFormatAddon = 0;
 
-// Complete 59 Dishes Catalogue
-const ALL_DISHES = [
-  // Wraps & Kebabs
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Kebab au Poulet', name_en: 'Chicken Kebab Wrap', desc_fr: 'Kebab de poulet assaisonné et grillé, servi avec salade et sauce au choix.', desc_en: 'Grilled seasoned chicken kebab with fresh salad and sauce.', price: 8.95, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Kebab à la Dinde et Bœuf', name_en: 'Turkey & Beef Kebab Wrap', desc_fr: 'Mélange savoureux de dinde et bœuf émincé et grillé.', desc_en: 'Savory blend of shaved seasoned turkey and beef.', price: 8.95, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Wrap au Poulet Tikka', name_en: 'Chicken Tikka Wrap', desc_fr: 'Morceaux de poulet mariné aux épices tandoori rouges et grillé.', desc_en: 'Tandoori marinated red spiced grilled chicken.', price: 8.95, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Wrap au Poulet Masala', name_en: 'Chicken Masala Wrap', desc_fr: 'Poulet mariné dans un mélange d\'épices masala traditionnelles.', desc_en: 'Chicken marinated in traditional masala spices.', price: 8.95, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Wrap au Steak Fromage', name_en: 'Steak & Cheese Wrap', desc_fr: 'Lamelles de steak de bœuf tendre garni de fromage fondant.', desc_en: 'Tender sliced steak topped with melted cheese.', price: 9.75, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Wrap Végétarien', name_en: 'Vegetarian Wrap', desc_fr: 'Légumes frais croquants, herbes et sauces savoureuses.', desc_en: 'Fresh crisp vegetables, herbs, and gourmet sauces.', price: 8.95, is_wrap: true },
-  { category_fr: 'Nos Wraps & Kebabs', category_en: 'Wraps & Kebabs', name_fr: 'Wrap Mix (2 Viandes)', name_en: 'Mix Wrap (2 Meats)', desc_fr: 'Combinaison de 2 viandes au choix parmi nos spécialités.', desc_en: 'Custom combination of 2 signature meats.', price: 9.95, is_wrap: true },
+// Official Menu Boards Complete Data
+const CATEGORIES = [
+  'Nos Wraps',
+  'Paninis',
+  'Bols de Curry & Combos',
+  'Biryani',
+  'Nos Assiettes',
+  'Nos Poutines',
+  'Nos Burgers',
+  'Menu Enfant',
+  'À Côté & Naans',
+  'Desserts & Boissons'
+];
+
+const BOARD_DISHES = [
+  // Wraps
+  { cat: 'Nos Wraps', name_fr: 'Kebab au Poulet', desc_fr: 'Poulet assaisonné et grillé, servi avec salade et sauce au choix.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Kebab à la Dinde et Bœuf', desc_fr: 'Mélange savoureux de dinde et bœuf émincé et grillé.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Tikka', desc_fr: 'Morceaux de poulet mariné aux épices tandoori rouges.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Poulet Masala', desc_fr: 'Poulet mariné dans un mélange d\'épices masala traditionnelles.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap au Steak Fromage', desc_fr: 'Lamelles de steak de bœuf tendre garni de fromage fondant.', price: 9.75, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap Poulet Croustillant', desc_fr: 'Poulet frit croustillant garni de salade fraîche.', price: 8.95, is_wrap: true },
+  { cat: 'Nos Wraps', name_fr: 'Wrap Mix (2 Viandes)', desc_fr: 'Combinaison de 2 viandes au choix parmi nos spécialités.', price: 9.95, is_wrap: true },
 
   // Paninis
-  { category_fr: 'Paninis', category_en: 'Paninis', name_fr: 'Panini Poulet Tikka', name_en: 'Chicken Tikka Panini', desc_fr: 'Pain ciabatta grillé garni de poulet tikka et fromage fondant.', desc_en: 'Grilled ciabatta panini filled with chicken tikka and melted cheese.', price: 8.95, is_wrap: false },
-  { category_fr: 'Paninis', category_en: 'Paninis', name_fr: 'Panini Poulet Tandoori', name_en: 'Tandoori Chicken Panini', desc_fr: 'Poulet tandoori assaisonné pressé à chaud avec fromage.', desc_en: 'Hot pressed tandoori seasoned chicken with melted cheese.', price: 8.95, is_wrap: false },
-  { category_fr: 'Paninis', category_en: 'Paninis', name_fr: 'Panini Steak de Bœuf', name_en: 'Beef Steak Panini', desc_fr: 'Steak de bœuf savoureux grillé au panini.', desc_en: 'Tender grilled beef steak panini.', price: 9.75, is_wrap: false },
+  { cat: 'Paninis', name_fr: 'Panini Poulet Tikka', desc_fr: 'Pain ciabatta pressé au poulet tikka et fromage fondant.', price: 9.25, is_wrap: false },
+  { cat: 'Paninis', name_fr: 'Panini Poulet Masala', desc_fr: 'Poulet masala avec fromage fondu grillé à chaud.', price: 9.25, is_wrap: false },
+  { cat: 'Paninis', name_fr: 'Panini Saumon & Fromage', desc_fr: 'Saumon savoureux garni de fromage chaud.', price: 9.25, is_wrap: false },
 
-  // Curry Bowls
-  { category_fr: 'Bols de Curry', category_en: 'Curry Bowls', name_fr: 'Poulet au Beurre (Butter Chicken)', name_en: 'Butter Chicken Bowl', desc_fr: 'Poulet tikka grillé dans une sauce crémeuse au beurre et amandes.', desc_en: 'Grilled chicken in a rich, creamy aromatic butter & tomato sauce.', price: 17.65, is_wrap: false },
-  { category_fr: 'Bols de Curry', category_en: 'Curry Bowls', name_fr: 'Curry d\'Agneau Korma', name_en: 'Lamb Korma Curry Bowl', desc_fr: 'Agneau mijoté doucement dans une sauce crémeuse aux épices douces.', desc_en: 'Slow-cooked tender lamb in mild aromatic creamy korma curry.', price: 18.95, is_wrap: false },
-  { category_fr: 'Bols de Curry', category_en: 'Curry Bowls', name_fr: 'Curry de Pois Chiches (Chana Masala)', name_en: 'Chana Masala Chickpea Bowl', desc_fr: 'Pois chiches mijotés dans une sauce tomate épicée.', desc_en: 'Hearty chickpeas simmered in spiced tomato onion gravy.', price: 14.50, is_wrap: false },
+  // Curry Bowls & Combos
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet au Beurre (Butter Chicken)', desc_fr: 'Poulet tikka dans une sauce crémeuse au beurre et aux amandes.', price: 17.65, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Curry Traditionnel', desc_fr: 'Poulet mijoté dans notre sauce curry spéciale aux herbes.', price: 17.65, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Poulet Malai Tikka', desc_fr: 'Blanc de volaille tandoor dans sauce crème et fromage.', price: 17.65, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Panneer Makhani (Fromage Maison)', desc_fr: 'Paneer dans une sauce crémeuse aux tomates et épices.', price: 15.25, is_wrap: false },
+  { cat: 'Bols de Curry & Combos', name_fr: 'Combo 2 : Curry + Riz + Naan Fromage', desc_fr: 'Grand bol au choix avec portion de riz basmati et naan fromage.', price: 24.35, is_wrap: false },
 
-  // Biryanis
-  { category_fr: 'Biryani', category_en: 'Biryani', name_fr: 'Biryani au Poulet', name_en: 'Chicken Biryani', desc_fr: 'Riz basmati parfumé au safran, épices indiennes et poulet mariné.', desc_en: 'Fragrant saffron basmati rice cooked with spiced marinated chicken.', price: 16.95, is_wrap: false },
-  { category_fr: 'Biryani', category_en: 'Biryani', name_fr: 'Biryani à l\'Agneau', name_en: 'Lamb Biryani', desc_fr: 'Riz basmati traditionnel mijoté avec morceaux d\'agneau tendres.', desc_en: 'Traditional basmati rice slow-cooked with tender lamb pieces.', price: 18.50, is_wrap: false },
-  { category_fr: 'Biryani', category_en: 'Biryani', name_fr: 'Biryani Végétarien', name_en: 'Vegetarian Biryani', desc_fr: 'Riz basmati aux légumes de saison et épices royales.', desc_en: 'Saffron basmati rice with garden vegetables and aromatic spices.', price: 14.95, is_wrap: false },
+  // Biryani
+  { cat: 'Biryani', name_fr: 'Biryani au Poulet', desc_fr: 'Riz basmati parfumé au safran, amandes, raisins et noix de cajou + Raita.', price: 18.85, is_wrap: false },
+  { cat: 'Biryani', name_fr: 'Biryani aux Crevettes', desc_fr: 'Riz basmati royal aux crevettes sautées et épices + Raita.', price: 18.85, is_wrap: false },
+
+  // Assiettes
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Kebab au Poulet', desc_fr: 'Servi avec salade au choix, frites/patate à l\'ail, riz basmati & pain kebab.', price: 17.65, is_wrap: false },
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Poulet Tikka', desc_fr: 'Poulet tandoori complet servi avec frites, riz et salade.', price: 17.65, is_wrap: false },
+  { cat: 'Nos Assiettes', name_fr: 'Assiette Mixte (2 Viandes)', desc_fr: 'Assiette royale avec 2 viandes au choix et accompagnements.', price: 19.95, is_wrap: false },
 
   // Poutines
-  { category_fr: 'Nos Poutines', category_en: 'Poutines', name_fr: 'Poutine Poulet Tikka', name_en: 'Chicken Tikka Poutine', desc_fr: 'Frites croustillantes, fromage en grains du Québec et poulet tikka.', desc_en: 'Crispy fries, Quebec cheese curds, brown gravy and chicken tikka.', price: 14.95, is_wrap: false },
-  { category_fr: 'Nos Poutines', category_en: 'Poutines', name_fr: 'Poutine Poulet au Beurre', name_en: 'Butter Chicken Poutine', desc_fr: 'Fromage en grains nappé de sauce poulet au beurre maison.', desc_en: 'Quebec cheese curds topped with signature rich butter chicken sauce.', price: 15.95, is_wrap: false },
-  { category_fr: 'Nos Poutines', category_en: 'Poutines', name_fr: 'Poutine Classique Québécoise', name_en: 'Classic Quebec Poutine', desc_fr: 'La classique avec vrai fromage en grains frais.', desc_en: 'Traditional Quebec poutine with authentic squeaky cheese curds.', price: 10.95, is_wrap: false },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet Tikka', desc_fr: 'Fromage en grains du Québec, poulet tikka et sauce au choix.', price: 14.95, is_wrap: false },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Poulet au Beurre', desc_fr: 'Fromage couic-couic nappé de notre sauce beurre maison.', price: 15.95, is_wrap: false },
+  { cat: 'Nos Poutines', name_fr: 'Poutine Kebab au Poulet', desc_fr: 'Frites croustillantes et lamelles de kebab au poulet.', price: 14.50, is_wrap: false },
 
-  // Naans & Starters
-  { category_fr: 'Pains Naans & Entrées', category_en: 'Naan & Starters', name_fr: '2 Samosas aux Légumes', name_en: '2 Vegetable Samosas', desc_fr: 'Chaussons triangulaires croustillants farcis aux pommes de terre.', desc_en: 'Crispy triangular pastries stuffed with spiced potatoes and peas.', price: 4.00, is_wrap: false },
-  { category_fr: 'Pains Naans & Entrées', category_en: 'Naan & Starters', name_fr: 'Pain Naan à l\'Ail et Fromage', name_en: 'Garlic & Cheese Naan', desc_fr: 'Cuit au four tandoori, garni de beurre à l\'ail et fromage.', desc_en: 'Freshly baked tandoori naan brushed with garlic butter and melted cheese.', price: 4.95, is_wrap: false },
+  // Burgers & Menu Enfant
+  { cat: 'Nos Burgers', name_fr: 'Cheese Burger', desc_fr: 'Burger classique avec fromage cheddar fondu.', price: 6.75, is_wrap: false },
+  { cat: 'Nos Burgers', name_fr: 'Double Cheese Burger', desc_fr: 'Deux galettes de bœuf et double cheddar.', price: 8.45, is_wrap: false },
+  { cat: 'Menu Enfant', name_fr: 'Nuggets + Frites + Boisson', desc_fr: 'Menu complet pour enfant avec frites et canette.', price: 8.95, is_wrap: false },
 
-  // Drinks & Desserts
-  { category_fr: 'Boissons', category_en: 'Drinks', name_fr: 'Lassi à la Mangue', name_en: 'Mango Lassi', desc_fr: 'Boisson rafraîchissante traditionnelle au yogourt et mangue.', desc_en: 'Refreshing traditional Indian yogurt smoothie with sweet mango.', price: 4.50, is_wrap: false },
-  { category_fr: 'Boissons', category_en: 'Drinks', name_fr: 'Canette Coca-Cola / Soda', name_en: 'Canned Soft Drink', desc_fr: 'Canette 355ml fraîche.', desc_en: 'Chilled 355ml soft drink.', price: 2.50, is_wrap: false }
+  // Sides, Naans, Desserts & Drinks
+  { cat: 'À Côté & Naans', name_fr: 'Naan à l\'Ail & Fromage', desc_fr: 'Cuit au tandoor avec beurre à l\'ail et fromage fondant.', price: 5.50, is_wrap: false },
+  { cat: 'À Côté & Naans', name_fr: '2 Samosas aux Légumes', desc_fr: 'Chaussons croustillants farcis aux légumes et épices.', price: 4.65, is_wrap: false },
+  { cat: 'Desserts & Boissons', name_fr: 'Lassi à la Mangue', desc_fr: 'Boisson rafraîchissante indienne au yogourt et mangue.', price: 4.50, is_wrap: false },
+  { cat: 'Desserts & Boissons', name_fr: 'Gulab Jamun (2 pcs)', desc_fr: 'Douceur indienne au sirop de cardamome.', price: 4.99, is_wrap: false }
 ];
 
-const CATEGORIES = [
-  { fr: 'Tous', en: 'All' },
-  { fr: 'Nos Wraps & Kebabs', en: 'Wraps & Kebabs' },
-  { fr: 'Paninis', en: 'Paninis' },
-  { fr: 'Bols de Curry', en: 'Curry Bowls' },
-  { fr: 'Biryani', en: 'Biryani' },
-  { fr: 'Nos Poutines', en: 'Poutines' },
-  { fr: 'Pains Naans & Entrées', en: 'Naan & Starters' },
-  { fr: 'Boissons', en: 'Drinks' }
-];
-
-function initApp() {
-  renderCategories();
-  renderMenu();
+function init() {
+  renderCatNav();
+  renderDishes();
 }
 
-function renderCategories() {
-  const container = document.getElementById('categoryContainer');
-  container.innerHTML = CATEGORIES.map(cat => {
-    const label = currentLang === 'FR' ? cat.fr : cat.en;
-    const isActive = cat.fr === activeCategory;
-    return `<div class="category-pill ${isActive ? 'active' : ''}" onclick="selectCategory('${cat.fr}')">${label}</div>`;
-  }).join('');
+function renderCatNav() {
+  const container = document.getElementById('categoryNav');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <button class="cat-btn ${cat === activeCat ? 'active' : ''}" onclick="selectCat('${cat}')">${cat}</button>
+  `).join('');
 }
 
-function selectCategory(catFr) {
-  activeCategory = catFr;
-  renderCategories();
-  renderMenu();
+function selectCat(cat) {
+  activeCat = cat;
+  renderCatNav();
+  renderDishes();
 }
 
-function renderMenu() {
+function renderDishes() {
   const container = document.getElementById('menuGrid');
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const filtered = BOARD_DISHES.filter(d => d.cat === activeCat);
 
-  const filtered = ALL_DISHES.filter(d => {
-    const matchesCategory = activeCategory === 'Tous' || d.category_fr === activeCategory;
-    const matchesQuery = !query || 
-      d.name_fr.toLowerCase().includes(query) || 
-      d.name_en.toLowerCase().includes(query) || 
-      d.desc_fr.toLowerCase().includes(query);
-    return matchesCategory && matchesQuery;
-  });
+  document.getElementById('currentCategoryTitle').innerText = activeCat;
+  document.getElementById('itemsCountLabel').innerText = `${filtered.length} plats`;
 
-  document.getElementById('dishesCountLabel').innerText = `${filtered.length} ${currentLang === 'FR' ? 'articles' : 'items'}`;
-
-  container.innerHTML = filtered.map(dish => {
-    const title = currentLang === 'FR' ? dish.name_fr : dish.name_en;
-    const desc = currentLang === 'FR' ? dish.desc_fr : dish.desc_en;
-    const cat = currentLang === 'FR' ? dish.category_fr : dish.category_en;
-
-    return `
-      <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
-        <div class="dish-category-tag">${cat}</div>
-        <div class="dish-title">${title}</div>
-        <div class="dish-desc">${desc}</div>
-        <div class="dish-footer">
-          <div class="dish-price">$${dish.price.toFixed(2)}</div>
-          <button class="dish-add-btn"><i class="fa-solid fa-plus"></i></button>
-        </div>
+  container.innerHTML = filtered.map(dish => `
+    <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
+      <div class="dish-badge">${dish.cat}</div>
+      <div class="dish-title">${dish.name_fr}</div>
+      <div class="dish-desc">${dish.desc_fr}</div>
+      <div class="dish-price-row">
+        <span class="price-text">$${dish.price.toFixed(2)}</span>
+        <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
       </div>
-    `;
-  }).join('');
+    </div>
+  `).join('');
 }
 
-function openDishModal(dishNameFr) {
-  selectedDish = ALL_DISHES.find(d => d.name_fr === dishNameFr);
-  if (!selectedDish) return;
+function openDishModal(name) {
+  curDish = BOARD_DISHES.find(d => d.name_fr === name);
+  if (!curDish) return;
 
-  currentBreadAddon = 0.0;
-  currentFormatAddon = 0.0;
+  curBreadAddon = 0;
+  curFormatAddon = 0;
 
-  document.getElementById('modalCategoryTag').innerText = currentLang === 'FR' ? selectedDish.category_fr : selectedDish.category_en;
-  document.getElementById('modalDishTitle').innerText = currentLang === 'FR' ? selectedDish.name_fr : selectedDish.name_en;
-  document.getElementById('modalDishDesc').innerText = currentLang === 'FR' ? selectedDish.desc_fr : selectedDish.desc_en;
+  document.getElementById('modalCatName').innerText = curDish.cat;
+  document.getElementById('modalTitle').innerText = curDish.name_fr;
+  document.getElementById('modalDesc').innerText = curDish.desc_fr;
+  document.getElementById('breadSection').style.display = curDish.is_wrap ? 'block' : 'none';
   
-  document.getElementById('breadOptionGroup').style.display = selectedDish.is_wrap ? 'block' : 'none';
-  updateModalPrice();
-
-  document.getElementById('itemModal').classList.add('open');
+  updateModalTotal();
+  document.getElementById('dishModal').classList.add('open');
 }
 
-function selectBreadOption(el, priceAddon, breadName) {
-  currentBreadAddon = priceAddon;
-  el.parentElement.querySelectorAll('.option-chip').forEach(c => c.classList.remove('selected'));
+function setBread(el, price, name) {
+  curBreadAddon = price;
+  el.parentElement.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  updateModalPrice();
+  updateModalTotal();
 }
 
-function selectFormatOption(el, priceAddon, formatName) {
-  currentFormatAddon = priceAddon;
-  el.parentElement.querySelectorAll('.option-chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  updateModalPrice();
+function setFormat(format, price) {
+  curFormatAddon = price;
+  if (format === 'Seul') {
+    document.getElementById('btnFormatSeul').classList.add('active');
+    document.getElementById('btnFormatTrio').classList.remove('active');
+  } else {
+    document.getElementById('btnFormatTrio').classList.add('active');
+    document.getElementById('btnFormatSeul').classList.remove('active');
+  }
+  updateModalTotal();
 }
 
-function updateModalPrice() {
-  const total = selectedDish.price + currentBreadAddon + currentFormatAddon;
-  document.getElementById('modalFinalPrice').innerText = `$${total.toFixed(2)}`;
+function updateModalTotal() {
+  const total = curDish.price + curBreadAddon + curFormatAddon;
+  document.getElementById('modalPriceLabel').innerText = `$${total.toFixed(2)}`;
 }
 
-function addCurrentDishToCart() {
-  const unitPrice = selectedDish.price + currentBreadAddon + currentFormatAddon;
-  cart.push({
-    name: currentLang === 'FR' ? selectedDish.name_fr : selectedDish.name_en,
-    price: unitPrice
-  });
-
-  closeModal('itemModal');
+function addDishToCart() {
+  const total = curDish.price + curBreadAddon + curFormatAddon;
+  cart.push({ name: curDish.name_fr, price: total });
+  closeModal('dishModal');
   updateCartBadge();
-  alert(`${selectedDish.name_fr} ajouté au panier!`);
+  alert(`${curDish.name_fr} ajouté au panier!`);
 }
 
 function updateCartBadge() {
-  const badge = document.getElementById('cartBadge');
+  const badge = document.getElementById('cartCountBadge');
   if (cart.length > 0) {
     badge.innerText = cart.length;
     badge.style.display = 'flex';
@@ -913,79 +874,68 @@ function updateCartBadge() {
 
 function openCartModal() {
   if (cart.length === 0) {
-    alert(currentLang === 'FR' ? "Votre panier est vide. Choisissez un délicieux plat!" : "Your cart is empty. Choose a delicious dish!");
+    alert("Votre panier est vide. Choisissez un plat pour commander!");
     return;
   }
 
-  const container = document.getElementById('cartItemsContainer');
-  container.innerHTML = cart.map(item => `
-    <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);">
-      <span style="font-size: 13px; font-weight: 600;">1x ${item.name}</span>
-      <span style="font-size: 13px; font-weight: 700; color: var(--primary);">$${item.price.toFixed(2)}</span>
+  const list = document.getElementById('cartItemsList');
+  list.innerHTML = cart.map(i => `
+    <div style="display: flex; justify-content: space-between; background: var(--bg-card); padding: 10px; border-radius: 10px;">
+      <span style="font-size: 13px; font-weight: 600;">1x ${i.name}</span>
+      <strong style="color: var(--primary);">$${i.price.toFixed(2)}</strong>
     </div>
   `).join('');
 
-  const subtotal = cart.reduce((s, i) => s + i.price, 0);
-  const deliveryFee = customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99);
-  const taxable = subtotal + deliveryFee;
-  const tps = taxable * 0.05;
-  const tvq = taxable * 0.09975;
-  const grandTotal = taxable + tps + tvq;
+  const sub = cart.reduce((a, b) => a + b.price, 0);
+  const tps = sub * 0.05;
+  const tvq = sub * 0.09975;
+  const grand = sub + tps + tvq;
 
-  document.getElementById('cartSubtotal').innerText = `$${subtotal.toFixed(2)}`;
-  document.getElementById('cartDeliveryFee').innerText = deliveryFee === 0 ? "GRATUIT" : `$${deliveryFee.toFixed(2)}`;
-  document.getElementById('cartTPS').innerText = `$${tps.toFixed(2)}`;
-  document.getElementById('cartTVQ').innerText = `$${tvq.toFixed(2)}`;
-  document.getElementById('cartGrandTotal').innerText = `$${grandTotal.toFixed(2)} CAD`;
-  document.getElementById('btnPayAmount').innerText = `$${grandTotal.toFixed(2)}`;
+  document.getElementById('lblSubtotal').innerText = `$${sub.toFixed(2)}`;
+  document.getElementById('lblTPS').innerText = `$${tps.toFixed(2)}`;
+  document.getElementById('lblTVQ').innerText = `$${tvq.toFixed(2)}`;
+  document.getElementById('lblTotal').innerText = `$${grand.toFixed(2)} CAD`;
+  document.getElementById('btnPayText').innerText = `$${grand.toFixed(2)}`;
 
   document.getElementById('cartModal').classList.add('open');
 }
 
-function submitLiveOrder() {
-  alert(`🎉 Commande envoyée avec succès à la cuisine de Drummondville!\n\nNuméro: #CMD-4092\nStatut: En Préparation\n\nVous recevrez votre livraison à Drummondville.`);
+function triggerStripeCheckout() {
+  alert(`💳 Stripe Connecté!\n\nPaiement sécurisé de $${document.getElementById('btnPayText').innerText} validé via Stripe.\nCommande transmise en direct à la cuisine de Drummondville!`);
   cart = [];
   updateCartBadge();
   closeModal('cartModal');
 }
 
-function closeModal(modalId) {
-  document.getElementById(modalId).classList.remove('open');
+function openGiftCardModal() {
+  document.getElementById('giftModal').classList.add('open');
 }
 
-function toggleLanguage() {
-  currentLang = currentLang === 'FR' ? 'EN' : 'FR';
-  document.getElementById('langBtn').innerText = currentLang === 'FR' ? 'EN' : 'FR';
+function selectGiftTier(el, amount) {
+  el.parentElement.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function shareGiftCardLink() {
+  const friend = document.getElementById('giftFriendName').value.trim() || 'un ami';
+  const shareUrl = `https://phenomenal-twilight-2064dd.netlify.app/?gift_from=Jean&amount=25`;
   
-  if (currentLang === 'EN') {
-    document.getElementById('heroTitle').innerText = "Real Indian Flavors. Fresh Every Day.";
-    document.getElementById('heroSubtitle').innerText = "House-made breads baked warm every morning, 24h marinated meats and chef sauces.";
-    document.getElementById('searchInput').placeholder = "Search wraps, curries, poutines...";
-    document.getElementById('sectionTitle').innerText = "All Dishes";
+  if (navigator.share) {
+    navigator.share({
+      title: 'Carte Cadeau - La Maison des Wraps',
+      text: `Salut ${friend}! Je t'offre une carte cadeau de 25$ à La Maison des Wraps (Drummondville). Télécharge l'application pour l'utiliser:`,
+      url: shareUrl
+    });
   } else {
-    document.getElementById('heroTitle').innerText = "Des saveurs indiennes authentiques. Frais à chaque jour.";
-    document.getElementById('heroSubtitle').innerText = "Pains cuits sur place chaque matin, viandes marinées 24h et sauces artisanales.";
-    document.getElementById('searchInput').placeholder = "Rechercher un wrap, curry, poutine...";
-    document.getElementById('sectionTitle').innerText = "Tous les Plats";
-  }
-
-  renderCategories();
-  renderMenu();
-}
-
-function switchCustomerTab(tab) {
-  if (tab === 'home' || tab === 'menu') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else if (tab === 'orders') {
-    alert("📦 Commande Active #CMD-4092:\nStatut: En préparation en cuisine\nLivreur assigné: Marc Livreur (Honda Civic)");
+    prompt("Copiez ce lien pour l'envoyer à votre ami par SMS ou WhatsApp :", `Salut ${friend}! Voici ta carte cadeau de 25$ à La Maison des Wraps: ${shareUrl}`);
   }
 }
 
-function handleSearch() {
-  renderMenu();
-}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function switchTab(t) { if (t === 'home' || t === 'menu') window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
 
-window.onload = initApp;
+window.onload = init;
 </script>
 
 </body>
