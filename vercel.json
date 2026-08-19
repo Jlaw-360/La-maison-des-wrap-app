@@ -4,8 +4,12 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/kitchen", "destination": "/app_preview/kitchen.html" },
     { "source": "/kitchen.html", "destination": "/app_preview/kitchen.html" },
+    { "source": "/driver", "destination": "/app_preview/driver.html" },
     { "source": "/driver.html", "destination": "/app_preview/driver.html" },
+    { "source": "/delivery", "destination": "/app_preview/driver.html" },
+    { "source": "/admin", "destination": "/app_preview/admin.html" },
     { "source": "/admin.html", "destination": "/app_preview/admin.html" },
     { "source": "/(.*)", "destination": "/app_preview/$1" }
   ],
