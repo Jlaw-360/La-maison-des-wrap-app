@@ -11,7 +11,10 @@
     "mobile:android": "npm --prefix mobile run android",
     "mobile:ios": "npm --prefix mobile run ios",
     "mobile:web": "npm --prefix mobile run web",
-    "mobile:install": "npm --prefix mobile install"
+    "mobile:install": "npm --prefix mobile install",
+    "mobile:build:android": "npm --prefix mobile run build:android:apk",
+    "mobile:build:ios": "npm --prefix mobile run build:ios:sim",
+    "mobile:build:all": "npm --prefix mobile run build:all"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
