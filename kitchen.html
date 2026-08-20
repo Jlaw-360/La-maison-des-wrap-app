@@ -478,14 +478,18 @@ function saveLiveKitchenOrders() {
 }
 
 function resetSystemToZero() {
-  if (confirm("Voulez-vous vraiment réinitialiser toutes les commandes à zéro (0) ?")) {
+  if (confirm("🗑️ Voulez-vous vraiment réinitialiser toutes les commandes à zéro (0) ?")) {
     liveOrders = [];
     localStorage.removeItem('lmdw_all_orders');
     localStorage.removeItem('lmdw_new_order');
     localStorage.removeItem('lmdw_active_order');
+    localStorage.removeItem('lmdw_order_status_update');
+    localStorage.removeItem('lmdw_kitchen_orders');
+    localStorage.removeItem('lmdw_driver_orders');
     stopAlarmAndAccept();
     renderKanbanColumns();
-    alert("✨ SYSTÈME RÉINITIALISÉ À ZÉRO (0) !\n\nToutes les colonnes sont vides et prêtes pour votre test de commande en direct.");
+    updateKitchenKpiBar();
+    showKitchenToast("✨ Cuisine réinitialisée à ZÉRO (0) !", "✨");
   }
 }
 
@@ -654,8 +658,8 @@ function updateKitchenKpiBar() {
     }
   });
 
-  const avgMin = timedOrdersCount > 0 ? (totalMinutes / timedOrdersCount).toFixed(1) : "8.5";
-  const ratePct = timedOrdersCount > 0 ? Math.round((onTimeCount / timedOrdersCount) * 100) : 98;
+  const avgMin = timedOrdersCount > 0 ? (totalMinutes / timedOrdersCount).toFixed(1) : "0.0";
+  const ratePct = timedOrdersCount > 0 ? Math.round((onTimeCount / timedOrdersCount) * 100) : 100;
 
   if (avgEl) avgEl.innerText = `${avgMin} min`;
   if (rateEl) rateEl.innerText = `${ratePct}%`;

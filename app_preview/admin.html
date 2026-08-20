@@ -396,10 +396,13 @@
     </div>
   </div>
   <div class="nav-links">
+    <button class="nav-btn" style="background: rgba(239, 68, 68, 0.15); border-color: #EF4444; color: #EF4444; font-weight: 700;" onclick="resetAllDataToZero()">
+      <i class="fa-solid fa-rotate-left"></i> <span>Réinitialiser à Zéro (0)</span>
+    </button>
     <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> App Client</a>
     <a href="/kitchen.html" class="nav-btn"><i class="fa-solid fa-fire-burner"></i> Cuisine KDS</a>
     <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> Livreur</a>
-    <button class="nav-btn active" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Actualiser Données</button>
+    <button class="nav-btn active" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Actualiser</button>
   </div>
 </header>
 
@@ -642,83 +645,36 @@ let salesChartInstance = null;
 let topItemsChartInstance = null;
 let channelChartInstance = null;
 
-// Verified Real Drummondville Initial Baseline Orders Generator
-function getAllOrdersWithSeed() {
-  let allOrders = [];
+// Pure Real Data Orders Loader (Starts from Clean 0)
+function getAllRealOrders() {
   try {
     const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) allOrders = JSON.parse(raw);
-  } catch(e){}
-
-  if (!Array.isArray(allOrders) || allOrders.length < 3) {
-    // Generate verified baseline orders for realistic multi-day analytics
-    const dishesList = [
-      { name: "Kebab au Poulet (Pain Naan) [Trio: Frites + Canette Inclus]", price: 16.25 },
-      { name: "Wrap Mix Kebab & Poulet (Pain Kebab) [Trio: Patates à l'Ail + Lassi]", price: 18.50 },
-      { name: "Tacos Français 2 Viandes [Trio: Frites + Canette Inclus]", price: 17.50 },
-      { name: "Poutine Spéciale Poulet au Beurre (Grand)", price: 17.95 },
-      { name: "Panini Poulet Tikka [Trio: Frites + Jarritos]", price: 15.45 },
-      { name: "Burger Double Cheese [Trio: Frites + Canette Inclus]", price: 13.95 },
-      { name: "Assiette Mixte Kebab & Poulet Tikka (+Boisson)", price: 21.20 }
-    ];
-
-    const customerNames = [
-      { name: "Jean Tremblay", addr: "1450 Rue Saint-Pierre, Drummondville, QC", phone: "(819) 555-0192" },
-      { name: "Sophie Gagnon", addr: "998 110e Avenue, Drummondville, QC", phone: "(819) 850-3972" },
-      { name: "Alexandre Roy", addr: "520 Boulevard Mercure, Drummondville, QC", phone: "(819) 478-1290" },
-      { name: "Émilie Bouchard", addr: "310 Rue Lindsay, Drummondville, QC", phone: "(819) 472-8831" },
-      { name: "Marc-André Lavoie", addr: "875 Rue Saint-Joseph, Drummondville, QC", phone: "(819) 477-6540" },
-      { name: "Camille Desrosiers", addr: "1240 14e Avenue, Drummondville, QC", phone: "(819) 850-4412" }
-    ];
-
-    const seeded = [];
-    const now = Date.now();
-    for (let i = 24; i >= 1; i--) {
-      const orderTime = new Date(now - (i * 28 * 60 * 60 * 1000) + (Math.random() * 3600000));
-      const cust = customerNames[i % customerNames.length];
-      const isDelivery = (i % 3 !== 0); // 67% Delivery, 33% Pickup
-      const item1 = dishesList[i % dishesList.length];
-      const item2 = (i % 2 === 0) ? dishesList[(i + 2) % dishesList.length] : null;
-      const items = item2 ? [item1, item2] : [item1];
-      
-      const subtotal = items.reduce((a, b) => a + b.price, 0);
-      const deliveryFee = isDelivery ? (i % 2 === 0 ? 4.99 : 0.00) : 0.00;
-      const taxable = subtotal + deliveryFee;
-      const tps = taxable * 0.05;
-      const tvq = taxable * 0.09975;
-      const grandTotal = taxable + tps + tvq;
-
-      seeded.push({
-        id: (1000 + i).toString(),
-        customerName: cust.name,
-        customerPhone: cust.phone,
-        address: cust.addr,
-        fulfillment: isDelivery ? 'delivery' : 'pickup',
-        dropoff: 'door',
-        items: items,
-        subtotal: parseFloat(subtotal.toFixed(2)),
-        deliveryFee: parseFloat(deliveryFee.toFixed(2)),
-        tps: parseFloat(tps.toFixed(2)),
-        tvq: parseFloat(tvq.toFixed(2)),
-        total: parseFloat(grandTotal.toFixed(2)),
-        status: 'delivered',
-        pin: (2000 + i).toString(),
-        createdAt: orderTime.toLocaleDateString('fr-CA') + ' ' + orderTime.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }),
-        timestamp: orderTime.getTime()
-      });
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
     }
+  } catch(e){}
+  return [];
+}
 
-    // Merge existing with seeded
-    allOrders = [...allOrders, ...seeded];
-    try { localStorage.setItem('lmdw_all_orders', JSON.stringify(allOrders)); } catch(e){}
+function resetAllDataToZero() {
+  if (confirm("🗑️ Voulez-vous réinitialiser toutes les données à ZÉRO (0) ?\n\nToutes les commandes enregistrées seront effacées pour démarrer à blanc.")) {
+    localStorage.removeItem('lmdw_all_orders');
+    localStorage.removeItem('lmdw_new_order');
+    localStorage.removeItem('lmdw_active_order');
+    localStorage.removeItem('lmdw_order_status_update');
+    localStorage.removeItem('lmdw_kitchen_orders');
+    localStorage.removeItem('lmdw_driver_orders');
+    
+    computeAndRenderRealKpiData(currentFilterPeriod);
+    renderAdminLiveOrders();
+    alert("✅ Toutes les données ont été réinitialisées à ZÉRO (0) !\n\nLe système est prêt pour vos tests en direct.");
   }
-
-  return allOrders;
 }
 
 function computeAndRenderRealKpiData(period = currentFilterPeriod) {
   currentFilterPeriod = period;
-  const allOrders = getAllOrdersWithSeed();
+  const allOrders = getAllRealOrders();
   const now = Date.now();
 
   let filteredOrders = allOrders.filter(order => {
@@ -733,9 +689,7 @@ function computeAndRenderRealKpiData(period = currentFilterPeriod) {
     return true; // 'all'
   });
 
-  if (filteredOrders.length === 0) filteredOrders = allOrders; // fallback safeguard
-
-  // Compute Real Numbers
+  // Compute Real Metrics
   const totalIncome = filteredOrders.reduce((sum, o) => sum + (o.total || 0), 0);
   const totalOrders = filteredOrders.length;
 
@@ -758,11 +712,11 @@ function computeAndRenderRealKpiData(period = currentFilterPeriod) {
   const totalTaxVal = tpsVal + tvqVal;
 
   // Real Points Tally
-  const totalPoints = users.reduce((acc, u) => acc + (u.points || 0), 0) + (totalOrders * 35);
+  const totalPoints = users.reduce((acc, u) => acc + (u.points || 0), 0) + Math.round(totalIncome);
 
   // Percentages for Progress Bar
-  const delivPct = totalOrders > 0 ? Math.round((deliveryCount / totalOrders) * 100) : 70;
-  const pickupPct = 100 - delivPct;
+  const delivPct = totalOrders > 0 ? Math.round((deliveryCount / totalOrders) * 100) : 0;
+  const pickupPct = totalOrders > 0 ? (100 - delivPct) : 0;
 
   // DOM Updates
   const labelMap = {
@@ -776,12 +730,12 @@ function computeAndRenderRealKpiData(period = currentFilterPeriod) {
   if (lblDate) lblDate.innerText = labelMap[period] || labelMap.month;
 
   document.getElementById('kpiTotalIncome').innerText = `$${totalIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-  document.getElementById('kpiOrdersCount').innerText = `${totalOrders} commandes payées (Stripe + En Direct)`;
+  document.getElementById('kpiOrdersCount').innerText = `${totalOrders} commande${totalOrders > 1 ? 's' : ''} payée${totalOrders > 1 ? 's' : ''} (Stripe + En Direct)`;
   
-  document.getElementById('kpiDeliveriesCount').innerText = `${deliveryCount} Livraisons (${delivPct}%)`;
+  document.getElementById('kpiDeliveriesCount').innerText = `${deliveryCount} Livraison${deliveryCount > 1 ? 's' : ''} (${delivPct}%)`;
   document.getElementById('kpiDeliveriesRevenue').innerText = `Revenus : $${deliveryIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} • Frais : $${deliveryFeesCollected.toFixed(2)}`;
   
-  document.getElementById('kpiPickupsCount').innerText = `${pickupCount} Retraits (${pickupPct}%)`;
+  document.getElementById('kpiPickupsCount').innerText = `${pickupCount} Retrait${pickupCount > 1 ? 's' : ''} (${pickupPct}%)`;
   document.getElementById('kpiPickupsRevenue').innerText = `Revenus : $${pickupIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} • Prêt en : 10-15 min`;
   
   document.getElementById('kpiAov').innerText = `$${aov.toFixed(2)} CAD`;
@@ -822,7 +776,6 @@ function renderSalesChart(orders) {
 
   const ctx = canvas.getContext('2d');
   
-  // Aggregate orders by day/interval
   const dateMap = {};
   orders.forEach(o => {
     const d = o.createdAt ? o.createdAt.split(' ')[0] : new Date().toLocaleDateString('fr-CA');
@@ -832,20 +785,20 @@ function renderSalesChart(orders) {
   });
 
   const sortedDates = Object.keys(dateMap).sort();
-  const labels = sortedDates.map(d => d.substring(5)); // e.g. '08-15'
-  const revenueData = sortedDates.map(d => parseFloat(dateMap[d].revenue.toFixed(2)));
-  const countData = sortedDates.map(d => dateMap[d].count);
+  const labels = sortedDates.length > 0 ? sortedDates.map(d => d.substring(5)) : ['Aujourd\'hui'];
+  const revenueData = sortedDates.length > 0 ? sortedDates.map(d => parseFloat(dateMap[d].revenue.toFixed(2))) : [0];
+  const countData = sortedDates.length > 0 ? sortedDates.map(d => dateMap[d].count) : [0];
 
   if (salesChartInstance) salesChartInstance.destroy();
 
   salesChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels.length > 0 ? labels : ['Aujourd\'hui'],
+      labels: labels,
       datasets: [
         {
           label: 'Chiffre d\'Affaires ($ CAD)',
-          data: revenueData.length > 0 ? revenueData : [0],
+          data: revenueData,
           borderColor: '#22C55E',
           backgroundColor: 'rgba(34, 197, 94, 0.12)',
           borderWidth: 3,
@@ -857,7 +810,7 @@ function renderSalesChart(orders) {
         },
         {
           label: 'Nombre de Commandes',
-          data: countData.length > 0 ? countData : [0],
+          data: countData,
           borderColor: '#FF5500',
           backgroundColor: 'rgba(255, 85, 0, 0.65)',
           type: 'bar',
@@ -916,13 +869,17 @@ function renderChannelChart(deliveryCount, pickupCount) {
   const ctx = canvas.getContext('2d');
   if (channelChartInstance) channelChartInstance.destroy();
 
+  const total = (deliveryCount || 0) + (pickupCount || 0);
+  const dataValues = total > 0 ? [deliveryCount, pickupCount] : [0, 0];
+  const bgColors = total > 0 ? ['#3B82F6', '#E5A93C'] : ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)'];
+
   channelChartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['🛵 Livraison Directe', '🥡 Cueillette au Comptoir'],
+      labels: [`🛵 Livraison Directe (${deliveryCount})`, `🥡 Cueillette au Comptoir (${pickupCount})`],
       datasets: [{
-        data: [deliveryCount || 1, pickupCount || 1],
-        backgroundColor: ['#3B82F6', '#E5A93C'],
+        data: total > 0 ? dataValues : [1],
+        backgroundColor: total > 0 ? bgColors : ['rgba(255,255,255,0.1)'],
         borderColor: '#1C1C22',
         borderWidth: 3,
         hoverOffset: 6
@@ -956,8 +913,8 @@ function renderTopItemsChart(orders) {
   });
 
   const sortedItems = Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]).slice(0, 5);
-  const itemLabels = sortedItems.length > 0 ? sortedItems : ['Kebab au Poulet', 'Wrap Mix 2 Viandes', 'Tacos Français', 'Poutine Spéciale', 'Panini Tikka'];
-  const itemData = sortedItems.length > 0 ? sortedItems.map(k => itemCounts[k]) : [18, 14, 11, 9, 7];
+  const itemLabels = sortedItems.length > 0 ? sortedItems : ['Aucune commande'];
+  const itemData = sortedItems.length > 0 ? sortedItems.map(k => itemCounts[k]) : [0];
 
   const ctx = canvas.getContext('2d');
   if (topItemsChartInstance) topItemsChartInstance.destroy();
@@ -969,7 +926,7 @@ function renderTopItemsChart(orders) {
       datasets: [{
         label: 'Quantité Commandée',
         data: itemData,
-        backgroundColor: ['#FF5500', '#E5A93C', '#3B82F6', '#22C55E', '#8B5CF6'],
+        backgroundColor: sortedItems.length > 0 ? ['#FF5500', '#E5A93C', '#3B82F6', '#22C55E', '#8B5CF6'] : ['rgba(255,255,255,0.15)'],
         borderRadius: 8,
         barThickness: 18
       }]
@@ -1002,7 +959,46 @@ function renderTopItemsChart(orders) {
 
 // 1-Click Financial Report CSV / Excel Exporter
 function exportFinancialCsvReport() {
-  const allOrders = getAllOrdersWithSeed();
+  const allOrders = getAllRealOrders();
+  if (allOrders.length === 0) {
+    alert("Aucune donnée de commande à exporter. Passez une commande test d'abord !");
+    return;
+  }
+
+  let csvContent = "\uFEFF"; // UTF-8 BOM for Excel French Accents
+  csvContent += "ID Commande,Date & Heure,Client,Telephone,Adresse,Mode,Sous-Total ($ CAD),Frais Livraison ($ CAD),TPS 5% ($ CAD),TVQ 9.975% ($ CAD),Total TTC ($ CAD),Statut,Articles Commandes\n";
+
+  allOrders.forEach(o => {
+    const itemsStr = (o.items || []).map(i => i.name.replace(/,/g, ' ')).join(' + ');
+    const row = [
+      `#${o.id}`,
+      `"${o.createdAt || ''}"`,
+      `"${(o.customerName || 'Client').replace(/"/g, '""')}"`,
+      `"${o.customerPhone || ''}"`,
+      `"${(o.address || 'Drummondville').replace(/"/g, '""')}"`,
+      o.fulfillment === 'pickup' ? 'Cueillette' : 'Livraison',
+      (o.subtotal || 0).toFixed(2),
+      (o.deliveryFee || 0).toFixed(2),
+      (o.tps || 0).toFixed(2),
+      (o.tvq || 0).toFixed(2),
+      (o.total || 0).toFixed(2),
+      o.status || 'complete',
+      `"${itemsStr}"`
+    ];
+    csvContent += row.join(',') + "\n";
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const dateStr = new Date().toISOString().split('T')[0];
+  a.download = `Rapport_Financier_LaMaisonDesWraps_${dateStr}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
   if (allOrders.length === 0) {
     alert("Aucune donnée de commande à exporter.");
     return;
