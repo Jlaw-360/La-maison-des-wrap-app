@@ -1,4 +1,14 @@
 name = "la-maison-des-wraps"
 account_id = "c67bc5032024bb38d910f5a0723fc3fa"
 compatibility_date = "2024-01-01"
-pages_build_output_dir = "."
+
+[assets]
+directory = "."
+
+[vars]
+SUPABASE_URL = "https://zldxbaykxgdraxvejkdr.supabase.co"
+NEXT_PUBLIC_SUPABASE_URL = "https://zldxbaykxgdraxvejkdr.supabase.co"
+SUPABASE_ANON_KEY = "sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy"
+SUPABASE_PROJECT_ID = "zldxbaykxgdraxvejkdr"
+BETTER_AUTH_API_KEY = "ba_hed5bolcn4cj17vepv1wjd1d8nk04pif"
