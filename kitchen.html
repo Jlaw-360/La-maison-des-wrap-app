@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
       --primary: #FF5500;
@@ -315,13 +316,18 @@
       📦 <strong>Détail :</strong> <span id="lblModalOrderItems">2x Kebab au Poulet (Trio Naan), 1x Lassi Mangue</span>
     </div>
 
-    <!-- Scanner Camera View Simulation -->
-    <div id="scannerCameraView" style="background: #000; border: 2px dashed #22C55E; border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 16px;">
-      <i class="fa-solid fa-qrcode" style="font-size: 40px; color: #22C55E; margin-bottom: 8px;"></i>
-      <div style="font-size: 13px; font-weight: 700; color: #fff;">Pointez la caméra vers le téléphone du client</div>
-      <button type="button" class="btn-action" style="background: #22C55E; margin-top: 10px; width: auto; display: inline-flex;" onclick="simulateStoreQRScanSuccess()">
-        <i class="fa-solid fa-bolt"></i> Simuler Scan QR Réussi
-      </button>
+    <!-- Live Camera QR Scanner -->
+    <div style="background: #101014; border: 1.5px solid #22C55E; border-radius: 14px; padding: 12px; margin-bottom: 16px; text-align: center;">
+      <div id="kitchen-qr-reader" style="width: 100%; min-height: 220px; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 10px; position: relative;"></div>
+      
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn-action" style="background: #22C55E; flex: 1; font-size: 13px;" onclick="startKitchenCameraScanner()">
+          <i class="fa-solid fa-camera"></i> Activer Caméra
+        </button>
+        <button type="button" class="btn-action" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); flex: 1; font-size: 12px;" onclick="simulateStoreQRScanSuccess()">
+          <i class="fa-solid fa-bolt"></i> Simuler Scan
+        </button>
+      </div>
     </div>
 
     <!-- 4-Digit Manual PIN Fallback -->
@@ -735,7 +741,9 @@ function moveTicket(orderId, nextState) {
   }
 }
 
-// In-Store Pickup Modal Functions
+// In-Store Pickup Modal Functions & Live Camera Scanner
+let html5KitchenQrScanner = null;
+
 function openStorePickupModal(orderId, pin, items) {
   currentPendingOrder = { id: orderId, pin: pin || '2325' };
   document.getElementById('lblModalOrderTitle').innerText = `Commande #${orderId}`;
@@ -743,13 +751,63 @@ function openStorePickupModal(orderId, pin, items) {
   document.getElementById('inputStore4DigitPin').value = '';
   document.getElementById('btnStoreFinalConfirm').style.display = 'none';
   document.getElementById('storePickupModal').style.display = 'flex';
+
+  setTimeout(() => {
+    startKitchenCameraScanner();
+  }, 250);
 }
 
 function closeStorePickupModal() {
+  stopKitchenCameraScanner();
   document.getElementById('storePickupModal').style.display = 'none';
 }
 
+function startKitchenCameraScanner() {
+  if (typeof Html5Qrcode === 'undefined') return;
+
+  const reader = document.getElementById('kitchen-qr-reader');
+  if (!reader) return;
+
+  if (html5KitchenQrScanner) {
+    try { html5KitchenQrScanner.stop().catch(()=>{}); } catch(e){}
+  }
+
+  html5KitchenQrScanner = new Html5Qrcode("kitchen-qr-reader");
+  const config = { fps: 15, qrbox: { width: 200, height: 200 } };
+
+  html5KitchenQrScanner.start(
+    { facingMode: "environment" },
+    config,
+    (decodedText) => {
+      stopKitchenCameraScanner();
+      showKitchenToast(`📸 QR Code Client Validé !`, "📸");
+      document.getElementById('btnStoreFinalConfirm').style.display = 'block';
+      document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
+    },
+    (err) => {}
+  ).catch(err => {
+    console.warn("Kitchen camera start error:", err);
+    reader.innerHTML = `
+      <div style="padding: 24px 12px; text-align: center; color: var(--text-muted); font-size: 12px;">
+        <i class="fa-solid fa-video-slash" style="font-size: 28px; color: #E5A93C; margin-bottom: 8px; display: block;"></i>
+        Caméra non accessible.<br>Utilisez le code PIN ci-dessous ou le bouton "Simuler Scan".
+      </div>
+    `;
+  });
+}
+
+function stopKitchenCameraScanner() {
+  if (html5KitchenQrScanner) {
+    try {
+      html5KitchenQrScanner.stop().then(() => {
+        html5KitchenQrScanner.clear();
+      }).catch(e=>{});
+    } catch(e){}
+  }
+}
+
 function simulateStoreQRScanSuccess() {
+  stopKitchenCameraScanner();
   showKitchenToast(`📸 QR Code Client Scanné avec succès ! Commande #${currentPendingOrder.id}`, "📸");
   document.getElementById('btnStoreFinalConfirm').style.display = 'block';
   document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
@@ -758,6 +816,7 @@ function simulateStoreQRScanSuccess() {
 function verifyStore4DigitPin() {
   const pin = (document.getElementById('inputStore4DigitPin').value || '').trim();
   if (pin === currentPendingOrder.pin || pin === "2325" || pin.length >= 3) {
+    stopKitchenCameraScanner();
     showKitchenToast(`✅ Code #${pin} Validé avec succès !`, "✅");
     document.getElementById('btnStoreFinalConfirm').style.display = 'block';
     document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
@@ -767,6 +826,7 @@ function verifyStore4DigitPin() {
 }
 
 function completeStorePickup() {
+  stopKitchenCameraScanner();
   showKitchenToast(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT !`, "🎉");
   closeStorePickupModal();
   const order = liveOrders.find(o => o.id === currentPendingOrder.id);

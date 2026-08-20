@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
       --primary: #FF5500;
@@ -207,7 +208,7 @@ function loadDriverDeliveries() {
         </div>
 
         <!-- Scanner Button -->
-        <button class="btn-primary" onclick="simulateCameraScan('${currentDriverOrder.id}')">
+        <button class="btn-primary" onclick="openDriverCameraScanner('${currentDriverOrder.id}', 'kitchen')">
           <i class="fa-solid fa-camera"></i> 1. Scanner le QR Code en Cuisine
         </button>
 
@@ -262,7 +263,7 @@ function loadDriverDeliveries() {
             🤝 Option 1 : Remise en main propre (Code PIN Client)
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="scanCustomerDoorQR('${currentDriverOrder.id}')">
+            <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="openDriverCameraScanner('${currentDriverOrder.id}', 'customer')">
               <i class="fa-solid fa-camera"></i> A. Scanner le QR Code du Client
             </button>
             <div style="font-size: 11px; color: var(--text-muted); text-align: center;">OU</div>
@@ -286,9 +287,111 @@ function loadDriverDeliveries() {
   }
 }
 
-function simulateCameraScan(orderId) {
-  alert(`📸 Caméra Activée !\n\nQR Code de la commande #${orderId} scanné en cuisine avec succès !\nStatut mis à jour : EN ROUTE VERS LE CLIENT.`);
-  startDelivery(orderId);
+// Live Camera QR Code Scanner Implementation
+let html5DriverQrScanner = null;
+let currentScannerTargetOrderId = null;
+let currentScannerMode = 'kitchen'; // 'kitchen' or 'customer'
+
+function openDriverCameraScanner(orderId, mode = 'kitchen') {
+  currentScannerTargetOrderId = orderId;
+  currentScannerMode = mode;
+  const modal = document.getElementById('driverCameraScannerModal');
+  const title = document.getElementById('lblDriverScannerTitle');
+  if (title) {
+    title.innerText = mode === 'kitchen' ? `Scanner Cuisine (#${orderId})` : `Scanner Client (#${orderId})`;
+  }
+  if (modal) modal.style.display = 'flex';
+
+  setTimeout(() => {
+    startDriverCamera();
+  }, 200);
+}
+
+function startDriverCamera() {
+  if (typeof Html5Qrcode === 'undefined') {
+    console.warn("Html5Qrcode library not loaded");
+    return;
+  }
+
+  const readerElement = document.getElementById('driver-qr-reader');
+  if (!readerElement) return;
+
+  if (html5DriverQrScanner) {
+    try { html5DriverQrScanner.stop().catch(()=>{}); } catch(e){}
+  }
+
+  html5DriverQrScanner = new Html5Qrcode("driver-qr-reader");
+  const config = { fps: 15, qrbox: { width: 220, height: 220 } };
+
+  html5DriverQrScanner.start(
+    { facingMode: "environment" },
+    config,
+    (decodedText) => {
+      handleDriverQrCodeDetected(decodedText);
+    },
+    (err) => {}
+  ).catch(err => {
+    console.warn("Driver camera access:", err);
+    readerElement.innerHTML = `
+      <div style="padding: 24px 16px; color: var(--text-muted); font-size: 12px; text-align: center;">
+        <i class="fa-solid fa-video-slash" style="font-size: 32px; color: #EF4444; margin-bottom: 10px; display: block;"></i>
+        Caméra non disponible ou accès non autorisé.<br>
+        <span style="color: #fff; font-size: 11px;">Vous pouvez utiliser le bouton "Simuler Scan" ou le code PIN.</span>
+      </div>
+    `;
+  });
+}
+
+function stopDriverCamera() {
+  if (html5DriverQrScanner) {
+    try {
+      html5DriverQrScanner.stop().then(() => {
+        html5DriverQrScanner.clear();
+      }).catch(e => {});
+    } catch(e){}
+  }
+}
+
+function closeDriverCameraScanner() {
+  stopDriverCamera();
+  const modal = document.getElementById('driverCameraScannerModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function handleDriverQrCodeDetected(decodedText) {
+  stopDriverCamera();
+  const modal = document.getElementById('driverCameraScannerModal');
+  if (modal) modal.style.display = 'none';
+
+  if (currentScannerMode === 'kitchen') {
+    alert(`📸 QR Code Cuisine Détecté avec succès !\n\nCommande #${currentScannerTargetOrderId} validée pour la livraison.`);
+    startDelivery(currentScannerTargetOrderId);
+  } else {
+    alert(`🎉 QR Code Client Détecté avec succès !\n\nCommande #${currentScannerTargetOrderId} livrée avec succès.`);
+    finalizeDelivery(currentScannerTargetOrderId);
+  }
+}
+
+function simulateDriverScanMatch() {
+  handleDriverQrCodeDetected(`LMDW-${currentScannerTargetOrderId}-PIN${currentDriverOrder?.pin || '2325'}`);
+}
+
+function completeDeliveryWithPhoto(orderId) {
+  currentScannerTargetOrderId = orderId;
+  const fileInput = document.getElementById('driverPhotoProofInput');
+  if (fileInput) {
+    fileInput.click();
+  } else {
+    finalizeDelivery(orderId);
+  }
+}
+
+function handleDriverPhotoCaptured(event) {
+  const file = event.target.files && event.target.files[0];
+  if (file) {
+    alert(`📸 Photo de preuve de livraison capturée (${file.name}) !\n\nCommande #${currentScannerTargetOrderId} marquée comme LIVRÉE.\nLe client a reçu la notification avec la photo.`);
+  }
+  finalizeDelivery(currentScannerTargetOrderId);
 }
 
 function verifyManualPin(orderId) {
@@ -315,16 +418,6 @@ function startDelivery(orderId) {
     }
   } catch(e){}
   loadDriverDeliveries();
-}
-
-function scanCustomerDoorQR(orderId) {
-  alert(`📸 QR Code Client Scanné à la porte avec succès !\n\nCommande #${orderId} livrée et confirmée.`);
-  finalizeDelivery(orderId);
-}
-
-function completeDeliveryWithPhoto(orderId) {
-  alert(`📸 Photo de preuve de livraison capturée à la porte !\n\nCommande #${orderId} marquée comme LIVRÉE.\nLe client a reçu la notification avec la photo.`);
-  finalizeDelivery(orderId);
 }
 
 function verifyCustomerDeliveryPin(orderId) {
@@ -372,6 +465,38 @@ window.onload = function() {
   loadDriverDeliveries();
 };
 </script>
+
+<!-- Live Camera QR Scanner Modal -->
+<div id="driverCameraScannerModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
+  <div style="background: #1C1C24; border: 1.5px solid var(--primary); border-radius: 20px; width: 100%; max-width: 440px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); text-align: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <div style="text-align: left;">
+        <span style="font-size: 11px; color: var(--primary); font-weight: 800; text-transform: uppercase;">Scanner Caméra en Direct</span>
+        <h3 style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 2px;" id="lblDriverScannerTitle">Scanner QR Code</h3>
+      </div>
+      <button style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;" onclick="closeDriverCameraScanner()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Live Video Viewfinder Div -->
+    <div id="driver-qr-reader" style="width: 100%; min-height: 240px; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 14px; position: relative;"></div>
+
+    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+      Pointez l'appareil photo vers le QR code sur l'écran ou le reçu.
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button type="button" class="btn-primary" style="flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border);" onclick="simulateDriverScanMatch()">
+        <i class="fa-solid fa-bolt"></i> Simuler Scan
+      </button>
+      <button type="button" class="btn-primary" style="flex: 1; background: #EF4444;" onclick="closeDriverCameraScanner()">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden File Input for Photo Proof of Delivery -->
+<input type="file" id="driverPhotoProofInput" accept="image/*" capture="environment" style="display: none;" onchange="handleDriverPhotoCaptured(event)">
 
 </body>
 </html>
