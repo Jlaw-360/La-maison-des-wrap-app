@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: #050507;
+      background-color: #060608;
       color: var(--text-white);
       font-family: var(--font-body);
       min-height: 100vh;
@@ -53,94 +53,25 @@
 
     .app-container {
       width: 100%;
-      max-width: 1180px;
+      max-width: 480px; /* Locked permanently to standard Mobile Phone View */
       min-height: 100vh;
       background-color: var(--bg-main);
       position: relative;
       border-left: 1px solid var(--border-subtle);
       border-right: 1px solid var(--border-subtle);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
       margin: 0 auto;
+      overflow-x: hidden;
     }
 
-    /* Desktop Navigation Bar */
-    .desktop-nav-links {
-      display: none;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .desktop-nav-link {
-      color: var(--text-body);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .desktop-nav-link:hover, .desktop-nav-link.active {
-      color: var(--primary);
-    }
-
-    .btn-google-auth {
-      width: 100%;
-      background: #FFFFFF;
-      color: #1F1F1F;
-      border: 1px solid #E0E0E0;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: var(--font-heading);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      cursor: pointer;
-      margin-bottom: 14px;
-      transition: background 0.2s, transform 0.1s;
-    }
-
-    .btn-google-auth:hover {
-      background: #F5F5F5;
-      transform: translateY(-1px);
-    }
-
-    @media (min-width: 768px) {
+    @media (min-width: 520px) {
       body {
-        padding-bottom: 30px;
+        padding-top: 14px;
+        padding-bottom: 95px;
       }
-      .desktop-nav-links {
-        display: flex;
-      }
-      .bottom-nav {
-        display: none !important;
-      }
-      .menu-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
-        gap: 20px !important;
-        padding-left: 28px !important;
-        padding-right: 28px !important;
-      }
-      .top-header {
-        padding: 16px 28px !important;
-      }
-      .hero-section, .promo-section, .about-card, .loyalty-bar-container, .dishes-header {
-        padding-left: 28px !important;
-        padding-right: 28px !important;
-      }
-      .category-nav {
-        padding-left: 28px !important;
-        padding-right: 28px !important;
-      }
-      .modal-sheet {
-        max-width: 580px !important;
-        margin: 40px auto !important;
-        border-radius: 24px !important;
-      }
-      .profile-container {
-        max-width: 600px;
-        margin: 0 auto;
+      .app-container {
+        border-radius: 32px;
+        border: 1.5px solid rgba(255, 255, 255, 0.1);
       }
     }
 
