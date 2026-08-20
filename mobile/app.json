@@ -38,6 +38,12 @@
       "favicon": "./assets/logo.png",
       "bundler": "metro"
     },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "owner": "jlaw-360"
   }
 }

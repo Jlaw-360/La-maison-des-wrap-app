@@ -12,7 +12,9 @@
     "build:ios:sim": "npx eas-cli build -p ios --profile preview",
     "build:ios:device": "npx eas-cli build -p ios --profile preview-device",
     "build:ios:prod": "npx eas-cli build -p ios --profile production",
-    "build:all": "npx eas-cli build --platform all --profile preview"
+    "build:all": "npx eas-cli build --platform all --profile preview",
+    "update:preview": "npx eas-cli update --channel preview --message",
+    "update:prod": "npx eas-cli update --channel production --message"
   },
   "dependencies": {
     "@better-auth/infra": "^0.4.1",
