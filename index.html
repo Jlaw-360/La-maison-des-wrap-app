@@ -983,12 +983,10 @@
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; align-items: center; gap: 6px;">
             <span style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase;" id="lblTopMode">Livraison • 25-35 min</span>
-            <span style="font-size: 9px; background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 1px 6px; border-radius: 10px; font-weight: 700;">Ouvert</span>
-          </div>
-          <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;" id="lblTopAddress">1450 Rue Saint-Pierre, Drummondville, QC</div>
+          <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;" id="lblTopAddress">Drummondville, QC</div>
         </div>
-        <button type="button" onclick="openCartModal()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
-          <i class="fa-solid fa-sliders" style="font-size: 10px; margin-right: 4px;"></i> Modifier
+        <button type="button" onclick="openAddressEditPrompt()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
+          <i class="fa-solid fa-location-dot" style="font-size: 10px; margin-right: 4px;"></i> Adresse
         </button>
       </div>
     </div>
@@ -1255,10 +1253,10 @@
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
 
-        <div class="profile-menu-item" onclick="alert('📍 Adresse Principale Enregistrée :\n1450 Rue Saint-Pierre, Drummondville, QC J2C 3Z5')">
+        <div class="profile-menu-item" onclick="openAddressEditPrompt()">
           <div class="profile-menu-item-left">
             <i class="fa-solid fa-location-dot"></i>
-            <span>Mes Adresses de Livraison</span>
+            <span>Mon Adresse de Livraison</span>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
@@ -1474,9 +1472,9 @@
     <div id="deliveryDetailsSection" style="background: var(--bg-card); border-radius: 14px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border-subtle);">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <span style="font-size: 11px; font-weight: 700; color: var(--text-white);">📍 Adresse de Livraison (Drummondville)</span>
-        <span style="font-size: 10px; color: var(--primary); font-weight: 700;" id="lblDistanceBadge">3.5 km • GRATUIT</span>
+        <span style="font-size: 10px; color: var(--primary); font-weight: 700;" id="lblDistanceBadge">Distance calculée en direct</span>
       </div>
-      <input type="text" id="deliveryAddressInput" value="1450 Rue Saint-Pierre, Drummondville, QC" placeholder="Entrez votre rue ou code postal..." oninput="updateDeliveryDistance(this.value)" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 6px; outline: none;">
+      <input type="text" id="deliveryAddressInput" value="" placeholder="Entrez votre rue ou code postal..." oninput="updateDeliveryDistance(this.value)" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; margin-bottom: 6px; outline: none;">
       
       <!-- Distance Tier Helper -->
       <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 10px;">
@@ -1587,7 +1585,7 @@
     <!-- QR Code & PIN Code Card -->
     <div style="background: var(--bg-card); border-radius: 16px; padding: 16px; margin-bottom: 16px; text-align: center; border: 1px solid var(--border-subtle);">
       <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 10px;" id="confFulfillmentSummary">
-        🛵 Livraison Directe (1450 Rue Saint-Pierre)
+        🛵 Livraison Directe
       </div>
 
       <div style="background: #FFFFFF; padding: 12px; border-radius: 14px; display: inline-block; margin-bottom: 12px;">
@@ -1805,8 +1803,8 @@
 
       <!-- Section 3 : Adresse de Livraison Principale -->
       <div style="margin-bottom: 18px;">
-        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">3. Adresse de Livraison (Drummondville)</div>
-        <input type="text" id="surveyAddress" placeholder="Ex: 1450 Rue Saint-Pierre, Drummondville, QC" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; margin-bottom: 6px;">
+        <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">3. Adresse de Livraison (Optionnelle)</div>
+        <input type="text" id="surveyAddress" placeholder="Ex: 123 Rue Principale, Drummondville, QC" value="" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none; margin-bottom: 6px;">
         <input type="text" id="surveyAptNotes" placeholder="Appartement, numéro d'interphone ou code de porte..." style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 12px; outline: none;">
       </div>
 
@@ -2384,7 +2382,7 @@ function setFulfillmentMode(mode) {
 
     if (iconTop) iconTop.className = "fa-solid fa-motorcycle";
     if (lblMode) lblMode.innerText = "Livraison • 25-35 min";
-    if (lblAddr) lblAddr.innerText = clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC";
+    if (lblAddr) lblAddr.innerText = clientProfile.address || "Drummondville, QC";
   } else {
     document.getElementById('fulfillmentPickupCard').classList.add('active');
     document.getElementById('fulfillmentDeliveryCard').classList.remove('active');
@@ -2556,7 +2554,7 @@ function triggerStripeCheckout() {
     total: grandTotal,
     fulfillment: currentFulfillment,
     dropoff: currentDropoffOption,
-    address: document.getElementById('deliveryAddressInput')?.value || clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC",
+    address: (document.getElementById('deliveryAddressInput')?.value || '').trim() || clientProfile.address || (currentFulfillment === 'pickup' ? "🥡 Comptoir : 998 110e Avenue, Drummondville" : "Drummondville, QC"),
     pin: '2325',
     status: 'new',
     createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
@@ -3010,7 +3008,7 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour, ${clientProfile.name}!\n\n✅ Connexion sécurisée réussie.\n📍 Adresse de livraison : ${clientProfile.address || '1450 Rue Saint-Pierre, Drummondville, QC'}\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
+  alert(`👋 Bon retour, ${clientProfile.name} !\n\n✅ Connexion sécurisée réussie.\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
 }
 
 function submitGateSignup() {
@@ -3033,8 +3031,8 @@ function submitGateSignup() {
 
   const email = emailInput.toLowerCase();
   const name = nameInput || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const phone = phoneInput || "819 850-3972";
-  const address = addressInput || "1450 Rue Saint-Pierre, Drummondville, QC";
+  const phone = phoneInput || "";
+  const address = addressInput || "";
 
   clientProfile = {
     name,
@@ -3059,7 +3057,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte a été créé avec succès!\n📍 Adresse de livraison pré-remplie : ${address}\n🎁 +50 Points de Fidélité crédités.`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name} !\n\n✅ Votre compte a été créé avec succès !\n🎁 +50 Points de Fidélité crédités.`);
 }
 
 function enterAsGuest() {
@@ -3087,7 +3085,7 @@ function selectTimsMode(mode) {
     currentFulfillment = 'delivery';
     if (iconTop) iconTop.className = "fa-solid fa-motorcycle";
     if (lblMode) lblMode.innerText = "Livraison • 25-35 min";
-    if (lblAddr) lblAddr.innerText = clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC";
+    if (lblAddr) lblAddr.innerText = clientProfile.address || "Drummondville, QC";
   } else if (mode === 'pickup') {
     const b = document.getElementById('btnModePickup');
     if (b) b.classList.add('active');
@@ -3250,12 +3248,28 @@ function selectSurveyChip(el, group) {
   el.classList.add('active');
 }
 
+function openAddressEditPrompt() {
+  const current = clientProfile.address || "";
+  const newAddr = prompt("📍 Entrez votre adresse de livraison à Drummondville :", current);
+  if (newAddr !== null && newAddr.trim() !== "") {
+    clientProfile.address = newAddr.trim();
+    try {
+      localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+    } catch(e){}
+    const deliveryInput = document.getElementById('deliveryAddressInput');
+    if (deliveryInput) deliveryInput.value = clientProfile.address;
+    updateUserProfileUI();
+    updateDeliveryDistance(clientProfile.address);
+    alert(`✅ Adresse de livraison mise à jour :\n${clientProfile.address}`);
+  }
+}
+
 function submitClientSurvey() {
-  const name = document.getElementById('surveyName').value.trim() || "Jean Tremblay";
-  const phone = document.getElementById('surveyPhone').value.trim() || "819 555-0192";
+  const name = document.getElementById('surveyName').value.trim() || "Client";
+  const phone = document.getElementById('surveyPhone').value.trim() || "";
   const email = document.getElementById('surveyEmail').value.trim() || "client@exemple.com";
   const birthday = document.getElementById('surveyBirthday').value || "";
-  const address = document.getElementById('surveyAddress').value.trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
+  const address = document.getElementById('surveyAddress').value.trim() || "";
 
   clientProfile = {
     name,
