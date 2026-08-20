@@ -879,6 +879,12 @@
     </div>
 
     <div class="header-actions" style="display: flex; align-items: center; gap: 6px;">
+      <!-- Ecosystem Switcher Pill -->
+      <button class="pill-btn" onclick="openRoleSwitcherModal()" style="background: rgba(59, 130, 246, 0.15); border: 1px solid #3B82F6; color: #3B82F6; padding: 6px 9px; border-radius: 18px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="Tester Cuisine, Livreur, Admin">
+        <i class="fa-solid fa-layer-group"></i>
+        <span>Apps</span>
+      </button>
+
       <!-- Loyalty Points Pill -->
       <button class="pill-btn" onclick="switchTab('scan')" style="background: rgba(229, 169, 60, 0.12); border: 1px solid rgba(229, 169, 60, 0.35); color: #E5A93C; padding: 6px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer;">
         <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
@@ -915,8 +921,7 @@
 
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <div style="flex: 1; min-width: 0;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase;" id="lblTopMode">Livraison • 25-35 min</span>
+          <div style="font-size: 10px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase;" id="lblTopMode">Livraison • 25-35 min</div>
           <div style="font-size: 12px; color: #fff; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;" id="lblTopAddress">Drummondville, QC</div>
         </div>
         <button type="button" onclick="openAddressEditPrompt()" class="pill-btn" style="background: rgba(255, 85, 0, 0.15); border-color: var(--primary); color: var(--primary); font-size: 11px; padding: 6px 12px; border-radius: 20px; white-space: nowrap;">
@@ -1308,9 +1313,92 @@
     </div>
   </nav>
 
+  <!-- Floating Cart Action Bar (UberEats / DoorDash Style) -->
+  <div id="floatingCartBar" style="display: none; position: fixed; bottom: 74px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 448px; background: linear-gradient(135deg, #FF5500 0%, #E04300 100%); color: #FFFFFF; border-radius: 16px; padding: 12px 18px; box-shadow: 0 10px 30px rgba(255, 85, 0, 0.45); z-index: 95; justify-content: space-between; align-items: center; cursor: pointer; transition: transform 0.2s ease;" onclick="openCartModal()">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="background: rgba(0,0,0,0.25); padding: 4px 10px; border-radius: 20px; font-weight: 800; font-size: 12px;" id="floatingCartCount">1 article</span>
+      <span style="font-size: 13px; font-weight: 800;">Voir le Panier</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 800;" id="floatingCartTotal">$0.00 CAD</span>
+      <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i>
+    </div>
+  </div>
+
   </div> <!-- /#appMainWrapper -->
 
 </div> <!-- /.app-container -->
+
+<!-- Multi-App Ecosystem Switcher Modal -->
+<div class="modal-overlay" id="roleSwitcherModal">
+  <div class="modal-sheet" style="max-height: 85vh;">
+    <div class="sheet-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px;">
+      <div>
+        <div style="font-size: 10px; font-weight: 800; color: #3B82F6; text-transform: uppercase;">Écosystème Restaurant 4-en-1</div>
+        <div class="sheet-title" style="margin-top: 4px; font-size: 18px;">Naviguer entre les Applications</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('roleSwitcherModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px; line-height: 1.4;">
+      La Maison des Wraps est une plateforme complète composée de 4 interfaces connectées en temps réel :
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px;">
+      <!-- App 1: Client -->
+      <a href="/index.html" style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 85, 0, 0.12); border: 1.5px solid var(--primary); padding: 14px 16px; border-radius: 14px; text-decoration: none; color: #fff;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px;">📱</div>
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">1. Application Client (Actuel)</div>
+            <div style="font-size: 11px; color: var(--text-body);">Commander, trios, fidélité et suivi GPS</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right" style="color: var(--primary);"></i>
+      </a>
+
+      <!-- App 2: Kitchen -->
+      <a href="/kitchen.html" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 16px; border-radius: 14px; text-decoration: none; color: #fff; transition: all 0.2s;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #3B82F6; display: flex; align-items: center; justify-content: center; font-size: 16px;">👨‍🍳</div>
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">2. Cuisine KDS & Sonnerie</div>
+            <div style="font-size: 11px; color: var(--text-body);">Kanban des commandes, sonnerie, scans QR</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right" style="color: #3B82F6;"></i>
+      </a>
+
+      <!-- App 3: Driver -->
+      <a href="/driver.html" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 16px; border-radius: 14px; text-decoration: none; color: #fff; transition: all 0.2s;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 16px;">🛵</div>
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">3. Portail Livreur (In-House)</div>
+            <div style="font-size: 11px; color: var(--text-body);">Prise en charge cuisine, GPS Waze/Maps, PIN & photo</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right" style="color: #10B981;"></i>
+      </a>
+
+      <!-- App 4: Admin -->
+      <a href="/admin.html" style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 14px 16px; border-radius: 14px; text-decoration: none; color: #fff; transition: all 0.2s;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #8B5CF6; display: flex; align-items: center; justify-content: center; font-size: 16px;">👑</div>
+          <div>
+            <div style="font-weight: 800; font-size: 14px;">4. Tableau de Bord Admin & KPI</div>
+            <div style="font-size: 11px; color: var(--text-body);">Revenus en direct, taxes, rôles des employés</div>
+          </div>
+        </div>
+        <i class="fa-solid fa-arrow-right" style="color: #8B5CF6;"></i>
+      </a>
+    </div>
+
+    <button type="button" class="btn-main" onclick="closeModal('roleSwitcherModal')" style="width: 100%;">
+      <span>Fermer</span>
+    </button>
+  </div>
+</div>
 
 <!-- Item Customization Modal -->
 <div class="modal-overlay" id="dishModal">
@@ -1602,23 +1690,23 @@
       <!-- Multi-step tracker line -->
       <div style="display: flex; justify-content: space-between; position: relative; margin: 16px 8px 8px 8px;">
         <div style="position: absolute; top: 12px; left: 0; right: 0; height: 3px; background: var(--border-subtle); z-index: 1;"></div>
-        <div style="position: absolute; top: 12px; left: 0; width: 33%; height: 3px; background: var(--primary); z-index: 2;"></div>
+        <div id="confTrackerProgressLine" style="position: absolute; top: 12px; left: 0; width: 0%; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 2;"></div>
         
-        <div style="position: relative; z-index: 3; text-align: center;">
-          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-check"></i></div>
-          <span style="font-size: 10px; color: #fff; font-weight: 700;">Reçue</span>
+        <div id="stepTrackerNode1" style="position: relative; z-index: 3; text-align: center;">
+          <div class="step-circle" style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-check"></i></div>
+          <span class="step-label" style="font-size: 10px; color: #fff; font-weight: 700;">Reçue</span>
         </div>
-        <div style="position: relative; z-index: 3; text-align: center;">
-          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--primary); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-fire-burner"></i></div>
-          <span style="font-size: 10px; color: var(--primary); font-weight: 700;">Cuisine</span>
+        <div id="stepTrackerNode2" style="position: relative; z-index: 3; text-align: center;">
+          <div class="step-circle" style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-fire-burner"></i></div>
+          <span class="step-label" style="font-size: 10px; color: var(--text-muted);">Cuisine</span>
         </div>
-        <div style="position: relative; z-index: 3; text-align: center;">
-          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-motorcycle"></i></div>
-          <span style="font-size: 10px; color: var(--text-muted);">Prête</span>
+        <div id="stepTrackerNode3" style="position: relative; z-index: 3; text-align: center;">
+          <div class="step-circle" style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-motorcycle"></i></div>
+          <span class="step-label" style="font-size: 10px; color: var(--text-muted);">Prête</span>
         </div>
-        <div style="position: relative; z-index: 3; text-align: center;">
-          <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-house"></i></div>
-          <span style="font-size: 10px; color: var(--text-muted);">Livrée</span>
+        <div id="stepTrackerNode4" style="position: relative; z-index: 3; text-align: center;">
+          <div class="step-circle" style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--border-subtle); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto 4px auto;"><i class="fa-solid fa-house"></i></div>
+          <span class="step-label" style="font-size: 10px; color: var(--text-muted);">Livrée</span>
         </div>
       </div>
     </div>
@@ -2122,7 +2210,7 @@ function togglePointsRedeem(isYes) {
     btnYes.style.color = '#FFFFFF';
     btnNo.style.background = 'transparent';
     btnNo.style.color = 'var(--text-muted)';
-    alert("🎁 RÉCOMPENSE ACTIVÉE !\n\nVotre QR Code est mis à jour : 200 points seront déduits en caisse contre 1 Wrap / Sandwich Gratuit.");
+    showToast("🎁 Récompense activée ! 200 pts déduits en caisse pour 1 Wrap gratuit.", "🎁");
   } else {
     btnNo.style.background = 'var(--primary)';
     btnNo.style.color = '#FFFFFF';
@@ -2423,16 +2511,35 @@ function addDishToCart() {
   cart.push({ name: itemTitle, price: total });
   closeModal('dishModal');
   updateCartBadge();
-  alert(`✅ ${itemTitle} ($${total.toFixed(2)}) ajouté au panier!`);
+  showToast(`<strong>${itemTitle}</strong> ($${total.toFixed(2)}) ajouté au panier !`, "🌯");
 }
 
 function updateCartBadge() {
   const badge = document.getElementById('cartCountBadge');
-  if (cart.length > 0) {
-    badge.innerText = cart.length;
-    badge.style.display = 'flex';
+  const floatBar = document.getElementById('floatingCartBar');
+  const floatCount = document.getElementById('floatingCartCount');
+  const floatTotal = document.getElementById('floatingCartTotal');
+
+  const count = cart.length;
+  const subtotal = cart.reduce((acc, item) => acc + (item.price || 0), 0);
+
+  if (count > 0) {
+    if (badge) {
+      badge.innerText = count;
+      badge.style.display = 'flex';
+    }
+    if (floatBar) {
+      floatBar.style.display = 'flex';
+    }
+    if (floatCount) {
+      floatCount.innerText = `${count} ${count > 1 ? 'articles' : 'article'}`;
+    }
+    if (floatTotal) {
+      floatTotal.innerText = `$${subtotal.toFixed(2)} CAD`;
+    }
   } else {
-    badge.style.display = 'none';
+    if (badge) badge.style.display = 'none';
+    if (floatBar) floatBar.style.display = 'none';
   }
 }
 
@@ -2550,7 +2657,7 @@ function setOrderTiming(timing) {
 
 function triggerAppleGooglePayExpress() {
   if (cart.length === 0) {
-    alert("Votre panier est vide.");
+    showToast("Votre panier est vide. Ajoutez un plat pour commander !", "🛒");
     return;
   }
 
@@ -2653,7 +2760,7 @@ function triggerStripeCheckout() {
   const amountText = document.getElementById('btnPayText').innerText;
   
   if (cart.length === 0) {
-    alert("Votre panier est vide!");
+    showToast("Votre panier est vide !", "🛒");
     return;
   }
 
@@ -2678,6 +2785,7 @@ function triggerStripeCheckout() {
   const grandTotal = taxable + tps + tvq;
 
   const orderNum = 'CMD-' + Math.floor(1000 + Math.random() * 9000);
+  const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
   lastPlacedOrder = {
     id: orderNum,
     customerName: clientProfile.name || "Client",
@@ -2692,7 +2800,7 @@ function triggerStripeCheckout() {
     fulfillment: currentFulfillment,
     dropoff: currentDropoffOption,
     address: (document.getElementById('deliveryAddressInput')?.value || '').trim() || clientProfile.address || (currentFulfillment === 'pickup' ? "🥡 Comptoir : 998 110e Avenue, Drummondville" : "Drummondville, QC"),
-    pin: '2325',
+    pin: generatedPin,
     status: 'new',
     createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
   };
@@ -2728,26 +2836,107 @@ function triggerStripeCheckout() {
   }, 1000);
 }
 
-function openOrderConfirmationModal(orderId) {
-  const order = lastPlacedOrder || {
-    id: orderId || 'CMD-4092',
-    items: [
-      { name: 'Kebab au Poulet (Pain Naan, Trio)', price: 16.25 },
-      { name: 'Poutine Poulet au Beurre', price: 15.95 }
-    ],
-    subtotal: 32.20,
-    deliveryFee: 0.00,
-    tps: 1.61,
-    tvq: 3.21,
-    total: 37.02,
-    fulfillment: currentFulfillment,
-    dropoff: currentDropoffOption,
-    address: "1450 Rue Saint-Pierre, Drummondville, QC",
-    pin: '52325'
+function renderOrderTrackerStep(order) {
+  if (!order) return;
+  const status = order.status || 'new';
+  const progressLine = document.getElementById('confTrackerProgressLine');
+  const etaLabel = document.getElementById('confEtaLabel');
+  
+  const node1 = document.getElementById('stepTrackerNode1');
+  const node2 = document.getElementById('stepTrackerNode2');
+  const node3 = document.getElementById('stepTrackerNode3');
+  const node4 = document.getElementById('stepTrackerNode4');
+
+  const setNodeState = (node, active, complete) => {
+    if (!node) return;
+    const circle = node.querySelector('.step-circle');
+    const label = node.querySelector('.step-label');
+    if (complete) {
+      if (circle) { circle.style.background = '#22C55E'; circle.style.borderColor = '#22C55E'; circle.style.color = '#fff'; }
+      if (label) { label.style.color = '#22C55E'; label.style.fontWeight = '700'; }
+    } else if (active) {
+      if (circle) { circle.style.background = 'var(--primary)'; circle.style.borderColor = 'var(--primary)'; circle.style.color = '#fff'; }
+      if (label) { label.style.color = '#fff'; label.style.fontWeight = '800'; }
+    } else {
+      if (circle) { circle.style.background = 'var(--bg-surface)'; circle.style.borderColor = 'var(--border-subtle)'; circle.style.color = 'var(--text-muted)'; }
+      if (label) { label.style.color = 'var(--text-muted)'; label.style.fontWeight = '400'; }
+    }
   };
+
+  if (status === 'new') {
+    if (progressLine) progressLine.style.width = '10%';
+    if (etaLabel) etaLabel.innerText = "⏱️ Reçue par la cuisine (~20 min)";
+    setNodeState(node1, true, false);
+    setNodeState(node2, false, false);
+    setNodeState(node3, false, false);
+    setNodeState(node4, false, false);
+  } else if (status === 'prep') {
+    if (progressLine) progressLine.style.width = '40%';
+    if (etaLabel) etaLabel.innerText = "🍲 En préparation par le chef (~10 min)";
+    setNodeState(node1, false, true);
+    setNodeState(node2, true, false);
+    setNodeState(node3, false, false);
+    setNodeState(node4, false, false);
+  } else if (status === 'ready') {
+    if (progressLine) progressLine.style.width = '70%';
+    if (etaLabel) etaLabel.innerText = "✅ Prête pour retrait / livraison !";
+    setNodeState(node1, false, true);
+    setNodeState(node2, false, true);
+    setNodeState(node3, true, false);
+    setNodeState(node4, false, false);
+  } else if (status === 'in_transit') {
+    if (progressLine) progressLine.style.width = '85%';
+    if (etaLabel) etaLabel.innerText = "🛵 Livreur en route vers vous !";
+    setNodeState(node1, false, true);
+    setNodeState(node2, false, true);
+    setNodeState(node3, false, true);
+    setNodeState(node4, true, false);
+  } else if (status === 'delivered' || status === 'completed') {
+    if (progressLine) { progressLine.style.width = '100%'; progressLine.style.background = '#22C55E'; }
+    if (etaLabel) etaLabel.innerHTML = "<strong style='color:#22C55E;'>🎉 Commande Livrée ! Bon appétit !</strong>";
+    setNodeState(node1, false, true);
+    setNodeState(node2, false, true);
+    setNodeState(node3, false, true);
+    setNodeState(node4, false, true);
+  }
+}
+
+function openOrderConfirmationModal(orderId) {
+  let order = lastPlacedOrder;
+  if (!order && orderId) {
+    try {
+      const raw = localStorage.getItem('lmdw_all_orders');
+      if (raw) {
+        const list = JSON.parse(raw);
+        order = list.find(x => x.id === orderId);
+      }
+    } catch(e){}
+  }
+
+  if (!order) {
+    order = {
+      id: orderId || 'CMD-4092',
+      items: [
+        { name: 'Kebab au Poulet (Pain Naan, Trio)', price: 16.25 },
+        { name: 'Poutine Poulet au Beurre', price: 15.95 }
+      ],
+      subtotal: 32.20,
+      deliveryFee: 0.00,
+      tps: 1.61,
+      tvq: 3.21,
+      total: 37.02,
+      fulfillment: currentFulfillment,
+      dropoff: currentDropoffOption,
+      address: "1450 Rue Saint-Pierre, Drummondville, QC",
+      pin: '2325',
+      status: 'new'
+    };
+  }
 
   document.getElementById('confOrderIdLabel').innerText = `Commande #${order.id}`;
   document.getElementById('confPinCode').innerText = order.pin;
+
+  renderOrderTrackerStep(order);
 
   if (order.fulfillment === 'pickup') {
     document.getElementById('confFulfillmentSummary').innerText = "🥡 Cueillette au Restaurant (998 110e Avenue)";
@@ -2767,16 +2956,16 @@ function openOrderConfirmationModal(orderId) {
     receiptList.innerHTML = order.items.map(item => `
       <div style="display: flex; justify-content: space-between; font-size: 13px;">
         <span>1x ${item.name}</span>
-        <strong style="color: var(--primary);">$${item.price.toFixed(2)}</strong>
+        <strong style="color: var(--primary);">$${item.price ? item.price.toFixed(2) : '0.00'}</strong>
       </div>
     `).join('');
   }
 
-  document.getElementById('confReceiptSubtotal').innerText = `$${order.subtotal.toFixed(2)}`;
-  document.getElementById('confReceiptDelivery').innerText = order.deliveryFee === 0 ? "GRATUIT" : `$${order.deliveryFee.toFixed(2)}`;
-  document.getElementById('confReceiptTPS').innerText = `$${order.tps.toFixed(2)}`;
-  document.getElementById('confReceiptTVQ').innerText = `$${order.tvq.toFixed(2)}`;
-  document.getElementById('confReceiptTotal').innerText = `$${order.total.toFixed(2)} CAD`;
+  document.getElementById('confReceiptSubtotal').innerText = `$${(order.subtotal || 0).toFixed(2)}`;
+  document.getElementById('confReceiptDelivery').innerText = (order.deliveryFee === 0 || !order.deliveryFee) ? "GRATUIT" : `$${order.deliveryFee.toFixed(2)}`;
+  document.getElementById('confReceiptTPS').innerText = `$${(order.tps || 0).toFixed(2)}`;
+  document.getElementById('confReceiptTVQ').innerText = `$${(order.tvq || 0).toFixed(2)}`;
+  document.getElementById('confReceiptTotal').innerText = `$${(order.total || 0).toFixed(2)} CAD`;
 
   // Generate QR Code on canvas
   const canvas = document.getElementById('customerQrCanvas');
@@ -2789,6 +2978,42 @@ function openOrderConfirmationModal(orderId) {
 
   document.getElementById('orderConfirmModal').classList.add('open');
 }
+
+// Live tracking synchronization across tabs
+window.addEventListener('storage', function(e) {
+  if (e.key === 'lmdw_order_status_update' || e.key === 'lmdw_all_orders') {
+    if (lastPlacedOrder) {
+      try {
+        const raw = localStorage.getItem('lmdw_all_orders');
+        if (raw) {
+          const list = JSON.parse(raw);
+          const current = list.find(x => x.id === lastPlacedOrder.id);
+          if (current) {
+            lastPlacedOrder = current;
+            renderOrderTrackerStep(current);
+          }
+        }
+      } catch(err){}
+    }
+  }
+});
+
+// Periodic tracking poll
+setInterval(() => {
+  if (lastPlacedOrder && document.getElementById('orderConfirmModal')?.classList.contains('open')) {
+    try {
+      const raw = localStorage.getItem('lmdw_all_orders');
+      if (raw) {
+        const list = JSON.parse(raw);
+        const current = list.find(x => x.id === lastPlacedOrder.id);
+        if (current && current.status !== lastPlacedOrder.status) {
+          lastPlacedOrder = current;
+          renderOrderTrackerStep(current);
+        }
+      }
+    } catch(err){}
+  }
+}, 2000);
 
 function openGiftCardModal() {
   document.getElementById('giftModal').classList.add('open');
@@ -2812,7 +3037,7 @@ function redeemInvitationCode() {
       feedbackEl.style.color = '#EF4444';
       feedbackEl.innerHTML = "⚠️ Veuillez saisir un code d'invitation ou de parrainage.";
     }
-    alert("Veuillez saisir un code d'invitation.");
+    showToast("Veuillez saisir un code d'invitation.", "⚠️");
     return;
   }
 
@@ -2837,7 +3062,7 @@ function redeemInvitationCode() {
       feedbackEl.innerHTML = `✅ <strong>Code Validé avec Succès !</strong><br>${bonus.desc}. Nouveau solde : <strong>${clientProfile.points} points</strong>.`;
     }
     codeInput.value = '';
-    alert(`🎉 CODE D'INVITATION VALIDÉ !\n\n${bonus.desc} a été crédité sur votre compte.\nVotre nouveau solde : ${clientProfile.points} points.`);
+    showToast(`🎉 Code validé ! ${bonus.desc} (Total: ${clientProfile.points} pts)`, "🎉");
   } else {
     // WRONG / INVALID INVITATION CODE: Provide crystal-clear feedback so customer is aware
     if (feedbackEl) {
@@ -2845,7 +3070,7 @@ function redeemInvitationCode() {
       feedbackEl.style.color = '#EF4444';
       feedbackEl.innerHTML = `❌ <strong>Code Invalide ou Expiré ("${code}")</strong><br>Ce code d'invitation n'existe pas ou n'est plus actif. Vérifiez avec votre ami ou utilisez le code <strong>BIENVENUE50</strong>.`;
     }
-    alert(`❌ CODE D'INVITATION INTROUVABLE\n\nLe code "${code}" n'est pas reconnu dans notre système ou a déjà expiré.\n\n💡 Conseil : Demandez à votre ami de vérifier son code exact, ou utilisez le code de bienvenue : BIENVENUE50.`);
+    showToast(`❌ Code "${code}" introuvable ou expiré. Essayez BIENVENUE50`, "❌");
   }
 }
 
@@ -2928,7 +3153,7 @@ function initGoogleMapsPlaces() {
 
 function useCurrentGpsLocation() {
   if (!navigator.geolocation) {
-    alert("La géolocalisation n'est pas supportée par votre navigateur.");
+    showToast("La géolocalisation n'est pas supportée par votre navigateur.", "⚠️");
     return;
   }
 
@@ -2950,13 +3175,14 @@ function useCurrentGpsLocation() {
             try { localStorage.setItem('lmdw_user', JSON.stringify(clientProfile)); } catch(e){}
             updateUserProfileUI();
             updateDeliveryDistance(addr);
-            alert(`📍 Adresse vérifiée par Google Maps :\n${addr}`);
+            showToast(`📍 Adresse détectée : ${addr}`, "📍");
           } else {
             const fallback = `Drummondville (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
             if (input) input.value = fallback;
             clientProfile.address = fallback;
             updateUserProfileUI();
             updateDeliveryDistance(fallback);
+            showToast(`📍 Position GPS détectée`, "📍");
           }
         });
       } else {
@@ -2965,11 +3191,12 @@ function useCurrentGpsLocation() {
         clientProfile.address = fallback;
         updateUserProfileUI();
         updateDeliveryDistance(fallback);
+        showToast(`📍 Position GPS détectée`, "📍");
       }
     },
     function(error) {
       if (input) input.placeholder = "Entrez votre rue ou code postal...";
-      alert("⚠️ Impossible d'obtenir la position GPS automatique. Veuillez saisir votre adresse ou code postal.");
+      showToast("⚠️ Impossible d'obtenir la position GPS. Saisissez votre adresse.", "⚠️");
     },
     { enableHighAccuracy: true, timeout: 8000 }
   );
@@ -3054,12 +3281,12 @@ function submitPasswordReset() {
   const newPass = (document.getElementById('gateResetNewPass') ? document.getElementById('gateResetNewPass').value : '').trim();
 
   if (!emailInput) {
-    alert("Veuillez entrer votre adresse courriel.");
+    showToast("Veuillez entrer votre adresse courriel.", "⚠️");
     return;
   }
 
   if (!newPass || newPass.length < 3) {
-    alert("Veuillez entrer un nouveau mot de passe d'au moins 3 caractères.");
+    showToast("Veuillez entrer un mot de passe d'au moins 3 caractères.", "⚠️");
     return;
   }
 
@@ -3095,7 +3322,7 @@ function submitPasswordReset() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`✅ MOT DE PASSE RÉINITIALISÉ AVEC SUCCÈS !\n\nVotre nouveau mot de passe a été enregistré pour le compte "${found.email}".\n👋 Bienvenue, ${clientProfile.name} !`);
+  showToast(`✅ Mot de passe réinitialisé ! Bienvenue, ${clientProfile.name}`, "✅");
 }
 
 function togglePassVisibility(inputId, iconId) {
@@ -3157,12 +3384,12 @@ function submitGateLogin() {
   const pass = (document.getElementById('gateLoginPass') ? document.getElementById('gateLoginPass').value : '').trim();
 
   if (!userInput) {
-    alert("Veuillez entrer votre adresse courriel ou numéro de téléphone.");
+    showToast("Veuillez entrer votre courriel ou téléphone.", "⚠️");
     return;
   }
 
   if (!pass) {
-    alert("Veuillez entrer votre mot de passe.");
+    showToast("Veuillez entrer votre mot de passe.", "⚠️");
     return;
   }
 
@@ -3187,10 +3414,10 @@ function submitGateLogin() {
       points: 50
     };
     saveRegisteredAccount(found);
-    alert(`🎉 BIENVENUE !\n\nVotre compte (${found.email}) a été créé et enregistré avec succès.\nMot de passe configuré.\n🎁 +50 Points de Fidélité crédités.`);
+    showToast(`🎉 Bienvenue ! Compte créé (+50 Pts).`, "🎉");
   } else if (found.pass && found.pass !== pass) {
-    // STRICT PASSWORD CHECK: If wrong password entered for existing account, deny access!
-    alert(`⛔ ACCÈS REFUSÉ : MOT DE PASSE INCORRECT\n\nLe mot de passe entré ne correspond pas au compte "${userInput}".\n\nVeuillez vérifier vos identifiants.`);
+    // STRICT PASSWORD CHECK
+    showToast(`⛔ Mot de passe incorrect pour "${userInput}".`, "⛔");
     return;
   }
 
@@ -3207,7 +3434,7 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour, ${clientProfile.name} !\n\n✅ Connexion sécurisée réussie.\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
+  showToast(`👋 Bon retour, ${clientProfile.name} ! (${clientProfile.points || 50} Pts)`, "👋");
 }
 
 function submitGateSignup() {
@@ -3219,12 +3446,12 @@ function submitGateSignup() {
   const addressInput = (document.getElementById('gateSignupAddress') ? document.getElementById('gateSignupAddress').value : '').trim();
 
   if (!emailInput) {
-    alert("Veuillez renseigner votre adresse courriel.");
+    showToast("Veuillez renseigner votre adresse courriel.", "⚠️");
     return;
   }
 
   if (!pass) {
-    alert("Veuillez créer un mot de passe.");
+    showToast("Veuillez créer un mot de passe.", "⚠️");
     return;
   }
 
@@ -3263,7 +3490,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name} !\n\n✅ Votre compte a été créé avec succès !\n📍 Adresse de livraison : ${address || 'À renseigner lors de la commande'}\n🎁 +50 Points de Fidélité crédités.`);
+  showToast(`🎉 Bienvenue ${name} ! +50 Points de fidélité crédités.`, "🎉");
 }
 
 function enterAsGuest() {
@@ -3349,7 +3576,7 @@ function openForgotPasswordModal() {
 function sendPasswordResetCode() {
   const idVal = (document.getElementById('forgotIdentifier').value || '').trim().toLowerCase();
   if (!idVal) {
-    alert("Veuillez entrer votre adresse courriel ou votre numéro de téléphone.");
+    showToast("Veuillez entrer votre courriel ou téléphone.", "⚠️");
     return;
   }
 
@@ -3357,7 +3584,7 @@ function sendPasswordResetCode() {
   const found = accounts.find(a => (a.email && a.email.toLowerCase() === idVal) || (a.phone && a.phone === idVal));
 
   if (!found) {
-    alert("❌ Aucun compte trouvé avec ces coordonnées dans notre base de données.\n\nVeuillez vérifier l'adresse ou cliquer sur 'Créer un Compte'.");
+    showToast("❌ Aucun compte trouvé avec ces coordonnées.", "❌");
     return;
   }
 
@@ -3374,12 +3601,12 @@ function confirmResetNewPassword() {
   const newPass = (document.getElementById('inputNewPassword').value || '').trim();
 
   if (code !== currentGeneratedResetCode && code !== "4829") {
-    alert("❌ Code de vérification incorrect. Veuillez entrer le code à 4 chiffres.");
+    showToast("❌ Code de vérification incorrect.", "❌");
     return;
   }
 
   if (!newPass || newPass.length < 3) {
-    alert("Veuillez entrer un mot de passe ou code PIN valide (au moins 3 caractères).");
+    showToast("Mot de passe : au moins 3 caractères.", "⚠️");
     return;
   }
 
@@ -3411,7 +3638,7 @@ function confirmResetNewPassword() {
     if (appWrapper) appWrapper.style.display = 'block';
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    alert(`✅ Mot de passe réinitialisé avec succès!\n👋 Bienvenue, ${clientProfile.name}. Connexion établie.`);
+    showToast(`✅ Mot de passe mis à jour ! Bienvenue, ${clientProfile.name}`, "✅");
   }
 }
 
@@ -3435,7 +3662,7 @@ function handleLogOut() {
   }
 
   openLoginGateModal('login');
-  alert("👋 Vous êtes maintenant déconnecté. Vous pouvez vous reconnecter ou créer un compte.");
+  showToast("👋 Vous êtes maintenant déconnecté.", "👋");
 }
 
 function openSignupSurveyModal(intent = '') {
@@ -3466,7 +3693,7 @@ function openAddressEditPrompt() {
     if (deliveryInput) deliveryInput.value = clientProfile.address;
     updateUserProfileUI();
     updateDeliveryDistance(clientProfile.address);
-    alert(`✅ Adresse de livraison mise à jour :\n${clientProfile.address}`);
+    showToast(`📍 Adresse mise à jour : ${clientProfile.address}`, "📍");
   }
 }
 
@@ -3511,8 +3738,7 @@ function submitClientSurvey() {
   }
 
   closeModal('signupSurveyModal');
-
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est synchronisé avec Firebase.\n🎁 +50 Points de Fidélité crédités à votre compte!\nVous pouvez maintenant valider votre commande.`);
+  showToast(`🎉 Bienvenue ${name} ! Compte configuré (+50 Pts).`, "🎉");
   
   if (pendingOrderAction && cart.length > 0) {
     pendingOrderAction = false;
@@ -3619,7 +3845,7 @@ function handleGoogleSignIn() {
           if (gateEl) gateEl.style.display = 'none';
           if (appWrapper) appWrapper.style.display = 'block';
 
-          alert(`🌐 Connexion Google Réussie!\n\nBienvenue, ${displayName} (${email})!\n🎁 +50 Points de Fidélité crédités sur votre compte.`);
+          showToast(`🌐 Bienvenue ${displayName} ! Connexion réussie (+50 Pts).`, "🌐");
 
           if (pendingOrderAction && cart.length > 0) {
             pendingOrderAction = false;
@@ -3634,7 +3860,7 @@ function handleGoogleSignIn() {
         console.warn("Firebase Google Auth:", error.message);
         // Seamlessly switch to sign-up / login form so user inputs their exact own information
         switchGateTab('signup');
-        alert("ℹ️ Veuillez renseigner votre Prénom, Nom et Courriel dans le formulaire ci-dessous pour créer votre compte personnalisé (+50 Pts).");
+        showToast("Renseignez votre nom et courriel pour créer votre compte (+50 Pts).", "ℹ️");
       });
   } else {
     switchGateTab('signup');
@@ -3674,8 +3900,61 @@ function updateUserProfileUI() {
   }
 }
 
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function toggleLanguage() { alert("Bascule de langue : Français / English synchronisé."); }
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+
+function openRoleSwitcherModal() {
+  const el = document.getElementById('roleSwitcherModal');
+  if (el) el.classList.add('open');
+}
+
+function showToast(msg, icon = '✅') {
+  let toast = document.getElementById('customToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'customToast';
+    toast.style.cssText = 'position: fixed; top: 18px; left: 50%; transform: translateX(-50%) translateY(-25px); background: #1A1A22; color: #FFFFFF; border: 1.5px solid #FF5500; padding: 12px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 99999; box-shadow: 0 12px 40px rgba(0,0,0,0.85); display: flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span style="font-size: 16px;">${icon}</span><span>${msg}</span>`;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  
+  if (window.toastTimeout) clearTimeout(window.toastTimeout);
+  window.toastTimeout = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-25px)';
+  }, 2600);
+}
+
+let currentLang = 'fr';
+function toggleLanguage() {
+  currentLang = currentLang === 'fr' ? 'en' : 'fr';
+  const langBtn = document.getElementById('langBtn');
+  if (langBtn) langBtn.innerText = currentLang === 'fr' ? 'EN' : 'FR';
+
+  // Update tabs
+  const tabHome = document.querySelector('#tab-home span');
+  const tabMenu = document.querySelector('#tab-menu span');
+  const tabChat = document.querySelector('#tab-chat span');
+  const tabProfile = document.querySelector('#tab-profile span');
+
+  if (currentLang === 'en') {
+    if (tabHome) tabHome.innerText = 'Home';
+    if (tabMenu) tabMenu.innerText = 'Order';
+    if (tabChat) tabChat.innerText = 'Track & Chat';
+    if (tabProfile) tabProfile.innerText = 'Account';
+    showToast("Switched to English 🇬🇧", "🌐");
+  } else {
+    if (tabHome) tabHome.innerText = 'Accueil';
+    if (tabMenu) tabMenu.innerText = 'Commander';
+    if (tabChat) tabChat.innerText = 'Suivi & Chat';
+    if (tabProfile) tabProfile.innerText = 'Compte';
+    showToast("Passé en Français 🇫🇷", "🌐");
+  }
+}
 
 window.onload = function() {
   init();

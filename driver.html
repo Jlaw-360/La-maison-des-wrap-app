@@ -143,8 +143,10 @@
       <div style="font-size: 11px; color: var(--primary);">Honda Civic Noir • En service</div>
     </div>
   </div>
-  <div>
-    <a href="/index.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none; border: 1px solid var(--border); padding: 4px 10px; border-radius: 8px;">Client</a>
+  <div style="display: flex; gap: 6px; align-items: center;">
+    <a href="/index.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-utensils"></i> Client</a>
+    <a href="/kitchen.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-fire-burner"></i> Cuisine</a>
+    <a href="/admin.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-crown"></i> Admin</a>
   </div>
 </header>
 
@@ -341,8 +343,13 @@ function finalizeDelivery(orderId) {
     const raw = localStorage.getItem('lmdw_all_orders');
     if (raw) {
       let orders = JSON.parse(raw);
-      orders = orders.filter(x => x.id !== orderId);
+      const o = orders.find(x => x.id === orderId);
+      if (o) {
+        o.status = 'delivered';
+        o.deliveredAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+      }
       localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
+      localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'delivered', time: Date.now() }));
     }
   } catch(e){}
   const container = document.getElementById('driverMainContent');

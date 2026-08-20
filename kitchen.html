@@ -551,13 +551,17 @@ function moveTicket(orderId, nextState) {
 
   if (nextState === 'prep') {
     order.status = 'prep';
+    order.prepStartedAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
     stopAlarmAndAccept();
     saveLiveKitchenOrders();
+    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'prep', time: Date.now() }));
     renderKanbanColumns();
     alert(`🍲 Commande #${orderId} passée EN PRÉPARATION en cuisine !`);
   } else if (nextState === 'ready') {
     order.status = 'ready';
+    order.readyAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
     saveLiveKitchenOrders();
+    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'ready', time: Date.now() }));
     renderKanbanColumns();
     alert(`✅ Commande #${orderId} marquée comme PRÊTE !\nLe livreur ou le client peut maintenant la récupérer.`);
   }
@@ -597,8 +601,13 @@ function verifyStore4DigitPin() {
 function completeStorePickup() {
   alert(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT avec succès !\nStatut mis à jour : COMPLÉTÉE.`);
   closeStorePickupModal();
-  liveOrders = liveOrders.filter(o => o.id !== currentPendingOrder.id);
+  const order = liveOrders.find(o => o.id === currentPendingOrder.id);
+  if (order) {
+    order.status = 'completed';
+    order.completedAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+  }
   saveLiveKitchenOrders();
+  localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: currentPendingOrder.id, status: 'completed', time: Date.now() }));
   renderKanbanColumns();
 }
 

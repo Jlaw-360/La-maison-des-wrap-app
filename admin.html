@@ -514,6 +514,26 @@
     </div>
   </div>
 
+  <!-- Live Order Pipeline Feed -->
+  <div class="users-table-card" style="border-color: rgba(255, 85, 0, 0.3);">
+    <div class="table-header-row">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800; color: var(--primary);">
+          <i class="fa-solid fa-bolt"></i> Flux des Commandes en Direct (Pipeline Temps Réel)
+        </h2>
+        <p style="font-size: 11px; color: var(--text-muted);">Toutes les commandes passées par les clients, en préparation en cuisine, ou en cours de livraison par les livreurs.</p>
+      </div>
+      <button class="nav-btn" style="background: var(--primary); color: #fff;" onclick="renderAdminLiveOrders()">
+        <i class="fa-solid fa-rotate"></i> Actualiser Flux
+      </button>
+    </div>
+
+    <!-- Live Orders List -->
+    <div class="user-list" id="adminLiveOrdersContainer">
+      <!-- Populated dynamically by JS -->
+    </div>
+  </div>
+
   <!-- Role Management Table -->
   <div class="users-table-card">
     <div class="table-header-row">
@@ -707,11 +727,88 @@ function saveUserRole(uid) {
   }
 }
 
+function renderAdminLiveOrders() {
+  const container = document.getElementById('adminLiveOrdersContainer');
+  if (!container) return;
+
+  let allOrders = [];
+  try {
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) allOrders = JSON.parse(raw);
+  } catch(e){}
+
+  if (allOrders.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 12px;">
+        <i class="fa-solid fa-receipt" style="font-size: 28px; margin-bottom: 8px; color: rgba(255,255,255,0.2); display: block;"></i>
+        Aucune commande enregistrée pour le moment. Passez une commande test sur l'<strong>App Client</strong> pour la voir apparaître ici en direct.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = allOrders.map(order => {
+    let statusBadge = '';
+    const st = order.status || 'new';
+    if (st === 'new') {
+      statusBadge = '<span style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🔔 NOUVELLE REÇUE</span>';
+    } else if (st === 'prep') {
+      statusBadge = '<span style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🍲 EN PRÉPARATION</span>';
+    } else if (st === 'ready') {
+      statusBadge = '<span style="background: rgba(16, 185, 129, 0.2); color: #10B981; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">✅ PRÊTE EN CUISINE</span>';
+    } else if (st === 'in_transit') {
+      statusBadge = '<span style="background: rgba(255, 85, 0, 0.2); color: #FF5500; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🛵 EN COURS DE LIVRAISON</span>';
+    } else if (st === 'delivered' || st === 'completed') {
+      statusBadge = '<span style="background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🎉 LIVRÉE / COMPLÉTÉE</span>';
+    }
+
+    const itemsSummary = (order.items || []).map(i => i.name).join(', ') || 'Articles';
+    const totalDisplay = order.total ? `$${order.total.toFixed(2)} CAD` : '$0.00 CAD';
+
+    return `
+      <div class="user-row" style="border-left: 3px solid ${st === 'delivered' || st === 'completed' ? '#22C55E' : 'var(--primary)'};">
+        <div class="user-info">
+          <div class="user-avatar" style="background: ${st === 'delivered' || st === 'completed' ? '#22C55E' : 'var(--primary)'}; font-size: 14px; font-weight: 800;">
+            ${order.fulfillment === 'pickup' ? '🥡' : '🛵'}
+          </div>
+          <div class="user-details">
+            <h3 style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span>#${order.id}</span>
+              <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">(${order.customerName || 'Client'})</span>
+              ${statusBadge}
+            </h3>
+            <p>
+              🛍️ <strong>${itemsSummary}</strong> • 📍 ${order.address || 'Drummondville, QC'}<br>
+              🕒 Heure: ${order.createdAt || 'Récemment'} • 🔑 PIN: <strong>${order.pin || '2325'}</strong>
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align: right; min-width: 110px;">
+          <div style="font-family: var(--font-heading); font-size: 16px; font-weight: 800; color: #fff;">${totalDisplay}</div>
+          <div style="font-size: 11px; color: var(--accent-green);"><i class="fa-solid fa-credit-card"></i> Payé (Stripe)</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 function filterUsers() {
   renderUsers();
 }
 
-window.onload = renderUsers;
+window.addEventListener('storage', function(e) {
+  if (e.key === 'lmdw_all_orders' || e.key === 'lmdw_new_order' || e.key === 'lmdw_order_status_update') {
+    renderAdminLiveOrders();
+  }
+});
+
+setInterval(renderAdminLiveOrders, 3000);
+
+window.onload = function() {
+  renderUsers();
+  renderAdminLiveOrders();
+};
 </script>
 
 </body>
