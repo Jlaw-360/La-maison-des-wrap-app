@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ----------------------------------------------------
+// Core Models for La Maison des Wraps Restaurant System
+// ----------------------------------------------------
+
+model User {
+  id                String   @id @default(uuid())
+  name              String
+  email             String   @unique
+  phone             String?
+  role              String   @default("customer") // customer | store | driver | admin
+  address           String?
+  birthday          String?
+  points            Int      @default(50)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  orders            Order[]
+}
+
+model MenuItem {
+  id            String   @id @default(uuid())
+  name          String
+  category      String
+  price         Float
+  description   String?
+  imageUrl      String?
+  isAvailable   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+}
+
+model Order {
+  id                  String      @id @default(uuid())
+  orderNumber         String      @unique // e.g. CMD-4092
+  userId              String?
+  user                User?       @relation(fields: [userId], references: [id])
+  customerName        String
+  customerPhone       String
+  customerEmail       String?
+  fulfillmentType     String      @default("delivery") // delivery | pickup
+  dropoffOption       String?     @default("hand") // hand | door
+  deliveryAddress     String?
+  subtotal            Float
+  deliveryFee         Float       @default(0.0)
+  tpsTax              Float
+  tvqTax              Float
+  total               Float
+  status              String      @default("received") // received | preparing | ready | out_for_delivery | delivered | completed
+  pickupPin           String      @default("52325")
+  paymentMethod       String      @default("stripe_card")
+  paymentStatus       String      @default("paid")
+  driverNotes         String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
