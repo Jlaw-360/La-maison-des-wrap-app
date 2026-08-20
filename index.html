@@ -22,19 +22,19 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4&libraries=places&callback=initGoogleMapsPlaces" async defer></script>
   <style>
     :root {
-      --bg-main: #0C0C0E;
-      --bg-surface: #151519;
-      --bg-card: #1C1C22;
-      --bg-card-hover: #25252E;
-      --primary: #FF5500;
-      --primary-hover: #E04B00;
-      --primary-glow: rgba(255, 85, 0, 0.28);
+      --bg-main: #FAF7F2;
+      --bg-surface: #F2ECE1;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #FFF9F5;
+      --primary: #E34A26;
+      --primary-hover: #CC3814;
+      --primary-glow: rgba(227, 74, 38, 0.25);
       --accent-gold: #E5A93C;
       --accent-green: #22C55E;
-      --text-white: #FFFFFF;
-      --text-body: #A5A5B2;
-      --text-muted: #6E6E7A;
-      --border-subtle: rgba(255, 255, 255, 0.08);
+      --text-white: #1C1917;
+      --text-body: #57534E;
+      --text-muted: #8C857B;
+      --border-subtle: #EBE5DA;
       --font-heading: 'Plus Jakarta Sans', sans-serif;
       --font-body: 'Inter', sans-serif;
     }
@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: #060608;
+      background-color: #EFE9DE;
       color: var(--text-white);
       font-family: var(--font-body);
       min-height: 100vh;
@@ -59,7 +59,7 @@
       position: relative;
       border-left: 1px solid var(--border-subtle);
       border-right: 1px solid var(--border-subtle);
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 12px 48px rgba(90, 70, 50, 0.12);
       margin: 0 auto;
       overflow-x: hidden;
     }
@@ -80,7 +80,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(12, 12, 14, 0.92);
+      background: rgba(250, 247, 242, 0.94);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border-subtle);
@@ -304,18 +304,20 @@
     .dish-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 14px;
+      border-radius: 20px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(90, 70, 50, 0.04);
     }
 
     .dish-card:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(255, 85, 0, 0.3);
-      transform: translateY(-2px);
+      border-color: rgba(227, 74, 38, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(227, 74, 38, 0.08);
     }
 
     .dish-badge {
@@ -367,17 +369,23 @@
     }
 
     .add-icon-btn {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: var(--primary);
+      color: #FFFFFF;
       border: none;
-      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
       cursor: pointer;
+      font-size: 13px;
+      transition: transform 0.15s ease, background 0.15s ease;
+      box-shadow: 0 4px 10px rgba(227, 74, 38, 0.35);
+    }
+    .add-icon-btn:hover {
+      transform: scale(1.1);
+      background: var(--primary-hover);
     }
 
     /* About Restaurant Card */
@@ -513,7 +521,13 @@
       text-align: center;
     }
 
-    .nav-item.active { color: var(--primary); }
+    .nav-item.active {
+      color: var(--primary);
+    }
+    .nav-item.active .nav-icon {
+      color: var(--primary);
+      transform: scale(1.1);
+    }
     .nav-item i { font-size: 16px; }
 
     /* Elevated Flame Orange Center Order Button */

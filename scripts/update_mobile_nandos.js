@@ -1,4 +1,8 @@
-import { AppMetrics } from 'expo-observe';
+﻿const fs = require('fs');
+
+console.log("Applying Nandos aesthetic to React Native mobile screens...");
+
+const homeScreenCode = `import { AppMetrics } from 'expo-observe';
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -112,7 +116,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <Text style={styles.heroBadgeText}>AU FEU TANDOOR</Text>
           </View>
           <Text style={styles.heroTitle}>
-            {language === 'fr' ? 'Wraps Grillés au Feu.\nSaveurs Intenses.' : 'Flame-grilled Wraps.\nBold Flavour.'}
+            {language === 'fr' ? 'Wraps Grillés au Feu.\\nSaveurs Intenses.' : 'Flame-grilled Wraps.\\nBold Flavour.'}
           </Text>
           <Text style={styles.heroSubtitle}>
             {language === 'fr' ? 'Pain Naan ou Tortilla maison avec trio frites & boisson.' : 'House-baked naan or tortilla with fries & drink trio.'}
@@ -189,7 +193,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               {language === 'fr' ? item.name_fr : item.name_en}
             </Text>
             <View style={styles.popularBottom}>
-              <Text style={styles.popularPrice}>${item.price_cad.toFixed(2)}</Text>
+              <Text style={styles.popularPrice}>` + "$" + `{item.price_cad.toFixed(2)}</Text>
               <TouchableOpacity style={styles.orangePlusBtn} onPress={onNavigateToOrder}>
                 <Text style={styles.orangePlusText}>+</Text>
               </TouchableOpacity>
@@ -639,3 +643,8 @@ const styles = StyleSheet.create({
     color: '#8C857B',
   },
 });
+`;
+
+fs.writeFileSync('mobile/src/screens/HomeScreen.tsx', homeScreenCode);
+fs.writeFileSync('src/screens/HomeScreen.tsx', homeScreenCode);
+console.log("Successfully updated HomeScreen.tsx with Nandos design");
