@@ -1235,5 +1235,52 @@ window.onload = function() {
 };
 </script>
 
+
+<!-- Owner & Staff Security Lock Guard -->
+<div id="staffSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+  <div style="max-width: 400px; width: 100%; background: #1C1C24; border: 1.5px solid #FF5500; border-radius: 24px; padding: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">
+      🔒
+    </div>
+    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Accès Propriétaire & Personnel</h2>
+    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.4;">
+      Cette interface (Console Direction) est strictement réservée au restaurant. Veuillez entrer votre code PIN :
+    </p>
+    <input type="password" id="txtStaffGuardPin" placeholder="Entrez le PIN (2325)" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 12px;">
+    <div id="staffGuardError" style="display: none; color: #FF4444; font-size: 11px; margin-bottom: 12px; font-weight: 700;">Code PIN incorrect.</div>
+    <div style="display: flex; gap: 8px;">
+      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #DDD; font-weight: 700; cursor: pointer;">
+        Retour Client
+      </button>
+      <button type="button" onclick="verifyStaffGuardPin()" style="flex: 1; padding: 12px; background: #FF5500; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; cursor: pointer;">
+        Déverrouiller
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+function verifyStaffGuardPin() {
+  const pinInput = document.getElementById('txtStaffGuardPin');
+  const pinVal = (pinInput ? pinInput.value : '').trim();
+  const errorEl = document.getElementById('staffGuardError');
+  const overlay = document.getElementById('staffSecurityLockOverlay');
+
+  if (pinVal === '2325' || pinVal.toLowerCase() === 'admin') {
+    sessionStorage.setItem('lmdw_owner_authenticated', 'true');
+    if (overlay) overlay.style.display = 'none';
+  } else {
+    if (errorEl) errorEl.style.display = 'block';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const overlay = document.getElementById('staffSecurityLockOverlay');
+  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
+    if (overlay) overlay.style.display = 'none';
+  }
+});
+</script>
+
 </body>
 </html>
