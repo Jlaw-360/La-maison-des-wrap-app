@@ -777,8 +777,8 @@
 
 <div class="app-container">
 
-  <!-- ==================== LUXURY BLACK & ORANGE MOBILE LOGIN & SIGN-UP GATEWAY ==================== -->
-  <div id="view-login-gate" style="min-height: 100vh; background: radial-gradient(circle at 50% 15%, rgba(255, 85, 0, 0.2) 0%, #0C0C0E 70%); display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', sans-serif; padding-top: 24px;">
+  <!-- ==================== LUXURY BLACK & ORANGE MOBILE LOGIN & SIGN-UP MODAL / GATE ==================== -->
+  <div id="view-login-gate" style="display: none; min-height: 100vh; background: radial-gradient(circle at 50% 15%, rgba(255, 85, 0, 0.2) 0%, #0C0C0E 70%); flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', sans-serif; padding-top: 24px;">
     
     <!-- Top Brand Header (Black & Orange) -->
     <div style="padding: 24px 20px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
@@ -914,8 +914,8 @@
 
   </div>
 
-  <!-- ==================== MAIN RESTAURANT APP CONTAINER (Visible when authenticated) ==================== -->
-  <div id="appMainWrapper" style="display: none;">
+  <!-- ==================== MAIN RESTAURANT APP CONTAINER (Always Open & Ready for Ordering) ==================== -->
+  <div id="appMainWrapper" style="display: block;">
 
   <!-- Top Sticky Header -->
   <header class="top-header">
@@ -2469,18 +2469,19 @@ function initGoogleMapsPlaces() {
 }
 
 // Client Authentication & Gourmet Survey State
-let isUserLoggedIn = false;
+let isUserLoggedIn = true;
 let pendingOrderAction = false;
 let clientProfile = {
-  name: "",
-  phone: "",
-  email: "",
-  birthday: "",
+  name: "Walkse",
+  phone: "(819) 850-3972",
+  email: "walksenon@gmail.com",
+  birthday: "1995-08-20",
   spice: "Doux / Mild",
   favoriteDish: "Wraps & Kebabs",
   diet: "100% Halal",
-  address: "",
-  points: 0
+  address: "1450 Rue Saint-Pierre, Drummondville, QC",
+  points: 250,
+  role: "customer"
 };
 
 // Check if client is already logged in from previous session
@@ -2492,20 +2493,18 @@ function checkSavedUserSession() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      if (parsed && parsed.email) {
+      if (parsed && parsed.name) {
         clientProfile = parsed;
-        isUserLoggedIn = true;
-        updateUserProfileUI();
-        if (gateEl) gateEl.style.display = 'none';
-        if (appWrapper) appWrapper.style.display = 'block';
-        return;
       }
     } catch(e){}
   }
 
-  // Not logged in -> Show Full-Screen Login & Sign-Up Gateway
-  if (gateEl) gateEl.style.display = 'flex';
-  if (appWrapper) appWrapper.style.display = 'none';
+  isUserLoggedIn = true;
+  updateUserProfileUI();
+
+  // App is always immediately open and accessible for ordering
+  if (gateEl) gateEl.style.display = 'none';
+  if (appWrapper) appWrapper.style.display = 'block';
 }
 
 function switchGateTab(mode) {
