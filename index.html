@@ -2453,28 +2453,20 @@ function checkSavedUserSession() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      // Auto-clear old test placeholder user
-      if (parsed && (parsed.name === "Client Google" || parsed.email === "client.google@gmail.com" || parsed.name === "Jean Tremblay")) {
-        localStorage.removeItem('lmdw_user');
-        clientProfile.name = "";
-        clientProfile.email = "";
-        isUserLoggedIn = false;
-        if (gateEl) gateEl.style.display = 'flex';
-        if (appWrapper) appWrapper.style.display = 'none';
+      if (parsed && parsed.email) {
+        clientProfile = parsed;
+        isUserLoggedIn = true;
+        updateUserProfileUI();
+        if (gateEl) gateEl.style.display = 'none';
+        if (appWrapper) appWrapper.style.display = 'block';
         return;
       }
-
-      clientProfile = parsed;
-      isUserLoggedIn = true;
-      updateUserProfileUI();
-      if (gateEl) gateEl.style.display = 'none';
-      if (appWrapper) appWrapper.style.display = 'block';
     } catch(e){}
-  } else {
-    // Show Full-Screen Login & Sign-Up Gateway first
-    if (gateEl) gateEl.style.display = 'flex';
-    if (appWrapper) appWrapper.style.display = 'none';
   }
+
+  // Not logged in -> Show Full-Screen Login & Sign-Up Gateway
+  if (gateEl) gateEl.style.display = 'flex';
+  if (appWrapper) appWrapper.style.display = 'none';
 }
 
 function switchGateTab(mode) {
