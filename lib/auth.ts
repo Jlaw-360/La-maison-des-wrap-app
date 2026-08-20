@@ -10,11 +10,31 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: false,
+    minPasswordLength: 6,
   },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+  user: {
+    additionalFields: {
+      phone: {
+        type: "string",
+        required: true,
+        defaultValue: "",
+      },
+      address: {
+        type: "string",
+        required: true,
+        defaultValue: "1450 Rue Saint-Pierre, Drummondville, QC",
+      },
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "customer",
+      },
+      points: {
+        type: "number",
+        required: false,
+        defaultValue: 50,
+      },
     },
   },
 });

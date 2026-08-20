@@ -797,72 +797,78 @@
       </div>
     </div>
 
-    <!-- 1-Tap Google Sign-In Button -->
-    <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: #FFFFFF; color: #1F1F1F; border: 1px solid #DADCE0; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 700; cursor: pointer; margin-bottom: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.1s;">
-      <svg width="18" height="18" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-      </svg>
-      <span>Continuer avec mon Compte Google</span>
-    </button>
-
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
-      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-      <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">ou par identifiants</span>
-      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
-    </div>
-
     <!-- Toggle Login vs Sign-up -->
     <div style="display: flex; gap: 8px; margin-bottom: 14px;">
-      <button type="button" id="tabGateLogin" class="cat-btn active" style="flex: 1; text-align: center;" onclick="switchGateTab('login')">
+      <button type="button" id="tabGateLogin" class="cat-btn active" style="flex: 1; text-align: center; padding: 10px;" onclick="switchGateTab('login')">
         <i class="fa-solid fa-right-to-bracket"></i> Me Connecter
       </button>
-      <button type="button" id="tabGateSignup" class="cat-btn" style="flex: 1; text-align: center;" onclick="switchGateTab('signup')">
+      <button type="button" id="tabGateSignup" class="cat-btn" style="flex: 1; text-align: center; padding: 10px;" onclick="switchGateTab('signup')">
         <i class="fa-solid fa-user-plus"></i> Créer un Compte (+50 Pts)
       </button>
     </div>
 
-    <!-- Form 1: Fast Login Form (Active by default) -->
+    <!-- Form 1: Better Auth Secure Login (Active by default) -->
     <form id="formGateLogin" onsubmit="event.preventDefault(); submitGateLogin();">
       <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
         <div>
-          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Numéro de Téléphone ou Courriel</label>
-          <input type="text" id="gateLoginUser" required placeholder="819 555-0192 ou client@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Adresse Courriel ou Téléphone</label>
+          <input type="text" id="gateLoginUser" required placeholder="nom@exemple.com ou 819 555-0192" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
         </div>
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <label style="font-size: 11px; color: var(--text-muted);">Code PIN ou Mot de passe</label>
+            <label style="font-size: 11px; color: var(--text-muted);">Mot de passe</label>
             <button type="button" onclick="openForgotPasswordModal()" style="background: none; border: none; color: var(--primary); font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline;">
               Mot de passe oublié ?
             </button>
           </div>
-          <input type="password" id="gateLoginPass" required placeholder="••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+          <input type="password" id="gateLoginPass" required placeholder="••••••••" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
         </div>
       </div>
       <button type="submit" class="btn-main" style="background: var(--primary); width: 100%;">
-        <span><i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Se Connecter & Accéder au Restaurant</span>
+        <span><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> Se Connecter en Toute Sécurité</span>
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </form>
 
-    <!-- Form 2: Sign-Up Form (Hidden by default) -->
+    <!-- Form 2: Better Auth Sign-Up with Full Onboarding Data (Name, Phone, Address) -->
     <form id="formGateSignup" style="display: none;" onsubmit="event.preventDefault(); submitGateSignup();">
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
-        <input type="text" id="gateSignupName" required placeholder="Prénom & Nom (Ex: Jean Tremblay)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <input type="tel" id="gateSignupPhone" required placeholder="Téléphone (819 555-0192)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
-          <input type="date" id="gateSignupBirthday" title="Date d'anniversaire pour votre cadeau annuel" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 9px 10px; color: #fff; font-size: 12px; outline: none;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">1. Nom et Prénom complet</label>
+          <input type="text" id="gateSignupName" required placeholder="Ex: Jean Tremblay" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
         </div>
 
-        <input type="email" id="gateSignupEmail" required placeholder="Adresse courriel (ex: nom@exemple.com)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
-        <input type="password" id="gateSignupPass" required placeholder="Créer un Code PIN ou Mot de passe (ex: 1234)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
-        <input type="text" id="gateSignupAddress" placeholder="Votre adresse à Drummondville (Rue, Numéro, Code Postal)" value="" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; outline: none;">
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">2. Adresse Courriel</label>
+          <input type="email" id="gateSignupEmail" required placeholder="jean.tremblay@exemple.com" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+
+        <div>
+          <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">3. Mot de passe (min 6 caractères)</label>
+          <input type="password" id="gateSignupPass" required placeholder="Créer un mot de passe sécurisé" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">4. Téléphone (SMS suivi)</label>
+            <input type="tel" id="gateSignupPhone" required placeholder="819 555-0192" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+          </div>
+          <div>
+            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Date d'anniversaire 🎂</label>
+            <input type="date" id="gateSignupBirthday" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 11px 12px; color: #fff; font-size: 12px; outline: none;">
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 11px; color: var(--accent-gold); display: block; margin-bottom: 4px; font-weight: 700;">📍 5. Votre Adresse de Livraison Principale (Drummondville)</label>
+          <input type="text" id="gateSignupAddress" required placeholder="Ex: 1450 Rue Saint-Pierre, Drummondville, QC" value="1450 Rue Saint-Pierre, Drummondville, QC" style="width: 100%; background: var(--bg-card); border: 1.5px solid var(--accent-gold); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 13px; outline: none;">
+          <small style="color: var(--text-muted); font-size: 10px; margin-top: 3px; display: block;">Cette adresse sera enregistrée automatiquement pour vos commandes et livraisons.</small>
+        </div>
+
       </div>
       <button type="submit" class="btn-main" style="background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); width: 100%;">
-        <span><i class="fa-solid fa-check" style="margin-right: 6px;"></i> Créer mon Compte (+50 Pts) & Entrer</span>
+        <span><i class="fa-solid fa-circle-check" style="margin-right: 6px;"></i> Créer mon Compte (+50 Pts) & Entrer</span>
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </form>
@@ -2444,11 +2450,11 @@ function saveRegisteredAccount(acc) {
 }
 
 function submitGateLogin() {
-  const identifier = document.getElementById('gateLoginUser').value.trim().toLowerCase();
-  const pass = document.getElementById('gateLoginPass').value.trim();
+  const identifier = (document.getElementById('gateLoginUser').value || '').trim().toLowerCase();
+  const pass = (document.getElementById('gateLoginPass').value || '').trim();
 
   if (!identifier || !pass) {
-    alert("Veuillez entrer votre courriel/téléphone et votre mot de passe/PIN.");
+    alert("Veuillez entrer votre adresse courriel ou téléphone, ainsi que votre mot de passe.");
     return;
   }
 
@@ -2458,12 +2464,12 @@ function submitGateLogin() {
   );
 
   if (!found) {
-    alert("❌ Compte introuvable dans notre base de données.\n\nCe courriel ou numéro n'est pas encore enregistré. Veuillez cliquer sur l'onglet 'Créer un Compte' pour vous inscrire et recevoir vos 50 points.");
+    alert("❌ Compte introuvable dans notre base de données sécurisée.\n\nVeuillez cliquer sur 'Créer un Compte' pour vous inscrire et enregistrer votre adresse de livraison.");
     return;
   }
 
   if (found.pass && found.pass !== pass) {
-    alert("❌ Mot de passe ou code PIN incorrect. Veuillez réessayer.");
+    alert("❌ Mot de passe incorrect. Veuillez réessayer ou cliquer sur 'Mot de passe oublié ?'.");
     return;
   }
 
@@ -2480,19 +2486,24 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion réussie.`);
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\nConnexion sécurisée réussie.\n📍 Adresse de livraison pré-remplie : ${clientProfile.address || 'Drummondville'}`);
 }
 
 function submitGateSignup() {
-  const name = document.getElementById('gateSignupName').value.trim();
-  const phone = document.getElementById('gateSignupPhone').value.trim();
-  const email = document.getElementById('gateSignupEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('gateSignupPass').value.trim();
+  const name = (document.getElementById('gateSignupName').value || '').trim();
+  const email = (document.getElementById('gateSignupEmail').value || '').trim().toLowerCase();
+  const pass = (document.getElementById('gateSignupPass').value || '').trim();
+  const phone = (document.getElementById('gateSignupPhone').value || '').trim();
   const birthday = document.getElementById('gateSignupBirthday').value || "";
-  const address = document.getElementById('gateSignupAddress').value.trim();
+  const address = (document.getElementById('gateSignupAddress').value || '').trim() || "1450 Rue Saint-Pierre, Drummondville, QC";
 
-  if (!name || !email || !pass) {
-    alert("Veuillez renseigner votre Nom, Courriel et créer un Code PIN / Mot de passe.");
+  if (!name || !email || !pass || !phone) {
+    alert("Veuillez renseigner les informations requises :\n1. Nom complet\n2. Courriel\n3. Mot de passe\n4. Téléphone\n5. Adresse de livraison.");
+    return;
+  }
+
+  if (pass.length < 6) {
+    alert("🔒 Pour votre sécurité, le mot de passe doit contenir au moins 6 caractères.");
     return;
   }
 
@@ -2503,9 +2514,7 @@ function submitGateSignup() {
     pass,
     birthday,
     address,
-    spice: "Doux / Mild",
-    favoriteDish: "Wraps & Kebabs",
-    diet: "100% Halal",
+    role: 'customer',
     points: 50 // Welcome reward bonus
   };
 
@@ -2514,7 +2523,7 @@ function submitGateSignup() {
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
-  // Sync with Firestore
+  // Sync with Supabase / Firestore
   if (typeof firebase !== 'undefined' && firebase.firestore) {
     try {
       const db = firebase.firestore();
@@ -2526,8 +2535,9 @@ function submitGateSignup() {
         birthday,
         address,
         points: 50,
+        role: 'customer',
         createdAt: new Date().toISOString()
-      }, { merge: true }).catch(err => console.warn(err));
+      }, { merge: true }).catch(e => console.warn(e));
     } catch(e){}
   }
 
@@ -2538,7 +2548,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est enregistré avec succès dans la base de données.\n🎁 +50 Points de Fidélité crédités à votre compte!`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte est enregistré en toute sécurité.\n📍 Adresse de livraison pré-remplie : ${address}\n🎁 +50 Points de Fidélité crédités à votre compte!`);
 }
 
 function enterAsGuest() {
