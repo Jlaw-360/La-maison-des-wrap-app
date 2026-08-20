@@ -245,13 +245,19 @@
     <div class="ticket-card" id="ticket-CMD-4093">
       <div class="ticket-header">
         <span class="ticket-id">#CMD-4093</span>
-        <span class="badge-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">🛵 LIVRAISON</span>
+        <span class="badge-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">🛵 LIVRAISON (3.5 km)</span>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
+        👤 <strong>Jean Tremblay</strong> • 📞 (819) 555-0192<br>
+        ✉️ <span style="color: var(--primary);">jean.tremblay@exemple.com</span><br>
+        📍 1450 Rue Saint-Pierre, Drummondville
       </div>
       <div class="ticket-items">
-        <strong>1x Wrap Poulet Tikka (Pain Tortilla, Trio)</strong><br>
-        <small style="color: var(--text-muted);">• Accompagnement: Frites • Sauces: Ail, Verte</small><br>
+        <strong>1x Wrap Poulet Tikka (Pain Tortilla) [Trio: Frites + Coca-Cola Canette (Inclus)]</strong><br>
+        <small style="color: var(--text-muted);">• Sauces: Ail, Verte</small><br>
         <strong>1x Poutine Poulet Tikka</strong>
       </div>
+      <div style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-top: 4px;">PIN Sécurité : 2325</div>
       <button class="btn-action" onclick="moveTicket('CMD-4093', 'prep')">
         <i class="fa-solid fa-fire-burner"></i> Lancer en Préparation
       </button>
@@ -269,11 +275,16 @@
         <span class="ticket-id">#CMD-4092</span>
         <span class="badge-tag" style="background: rgba(34, 197, 94, 0.2); color: #22C55E;">🥡 CUEILLETTE COMPTOIR</span>
       </div>
-      <div class="ticket-items">
-        <strong>2x Kebab au Poulet (Pain Naan Fait Maison, Trio)</strong><br>
-        <small style="color: var(--text-muted);">• Sauces: Ail, Harissa • Extra Œuf (+0.99$)</small><br>
-        <strong>1x Lassi Mangue</strong>
+      <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
+        👤 <strong>Sophie Gagnon</strong> • 📞 (819) 850-3972<br>
+        ✉️ <span style="color: var(--primary);">sophie.gagnon@exemple.com</span>
       </div>
+      <div class="ticket-items">
+        <strong>2x Kebab au Poulet (Pain Naan Fait Maison) [Trio: Frites + Lassi Mangue (+2.50$)]</strong><br>
+        <small style="color: var(--text-muted);">• Sauces: Ail, Harissa</small><br>
+        <strong>1x Chai Indien Épicé Chaud</strong>
+      </div>
+      <div style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-top: 4px;">PIN Comptoir : 2325</div>
       <button class="btn-action" style="background: #10B981;" onclick="moveTicket('CMD-4092', 'ready')">
         <i class="fa-solid fa-qrcode"></i> Prêt pour Retrait
       </button>
@@ -289,9 +300,11 @@
     <div class="ticket-card" id="ticket-ready-container" style="border: 1px solid var(--badge-ready);">
       <div class="ticket-header">
         <span class="ticket-id">#CMD-4092</span>
-        <span class="badge-tag" style="background: #10B981; color: #fff;">PRÊT POUR RETRAIT</span>
+        <span class="badge-tag" style="background: #10B981; color: #fff;">PRÊT AU COMPTOIR</span>
       </div>
-      <div style="font-size: 12px; color: var(--text-muted);">Client : <strong>Cueillette au Comptoir</strong></div>
+      <div style="font-size: 12px; color: var(--text-muted);">
+        Client : <strong>Sophie Gagnon</strong> (sophie.gagnon@exemple.com)
+      </div>
       
       <!-- Generated QR Code & Verification Button -->
       <div style="text-align: center;">
@@ -303,10 +316,10 @@
       
       <!-- Cashier Confirm Pickup Button -->
       <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-        <button class="btn-action" style="background: #22C55E; font-size: 13px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio), 1x Lassi Mangue')">
+        <button class="btn-action" style="background: #22C55E; font-size: 13px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio Lassi), 1x Chai')">
           <i class="fa-solid fa-camera"></i> 1. Scanner QR Code Client
         </button>
-        <button class="btn-action" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); font-size: 12px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio), 1x Lassi Mangue')">
+        <button class="btn-action" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); font-size: 12px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio Lassi), 1x Chai')">
           <i class="fa-solid fa-keyboard"></i> 2. Entrer Code (4 chiffres : 2325)
         </button>
       </div>
