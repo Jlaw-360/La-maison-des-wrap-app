@@ -15,6 +15,7 @@
     "build:all": "npx eas-cli build --platform all --profile preview"
   },
   "dependencies": {
+    "@better-auth/infra": "^0.4.1",
     "@supabase/supabase-js": "^2.49.1",
     "expo": "~52.0.0",
     "expo-app-metrics": "^0.1.0",

@@ -17,8 +17,10 @@
     "mobile:build:all": "npm --prefix mobile run build:all"
   },
   "dependencies": {
+    "@better-auth/infra": "^0.4.1",
     "@supabase/supabase-js": "^2.49.1",
     "expo": "~52.0.0",
+    "expo-app-metrics": "^0.1.0",
     "expo-asset": "~11.0.5",
     "expo-constants": "~17.0.8",
     "expo-observe": "^0.1.0",
@@ -26,8 +28,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
-    "react-native-web": "~0.19.13",
-    "expo-app-metrics": "^0.1.0"
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
