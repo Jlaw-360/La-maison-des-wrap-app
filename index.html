@@ -22,19 +22,19 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4&libraries=places&callback=initGoogleMapsPlaces" async defer></script>
   <style>
     :root {
-      --bg-main: #FAF7F2;
-      --bg-surface: #F2ECE1;
-      --bg-card: #FFFFFF;
-      --bg-card-hover: #FFF9F5;
-      --primary: #E34A26;
-      --primary-hover: #CC3814;
-      --primary-glow: rgba(227, 74, 38, 0.25);
+      --bg-main: #0C0C0E;
+      --bg-surface: #151519;
+      --bg-card: #1C1C22;
+      --bg-card-hover: #262630;
+      --primary: #FF5500;
+      --primary-hover: #E04B00;
+      --primary-glow: rgba(255, 85, 0, 0.35);
       --accent-gold: #E5A93C;
       --accent-green: #22C55E;
-      --text-white: #1C1917;
-      --text-body: #57534E;
-      --text-muted: #8C857B;
-      --border-subtle: #EBE5DA;
+      --text-white: #FFFFFF;
+      --text-body: #A5A5B2;
+      --text-muted: #7A7A88;
+      --border-subtle: rgba(255, 255, 255, 0.09);
       --font-heading: 'Plus Jakarta Sans', sans-serif;
       --font-body: 'Inter', sans-serif;
     }
@@ -42,7 +42,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background-color: #EFE9DE;
+      background-color: #060608;
       color: var(--text-white);
       font-family: var(--font-body);
       min-height: 100vh;
@@ -59,7 +59,7 @@
       position: relative;
       border-left: 1px solid var(--border-subtle);
       border-right: 1px solid var(--border-subtle);
-      box-shadow: 0 12px 48px rgba(90, 70, 50, 0.12);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
       margin: 0 auto;
       overflow-x: hidden;
     }
@@ -80,7 +80,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(250, 247, 242, 0.94);
+      background: rgba(12, 12, 14, 0.94);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border-subtle);
@@ -304,20 +304,20 @@
     .dish-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 12px;
       display: flex;
       flex-direction: column;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 16px rgba(90, 70, 50, 0.04);
+      position: relative;
     }
 
     .dish-card:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(227, 74, 38, 0.3);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(227, 74, 38, 0.08);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--primary-glow);
     }
 
     .dish-badge {
@@ -380,8 +380,12 @@
       justify-content: center;
       cursor: pointer;
       font-size: 13px;
-      transition: transform 0.15s ease, background 0.15s ease;
-      box-shadow: 0 4px 10px rgba(227, 74, 38, 0.35);
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+    .add-icon-btn:hover {
+      transform: scale(1.1);
+      background: var(--primary-hover);
     }
     .add-icon-btn:hover {
       transform: scale(1.1);
@@ -1421,6 +1425,10 @@
       </div>
       <button class="close-btn" onclick="closeModal('dishModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
+    <!-- Large Dish Hero Image -->
+    <div style="width: 100%; height: 160px; border-radius: 14px; overflow: hidden; margin-bottom: 12px; background: #121216; border: 1px solid var(--border-subtle);">
+      <img id="modalDishImage" src="/assets/food/wrap_kebab_poulet.png" alt="Plat" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/food/wrap_kebab_poulet.png'">
+    </div>
     <p id="modalDesc" style="font-size: 12px; color: var(--text-body); margin-bottom: 16px; line-height: 1.4;"></p>
 
     <!-- Step 1: Bread Choice (For Wraps) -->
@@ -2359,15 +2367,25 @@ function openMenuAtCategory(cat) {
 
 function renderHomeFeatured() {
   const container = document.getElementById('homeFeaturedGrid');
+  if (!container) return;
   const featured = BOARD_DISHES.filter(d => d.is_featured);
 
   container.innerHTML = featured.map(dish => `
     <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
-      <div class="dish-badge">Vedette • ${dish.cat}</div>
-      <div class="dish-title">${dish.name_fr}</div>
-      <div class="dish-desc">${dish.desc_fr}</div>
-      <div class="dish-price-row">
-        <span class="price-text">$${dish.price.toFixed(2)}</span>
+      <div style="width: 100%; height: 120px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: #121216; position: relative;">
+        <img src="${dish.image || '/assets/food/wrap_kebab_poulet.png'}" alt="${dish.name_fr}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/food/wrap_kebab_poulet.png'">
+        <div style="position: absolute; top: 6px; left: 6px; background: rgba(12, 12, 14, 0.85); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; color: var(--accent-gold);">
+          ${dish.cat}
+        </div>
+      </div>
+      <div class="dish-title" style="font-size: 13px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 4px;">
+        ${dish.name_fr}
+      </div>
+      <div class="dish-desc" style="font-size: 11px; color: var(--text-body); line-height: 1.3; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 28px;">
+        ${dish.desc_fr}
+      </div>
+      <div class="dish-price-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+        <span class="price-text" style="font-size: 14px; font-weight: 800; color: var(--primary);">${dish.price.toFixed(2)} CAD</span>
         <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
       </div>
     </div>
@@ -2390,25 +2408,34 @@ function selectMenuCat(cat) {
 
 function renderMenuDishes(query = '') {
   const container = document.getElementById('fullMenuGrid');
+  if (!container) return;
   const filtered = BOARD_DISHES.filter(d => {
     const matchesCat = d.cat === activeCat;
     const matchesQuery = !query || d.name_fr.toLowerCase().includes(query) || d.desc_fr.toLowerCase().includes(query);
     return matchesCat && matchesQuery;
   });
 
-  document.getElementById('menuCategoryTitle').innerText = activeCat;
-  document.getElementById('menuItemsCountLabel').innerText = `${filtered.length} plats`;
+  const catTitleEl = document.getElementById('menuCategoryTitle');
+  if (catTitleEl) catTitleEl.innerText = activeCat;
+  const countEl = document.getElementById('menuItemsCountLabel');
+  if (countEl) countEl.innerText = `${filtered.length} plats`;
 
   container.innerHTML = filtered.map(dish => `
     <div class="dish-card" onclick="openDishModal('${dish.name_fr.replace(/'/g, "\\'")}')">
-      <div style="width: 100%; height: 110px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: #181820; position: relative;">
-        <img src="${dish.image || '/assets/food/wrap_kebab_poulet.png'}" alt="${dish.name_fr}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/logo.png'">
-        <div class="dish-badge" style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; margin: 0; font-size: 8px;">${dish.cat}</div>
+      <div style="width: 100%; height: 120px; border-radius: 12px; overflow: hidden; margin-bottom: 10px; background: #121216; position: relative;">
+        <img src="${dish.image || '/assets/food/wrap_kebab_poulet.png'}" alt="${dish.name_fr}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/food/wrap_kebab_poulet.png'">
+        <div style="position: absolute; top: 6px; left: 6px; background: rgba(12, 12, 14, 0.85); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; color: var(--accent-gold);">
+          ${dish.cat}
+        </div>
       </div>
-      <div class="dish-title">${dish.name_fr}</div>
-      <div class="dish-desc">${dish.desc_fr}</div>
-      <div class="dish-price-row">
-        <span class="price-text">${dish.price.toFixed(2)}</span>
+      <div class="dish-title" style="font-size: 13px; font-weight: 700; color: #FFFFFF; line-height: 1.3; margin-bottom: 4px;">
+        ${dish.name_fr}
+      </div>
+      <div class="dish-desc" style="font-size: 11px; color: var(--text-body); line-height: 1.3; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 28px;">
+        ${dish.desc_fr}
+      </div>
+      <div class="dish-price-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+        <span class="price-text" style="font-size: 14px; font-weight: 800; color: var(--primary);">${dish.price.toFixed(2)} CAD</span>
         <button class="add-icon-btn"><i class="fa-solid fa-plus"></i></button>
       </div>
     </div>
@@ -2539,7 +2566,7 @@ function addDishToCart() {
     itemTitle += ` [Trio: ${curSideName} + ${curDrinkName || 'Canette Inclus'}]`;
   }
 
-  cart.push({ name: itemTitle, price: total });
+  cart.push({ name: itemTitle, price: total, image: curDish.image || '/assets/food/wrap_kebab_poulet.png' });
   closeModal('dishModal');
   updateCartBadge();
   showToast(`<strong>${itemTitle}</strong> ($${total.toFixed(2)}) ajouté au panier !`, "🌯");
@@ -2640,12 +2667,15 @@ function openCartModal() {
 
     if (list) {
       list.innerHTML = cart.map((i, idx) => `
-        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 10px 12px; border-radius: 12px; border: 1px solid var(--border-subtle);">
-          <div style="flex: 1; min-width: 0; padding-right: 8px;">
-            <div style="font-size: 13px; font-weight: 700; color: #fff;">${i.name}</div>
-            <strong style="color: var(--primary); font-size: 13px;">$${i.price.toFixed(2)}</strong>
+        <div style="display: flex; align-items: center; gap: 10px; background: var(--bg-card); padding: 10px 12px; border-radius: 14px; border: 1px solid var(--border-subtle);">
+          <div style="width: 50px; height: 50px; border-radius: 10px; overflow: hidden; background: #121216; flex-shrink: 0; border: 1px solid var(--border-subtle);">
+            <img src="${i.image || '/assets/food/wrap_kebab_poulet.png'}" alt="${i.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/food/wrap_kebab_poulet.png'">
           </div>
-          <button type="button" onclick="removeItemFromCart(${idx})" style="background: rgba(255, 68, 68, 0.15); border: 1px solid rgba(255, 68, 68, 0.3); color: #FF4444; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <div style="flex: 1; min-width: 0; padding-right: 6px;">
+            <div style="font-size: 13px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 3px;">${i.name}</div>
+            <strong style="color: var(--primary); font-size: 13px;">${i.price.toFixed(2)} CAD</strong>
+          </div>
+          <button type="button" onclick="removeItemFromCart(${idx})" style="background: rgba(255, 68, 68, 0.15); border: 1px solid rgba(255, 68, 68, 0.3); color: #FF4444; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
             <i class="fa-solid fa-trash" style="font-size: 11px;"></i>
           </button>
         </div>

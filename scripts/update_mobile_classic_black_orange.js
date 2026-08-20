@@ -1,4 +1,8 @@
-import { AppMetrics } from 'expo-observe';
+﻿const fs = require('fs');
+
+console.log("Applying classic Black & Orange theme to mobile React Native screens...");
+
+const mobileHomeScreen = `import { AppMetrics } from 'expo-observe';
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -58,7 +62,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <View style={styles.statusRow}>
           <View style={styles.statusDot} />
           <Text style={styles.statusText}>
-            {language === 'fr' ? 'Ouvert aujourd\'hui · 11h00 à 22h00' : 'Open today · 11:00 AM to 10:00 PM'}
+            {language === 'fr' ? 'Ouvert aujourd\\'hui · 11h00 à 22h00' : 'Open today · 11:00 AM to 10:00 PM'}
           </Text>
         </View>
 
@@ -161,7 +165,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               {language === 'fr' ? item.description_fr : item.description_en}
             </Text>
             <View style={styles.dishBottomRow}>
-              <Text style={styles.dishPrice}>${item.price_cad.toFixed(2)} CAD</Text>
+              <Text style={styles.dishPrice}>\${item.price_cad.toFixed(2)} CAD</Text>
               <View style={styles.plusBtn}>
                 <Text style={styles.plusBtnText}>+</Text>
               </View>
@@ -572,3 +576,17 @@ const styles = StyleSheet.create({
     color: '#7A7A88',
   },
 });
+`;
+
+fs.writeFileSync('mobile/src/screens/HomeScreen.tsx', mobileHomeScreen);
+fs.writeFileSync('src/screens/HomeScreen.tsx', mobileHomeScreen);
+console.log("Updated mobile HomeScreen.tsx with classic Black & Orange");
+
+// Update mobile/App.tsx navigation styles
+let appCode = fs.readFileSync('mobile/App.tsx', 'utf8');
+appCode = appCode.replace(/safeArea:\s*\{[\s\S]*?backgroundColor:\s*'[^']+',/, `safeArea: {\n    flex: 1,\n    backgroundColor: '#0C0C0E',`);
+appCode = appCode.replace(/bottomNav:\s*\{[\s\S]*?backgroundColor:\s*'[^']+',/, `bottomNav: {\n    position: 'absolute',\n    bottom: 12,\n    left: 14,\n    right: 14,\n    flexDirection: 'row',\n    backgroundColor: 'rgba(24, 24, 28, 0.96)',\n    borderRadius: 24,\n    borderWidth: 1,\n    borderColor: 'rgba(255, 255, 255, 0.08)',\n    height: 64,\n    alignItems: 'center',\n    justifyContent: 'space-around',\n    paddingHorizontal: 8,\n    shadowColor: '#000',\n    shadowOffset: { width: 0, height: 6 },\n    shadowOpacity: 0.6,\n    shadowRadius: 14,\n    elevation: 8,`);
+fs.writeFileSync('mobile/App.tsx', appCode);
+fs.writeFileSync('App.tsx', appCode);
+console.log("Updated mobile App.tsx with classic Black & Orange");
+
