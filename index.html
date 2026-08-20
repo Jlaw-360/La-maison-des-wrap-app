@@ -1076,41 +1076,171 @@
 
   </div>
 
-  <!-- ==================== VIEW 3: PROFILE (PROFIL) ==================== -->
+  <!-- ==================== VIEW 3: SCAN & REWARDS HUB (TIM HORTOUNS / MCDONALD'S STYLE) ==================== -->
+  <div class="app-view" id="view-scan">
+    <div style="padding: 16px 18px 24px 18px; max-width: 520px; margin: 0 auto;">
+      
+      <!-- Top Member Rewards Card -->
+      <div style="background: linear-gradient(135deg, #22222A 0%, #17171E 100%); border: 1.5px solid var(--accent-gold); border-radius: 22px; padding: 20px; box-shadow: 0 8px 30px rgba(229, 169, 60, 0.18); margin-bottom: 18px; text-align: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(229, 169, 60, 0.1); border-radius: 50%;"></div>
+        
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(229, 169, 60, 0.2); color: var(--accent-gold); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px;">
+          <i class="fa-solid fa-crown"></i> Programme Fidélité Récompenses
+        </div>
+
+        <h1 style="font-family: var(--font-heading); font-size: 38px; font-weight: 800; color: #FFFFFF; line-height: 1; margin-bottom: 4px;">
+          <span id="lblScanPointsVal">250</span> <span style="font-size: 18px; color: var(--accent-gold);">Points</span>
+        </h1>
+        <p style="font-size: 12px; color: var(--text-muted);">Gagnez 10 points par tranche de 1$ CAD dépensé</p>
+
+        <!-- Rewards Redeem Switcher (Toggle Yes / No to Redeem Sandwich with Points) -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px 14px; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div style="text-align: left;">
+            <strong style="font-size: 12px; color: #FFFFFF; display: block;">Échanger contre un Wrap Gratuit (200 pts)</strong>
+            <span style="font-size: 10px; color: var(--text-muted);">Activer avant que le restaurant scanne votre code</span>
+          </div>
+          <div style="display: flex; gap: 4px; background: var(--bg-surface); padding: 3px; border-radius: 20px; border: 1px solid var(--border-subtle);">
+            <button type="button" id="btnRedeemNo" onclick="togglePointsRedeem(false)" style="background: var(--primary); color: #fff; border: none; padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 800; cursor: pointer;">NON</button>
+            <button type="button" id="btnRedeemYes" onclick="togglePointsRedeem(true)" style="background: transparent; color: var(--text-muted); border: none; padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 800; cursor: pointer;">OUI</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- High-Contrast Scannable QR Code Card -->
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 22px 18px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: #111827;">
+        <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #4B5563; letter-spacing: 0.5px;">Scanner en Caisse ou à la Livraison</span>
+        
+        <div id="hubQrCodeContainer" style="margin: 14px auto 10px auto; display: flex; justify-content: center; min-height: 180px; align-items: center;">
+          <canvas id="hubQrCanvas" style="max-width: 190px; border-radius: 8px;"></canvas>
+        </div>
+
+        <div style="border-top: 1.5px dashed #E5E7EB; margin-top: 12px; padding-top: 12px;">
+          <span style="font-size: 11px; color: #6B7280; font-weight: 600;">Code de secours manuel à 4 chiffres (PIN) :</span>
+          <div style="font-family: var(--font-heading); font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #E11D23; margin-top: 2px;" id="lblHubPinCode">2325</div>
+          <small style="color: #9CA3AF; font-size: 10px;">Donnez ce code si le lecteur QR du restaurant est indisponible.</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== VIEW 4: LIVE TRACKING & CHAT (SUIVI & MESSAGERIE) ==================== -->
+  <div class="app-view" id="view-chat">
+    <div style="padding: 16px 18px 24px 18px; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+      
+      <!-- Live Order Status Tracker Box -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <span style="font-size: 11px; color: var(--accent-gold); font-weight: 800; text-transform: uppercase;">Commande Active</span>
+            <h3 style="font-size: 15px; font-weight: 800;" id="lblLiveOrderNum">CMD-4092</h3>
+          </div>
+          <span style="background: rgba(34, 197, 94, 0.15); color: #22C55E; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;" id="lblLiveStatusBadge">
+            <i class="fa-solid fa-fire-burner"></i> En Préparation (5-10 min)
+          </span>
+        </div>
+
+        <!-- 4-Step Progress Line -->
+        <div style="display: flex; justify-content: space-between; position: relative; margin: 18px 6px 6px 6px;">
+          <div style="position: absolute; top: 12px; left: 10px; right: 10px; height: 3px; background: rgba(255,255,255,0.1); z-index: 1;"></div>
+          <div style="position: absolute; top: 12px; left: 10px; width: 60%; height: 3px; background: var(--primary); z-index: 1;" id="progressBarFill"></div>
+          
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto;"><i class="fa-solid fa-check"></i></div>
+            <span style="font-size: 9px; color: #fff; margin-top: 4px; display: block;">Reçue</span>
+          </div>
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto;"><i class="fa-solid fa-fire-burner"></i></div>
+            <span style="font-size: 9px; color: #fff; margin-top: 4px; display: block;">Cuisine</span>
+          </div>
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid rgba(255,255,255,0.2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto;"><i class="fa-solid fa-motorcycle"></i></div>
+            <span style="font-size: 9px; color: var(--text-muted); margin-top: 4px; display: block;">Livraison</span>
+          </div>
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-surface); border: 2px solid rgba(255,255,255,0.2); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; margin: 0 auto;"><i class="fa-solid fa-house-chimney"></i></div>
+            <span style="font-size: 9px; color: var(--text-muted); margin-top: 4px; display: block;">Arrivé</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time In-App Chat Window (Supabase Live Chat) -->
+      <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btnChatStore" onclick="setChatRecipient('store')" class="cat-btn active" style="font-size: 11px; padding: 6px 12px;">
+              <i class="fa-solid fa-store"></i> Cuisine Restaurant
+            </button>
+            <button type="button" id="btnChatDriver" onclick="setChatRecipient('driver')" class="cat-btn" style="font-size: 11px; padding: 6px 12px;">
+              <i class="fa-solid fa-motorcycle"></i> Livreur en Route
+            </button>
+          </div>
+          <span style="font-size: 10px; color: var(--accent-green);"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> En direct</span>
+        </div>
+
+        <!-- Message History Feed -->
+        <div id="chatMessagesContainer" style="height: 220px; overflow-y: auto; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+          <div style="align-self: flex-start; max-width: 80%; background: #22222C; padding: 8px 12px; border-radius: 12px 12px 12px 2px; font-size: 12px;">
+            <strong style="color: var(--accent-gold); font-size: 10px; display: block;">Chef Cuisine • 110e Avenue</strong>
+            Votre commande est acceptée et en cuisson ! Prête dans 7 minutes. 🌯
+          </div>
+        </div>
+
+        <!-- Quick Response Suggestion Tags -->
+        <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; scrollbar-width: none;">
+          <button type="button" onclick="sendQuickChatMessage('Sans oignons svp !')" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 10px; white-space: nowrap; cursor: pointer;">🧅 Sans oignons</button>
+          <button type="button" onclick="sendQuickChatMessage('Je suis en bas / à l\'accueil')" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 10px; white-space: nowrap; cursor: pointer;">📍 Je suis en bas</button>
+          <button type="button" onclick="sendQuickChatMessage('Code porte : 2325')" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 10px; white-space: nowrap; cursor: pointer;">🔢 Code porte : 2325</button>
+          <button type="button" onclick="sendQuickChatMessage('Extra sauce à l\'ail svp')" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 10px; white-space: nowrap; cursor: pointer;">🧄 Extra sauce</button>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="chatTextInput" placeholder="Écrire un message en direct..." style="flex: 1; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 10px 14px; color: #fff; font-size: 13px; outline: none;" onkeydown="if(event.key==='Enter') sendChatMessage()">
+          <button type="button" onclick="sendChatMessage()" style="background: var(--primary); border: none; color: #fff; border-radius: 12px; padding: 10px 16px; font-weight: 700; cursor: pointer;">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== VIEW 5: PROFILE (PROFIL & RÉGLAGES) ==================== -->
   <div class="app-view" id="view-profile">
     <div class="profile-container">
 
       <!-- Profile Header Card -->
       <div class="profile-card">
-        <div class="profile-avatar">JT</div>
-        <h2 style="font-family: var(--font-heading); font-size: 17px; font-weight: 800;">Jean Tremblay</h2>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">jean.tremblay@exemple.com • (819) 555-0192</p>
+        <div class="profile-avatar">W</div>
+        <h2 style="font-family: var(--font-heading); font-size: 17px; font-weight: 800;">Walkse</h2>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">walksenon@gmail.com • (819) 850-3972</p>
         
         <div style="margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; background: rgba(229, 169, 60, 0.15); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;">
-          <i class="fa-solid fa-crown"></i> Membre VIP Argent (120 Pts)
+          <i class="fa-solid fa-crown"></i> Membre VIP Or (250 Pts)
         </div>
       </div>
 
       <!-- Profile Actions Menu List -->
       <div class="profile-menu-list">
         
-        <div class="profile-menu-item" onclick="openSignupSurveyModal()">
+        <div class="profile-menu-item" onclick="switchTab('scan')">
           <div class="profile-menu-item-left">
-            <i class="fa-solid fa-clipboard-question" style="color: var(--accent-gold);"></i>
-            <span>Mon Profil & Questionnaire Gourmand</span>
+            <i class="fa-solid fa-qrcode" style="color: var(--accent-gold);"></i>
+            <span>Ma Carte Récompenses & QR Code</span>
           </div>
-          <span style="background: rgba(229, 169, 60, 0.15); color: var(--accent-gold); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;">+50 Pts</span>
+          <span style="background: rgba(229, 169, 60, 0.15); color: var(--accent-gold); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px;">250 Pts</span>
         </div>
 
-        <div class="profile-menu-item" onclick="openOrderConfirmationModal('CMD-4092')">
+        <div class="profile-menu-item" onclick="switchTab('chat')">
           <div class="profile-menu-item-left">
-            <i class="fa-solid fa-qrcode" style="color: var(--primary);"></i>
-            <span>Mon QR Code & PIN de Récupération</span>
+            <i class="fa-solid fa-comment-dots" style="color: var(--primary);"></i>
+            <span>Suivi de Commande & Messagerie Cuisine</span>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
 
-        <div class="profile-menu-item" onclick="alert('📍 Adresse Enregistrée :\n1450 Rue Saint-Pierre, Drummondville, QC J2C 3Z5')">
+        <div class="profile-menu-item" onclick="alert('📍 Adresse Principale Enregistrée :\n1450 Rue Saint-Pierre, Drummondville, QC J2C 3Z5')">
           <div class="profile-menu-item-left">
             <i class="fa-solid fa-location-dot"></i>
             <span>Mes Adresses de Livraison</span>
@@ -1126,10 +1256,11 @@
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
 
-        <div class="profile-menu-item" onclick="window.location.href='tel:8198503972'">
+        <!-- Role Switching Quick Links -->
+        <div class="profile-menu-item" onclick="window.location.href='/admin.html'">
           <div class="profile-menu-item-left">
-            <i class="fa-solid fa-headset"></i>
-            <span>Service Client & Support</span>
+            <i class="fa-solid fa-crown" style="color: var(--primary);"></i>
+            <span>Portail Administrateur & Rôles</span>
           </div>
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
@@ -1147,30 +1278,35 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation with Elevated Center Order Button -->
+  <!-- Bottom Navigation: Canadian QSR 5-Tab System (Tim Hortons / McDonald's Canada) -->
   <nav class="bottom-nav">
+    <!-- Tab 1: Accueil -->
     <div class="nav-item active" id="tab-home" onclick="switchTab('home')">
       <i class="fa-solid fa-house"></i>
       <span>Accueil</span>
     </div>
+
+    <!-- Tab 2: Commander -->
     <div class="nav-item" id="tab-menu" onclick="switchTab('menu')">
       <i class="fa-solid fa-utensils"></i>
-      <span>Menu</span>
+      <span>Commander</span>
     </div>
 
-    <!-- ELEVATED FLAME ORANGE CENTER ORDER BUTTON -->
-    <div class="center-order-cta" onclick="openCartModal()">
-      <i class="fa-solid fa-bag-shopping"></i>
-      <div class="cart-count-badge" id="cartCountBadge" style="display: none;">0</div>
+    <!-- Tab 3: ELEVATED GLOWING SCANNER & REWARDS CENTER BUTTON -->
+    <div class="center-order-cta" id="tab-scan" onclick="switchTab('scan')" style="background: linear-gradient(135deg, #FF5500 0%, #E5A93C 100%); box-shadow: 0 6px 24px rgba(255, 85, 0, 0.45);">
+      <i class="fa-solid fa-qrcode" style="font-size: 22px;"></i>
     </div>
 
-    <div class="nav-item" onclick="openGiftCardModal()">
-      <i class="fa-solid fa-gift"></i>
-      <span>Cadeaux</span>
+    <!-- Tab 4: Suivi & Chat -->
+    <div class="nav-item" id="tab-chat" onclick="switchTab('chat')">
+      <i class="fa-solid fa-comments"></i>
+      <span>Suivi & Chat</span>
     </div>
+
+    <!-- Tab 5: Compte / Profil -->
     <div class="nav-item" id="tab-profile" onclick="switchTab('profile')">
       <i class="fa-solid fa-user"></i>
-      <span>Profil</span>
+      <span>Compte</span>
     </div>
   </nav>
 
@@ -1879,7 +2015,14 @@ function init() {
   renderMenuDishes();
 }
 
-// Switch between App Tabs (Home, Menu, Profile)
+// Points & Hub Rewards State
+let isPointsRedemptionActive = false;
+let currentChatRecipient = 'store'; // 'store' or 'driver'
+let chatMessagesList = [
+  { sender: 'Chef Cuisine • 110e Avenue', text: 'Bonjour ! Votre commande est bien enregistrée en cuisine. 🌯', time: '12:04', isStore: true }
+];
+
+// Switch between Canadian QSR 5 App Tabs (Home, Menu, Scan, Chat, Profile)
 function switchTab(tabName) {
   document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
@@ -1890,12 +2033,135 @@ function switchTab(tabName) {
   } else if (tabName === 'menu') {
     document.getElementById('view-menu').classList.add('active');
     document.getElementById('tab-menu').classList.add('active');
+  } else if (tabName === 'scan') {
+    document.getElementById('view-scan').classList.add('active');
+    renderHubQrCode();
+  } else if (tabName === 'chat') {
+    document.getElementById('view-chat').classList.add('active');
+    document.getElementById('tab-chat').classList.add('active');
+    renderChatFeed();
   } else if (tabName === 'profile') {
     document.getElementById('view-profile').classList.add('active');
     document.getElementById('tab-profile').classList.add('active');
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function togglePointsRedeem(isYes) {
+  isPointsRedemptionActive = isYes;
+  const btnNo = document.getElementById('btnRedeemNo');
+  const btnYes = document.getElementById('btnRedeemYes');
+
+  if (isYes) {
+    btnYes.style.background = '#22C55E';
+    btnYes.style.color = '#FFFFFF';
+    btnNo.style.background = 'transparent';
+    btnNo.style.color = 'var(--text-muted)';
+    alert("🎁 RÉCOMPENSE ACTIVÉE !\n\nVotre QR Code est mis à jour : 200 points seront déduits en caisse contre 1 Wrap / Sandwich Gratuit.");
+  } else {
+    btnNo.style.background = 'var(--primary)';
+    btnNo.style.color = '#FFFFFF';
+    btnYes.style.background = 'transparent';
+    btnYes.style.color = 'var(--text-muted)';
+  }
+  renderHubQrCode();
+}
+
+function renderHubQrCode() {
+  const canvas = document.getElementById('hubQrCanvas');
+  const pinEl = document.getElementById('lblHubPinCode');
+  const pointsEl = document.getElementById('lblScanPointsVal');
+
+  if (pointsEl && clientProfile) {
+    pointsEl.innerText = clientProfile.points || 250;
+  }
+
+  const pin = '2325';
+  if (pinEl) pinEl.innerText = pin;
+
+  const redeemFlag = isPointsRedemptionActive ? 'REDEEM-FREE-WRAP' : 'EARN-POINTS';
+  const qrPayload = `LMDW-MEMBER-${(clientProfile.name || 'WALKSE').toUpperCase()}-PIN${pin}-${redeemFlag}`;
+
+  if (canvas && typeof QRCode !== 'undefined') {
+    QRCode.toCanvas(canvas, qrPayload, {
+      width: 190,
+      margin: 1,
+      color: { dark: '#0C0C0E', light: '#FFFFFF' }
+    }, function (err) {
+      if (err) console.warn("Hub QR error:", err);
+    });
+  }
+}
+
+function setChatRecipient(rec) {
+  currentChatRecipient = rec;
+  const btnStore = document.getElementById('btnChatStore');
+  const btnDriver = document.getElementById('btnChatDriver');
+
+  if (rec === 'store') {
+    btnStore.classList.add('active');
+    btnDriver.classList.remove('active');
+  } else {
+    btnDriver.classList.add('active');
+    btnStore.classList.remove('active');
+  }
+  renderChatFeed();
+}
+
+function renderChatFeed() {
+  const box = document.getElementById('chatMessagesContainer');
+  if (!box) return;
+
+  box.innerHTML = chatMessagesList.map(msg => `
+    <div style="align-self: ${msg.isMe ? 'flex-end' : 'flex-start'}; max-width: 80%; background: ${msg.isMe ? 'linear-gradient(135deg, #FF5500 0%, #FF3D00 100%)' : '#22222C'}; color: #fff; padding: 8px 12px; border-radius: ${msg.isMe ? '12px 12px 2px 12px' : '12px 12px 12px 2px'}; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+      ${!msg.isMe ? `<strong style="color: var(--accent-gold); font-size: 10px; display: block; margin-bottom: 2px;">${msg.sender}</strong>` : ''}
+      ${msg.text}
+      <span style="font-size: 9px; opacity: 0.7; display: block; text-align: right; margin-top: 2px;">${msg.time || '12:05'}</span>
+    </div>
+  `).join('');
+
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chatTextInput');
+  const text = (input ? input.value : '').trim();
+  if (!text) return;
+
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+  chatMessagesList.push({
+    sender: clientProfile.name || 'Walkse',
+    text: text,
+    time: timeStr,
+    isMe: true
+  });
+
+  input.value = '';
+  renderChatFeed();
+
+  // Automatic simulated assistant reply
+  setTimeout(() => {
+    const replyText = currentChatRecipient === 'store'
+      ? "👨‍🍳 Restaurant : Bien reçu ! Nous préparons votre commande avec soin."
+      : "🛵 Livreur : Parfait, je suis en route avec votre sac isotherme.";
+    
+    chatMessagesList.push({
+      sender: currentChatRecipient === 'store' ? 'Chef Cuisine • 110e Avenue' : 'Livreur en Route',
+      text: replyText,
+      time: `${now.getHours().toString().padStart(2, '0')}:${(now.getMinutes()+1).toString().padStart(2, '0')}`,
+      isMe: false
+    });
+    renderChatFeed();
+  }, 1200);
+}
+
+function sendQuickChatMessage(txt) {
+  const input = document.getElementById('chatTextInput');
+  if (input) input.value = txt;
+  sendChatMessage();
 }
 
 // HOME VIEW RENDERING
