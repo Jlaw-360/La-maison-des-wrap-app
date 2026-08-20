@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "La Maison des Wraps",
+    "slug": "la-maison-des-wraps",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ca.maisondeswraps.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Cette application utilise l'appareil photo pour scanner les codes QR de commande et capturer les photos de livraison au pas de la porte.",
+        "NSLocationWhenInUseUsageDescription": "Cette application utilise votre position pour suivre la livraison en direct du restaurant jusqu'à votre adresse à Drummondville."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "package": "ca.maisondeswraps.app",
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./logo.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}
