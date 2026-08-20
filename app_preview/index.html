@@ -1182,7 +1182,50 @@
         </div>
       </div>
 
-      <!-- Real-Time In-App Chat Window (Supabase Live Chat) -->
+      <!-- Live Interactive GPS Driver Tracking Map -->
+      <div id="liveDriverMapContainer" style="background: #14141A; border: 1.5px solid rgba(255, 85, 0, 0.3); border-radius: 18px; padding: 14px; position: relative; overflow: hidden;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;"><i class="fa-solid fa-satellite-dish" style="color: #FF5500;"></i></span>
+            <div>
+              <div style="font-size: 13px; font-weight: 800; color: #FFFFFF;">Suivi GPS du Livreur en Direct</div>
+              <div style="font-size: 10px; color: #8E8E9A;" id="lblDriverEtaText">Marc Livreur • Arrivée estimée dans 6 min (2.1 km)</div>
+            </div>
+          </div>
+          <span style="background: rgba(34, 197, 94, 0.15); color: #22C55E; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px;">En Route</span>
+        </div>
+
+        <!-- Map Route Visualization Canvas -->
+        <div style="height: 120px; background: #0A0A0E; border-radius: 12px; position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden;">
+          <!-- Stylized Road Line -->
+          <div style="position: absolute; left: 40px; right: 40px; height: 4px; background: rgba(255, 85, 0, 0.25); border-radius: 2px;"></div>
+          <div style="position: absolute; left: 40px; width: 60%; height: 4px; background: linear-gradient(90deg, #22C55E, #FF5500); border-radius: 2px;" id="mapProgressBar"></div>
+
+          <!-- Restaurant Node -->
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #1C1C22; border: 2px solid #22C55E; display: flex; align-items: center; justify-content: center; font-size: 14px; margin: 0 auto; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);">
+              🏪
+            </div>
+            <span style="font-size: 9px; font-weight: 700; color: #D1D1DB; margin-top: 4px; display: block;">998 110e Ave</span>
+          </div>
+
+          <!-- Moving Driver Motorcycle Node -->
+          <div style="position: absolute; left: 60%; transform: translateX(-50%); z-index: 3; text-align: center; transition: left 1s ease;" id="mapDriverPin">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: #FF5500; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; margin: 0 auto; box-shadow: 0 0 14px rgba(255, 85, 0, 0.8);">
+              🛵
+            </div>
+            <span style="font-size: 9px; font-weight: 800; color: #FF5500; margin-top: 2px; display: block; white-space: nowrap;">Marc Livreur</span>
+          </div>
+
+          <!-- Customer Destination Node -->
+          <div style="z-index: 2; text-align: center;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #1C1C22; border: 2px solid #3B82F6; display: flex; align-items: center; justify-content: center; font-size: 14px; margin: 0 auto; box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);">
+              🏠
+            </div>
+            <span style="font-size: 9px; font-weight: 700; color: #D1D1DB; margin-top: 4px; display: block;">Votre Porte</span>
+          </div>
+        </div>
+      </div>
       <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; flex: 1;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <div style="display: flex; gap: 8px;">
@@ -1535,6 +1578,29 @@
       </p>
     </div>
 
+    <!-- Order Timing Selector (Heure de Commande) -->
+    <div style="background: var(--bg-card); border-radius: 14px; padding: 12px; margin-bottom: 14px; border: 1px solid var(--border-subtle);">
+      <div style="font-size: 11px; font-weight: 700; color: var(--text-white); margin-bottom: 6px;">Heure de Préparation / Commande</div>
+      <div style="display: flex; gap: 6px;">
+        <button type="button" class="dropoff-option-btn active" id="btnTimingNow" onclick="setOrderTiming('now')" style="flex: 1; padding: 8px; font-size: 11px;">
+          <i class="fa-solid fa-bolt"></i> Dès que possible (25-35 min)
+        </button>
+        <button type="button" class="dropoff-option-btn" id="btnTimingLater" onclick="setOrderTiming('later')" style="flex: 1; padding: 8px; font-size: 11px;">
+          <i class="fa-solid fa-clock"></i> Planifier pour plus tard
+        </button>
+      </div>
+      <div id="timingLaterPicker" style="display: none; margin-top: 8px;">
+        <select id="selectScheduleTime" style="width: 100%; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px 10px; color: #fff; font-size: 12px; outline: none;">
+          <option value="17:30">Aujourd'hui à 17h30</option>
+          <option value="18:00">Aujourd'hui à 18h00</option>
+          <option value="18:30" selected>Aujourd'hui à 18h30</option>
+          <option value="19:00">Aujourd'hui à 19h00</option>
+          <option value="19:30">Aujourd'hui à 19h30</option>
+          <option value="20:00">Aujourd'hui à 20h00</option>
+        </select>
+      </div>
+    </div>
+
     <!-- Cart Items List -->
     <div id="cartItemsList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;"></div>
 
@@ -1547,13 +1613,20 @@
       <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
     </div>
 
+    <!-- 1-Click Apple Pay & Google Pay Express Checkout -->
+    <button type="button" onclick="triggerAppleGooglePayExpress()" style="width: 100%; background: #FFFFFF; color: #000000; border: none; border-radius: 14px; padding: 13px; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);">
+      <i class="fa-brands fa-apple" style="font-size: 18px;"></i>
+      <i class="fa-brands fa-google-pay" style="font-size: 24px;"></i>
+      <span>Payer en 1 Clic • Express</span>
+    </button>
+
     <!-- Stripe Test Mode Card Input Element -->
     <div style="margin-bottom: 14px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <span style="font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">
-          <i class="fa-solid fa-flask" style="color: var(--accent-gold);"></i> Mode Test Stripe (Actif)
+          <i class="fa-solid fa-credit-card" style="color: var(--accent-gold);"></i> Carte Bancaire (Visa / Mastercard)
         </span>
-        <span style="font-size: 10px; color: var(--text-muted);">Carte: 4242...</span>
+        <span style="font-size: 10px; color: var(--text-muted);">Sécurisé SSL 256-bit</span>
       </div>
       <div id="stripe-card-element" style="background: var(--bg-card); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border-subtle);"></div>
       <div id="card-errors" style="color: #FF4444; font-size: 11px; margin-top: 6px;" role="alert"></div>
@@ -1997,6 +2070,7 @@ let customerDistanceKm = 3.5;
 
 // Official Menu Boards Complete Data
 const CATEGORIES = [
+  'Boîtes & Combos Familiaux',
   'Nos Wraps',
   'Paninis',
   'Bols de Curry & Combos',
@@ -2010,6 +2084,11 @@ const CATEGORIES = [
 ];
 
 const BOARD_DISHES = [
+  // Family & Group Feasts (High Ticket Value)
+  { cat: 'Boîtes & Combos Familiaux', name_fr: 'La Boîte Festin 4 Wraps', desc_fr: '4 Wraps au choix + 2 Grandes Frites ou Patates à l\'Ail + 4 Canettes + Sauces.', price: 44.95, is_wrap: false, is_featured: true },
+  { cat: 'Boîtes & Combos Familiaux', name_fr: 'Le Combo Duo Gourmet', desc_fr: '2 Wraps Naan faits maison au choix + 1 Grande Poutine Tikka à partager + 2 Boissons.', price: 28.95, is_wrap: false, is_featured: true },
+  { cat: 'Boîtes & Combos Familiaux', name_fr: 'Le Festin Tandoori Mixte', desc_fr: 'Assortiment généreux Poulet Tikka & Kebab grillés, 4 Pains Naan chauds, Salade et Sauces.', price: 39.95, is_wrap: false, is_featured: true },
+
   // Top Featured Signatures (for Home)
   { cat: 'Bols de Curry & Combos', name_fr: 'Poulet au Beurre (Butter Chicken)', desc_fr: 'Poulet tikka dans une sauce crémeuse au beurre et aux amandes.', price: 17.65, is_wrap: false, is_featured: true },
   { cat: 'Nos Wraps', name_fr: 'Kebab au Poulet', desc_fr: 'Poulet assaisonné et grillé, servi avec salade et sauce au choix.', price: 8.95, is_wrap: true, is_featured: true },
@@ -2481,6 +2560,45 @@ function openCartModal() {
 
   recalcCartPrices();
   document.getElementById('cartModal').classList.add('open');
+}
+
+let currentOrderTiming = 'now';
+let scheduledTimeStr = '';
+
+function setOrderTiming(timing) {
+  currentOrderTiming = timing;
+  const btnNow = document.getElementById('btnTimingNow');
+  const btnLater = document.getElementById('btnTimingLater');
+  const picker = document.getElementById('timingLaterPicker');
+
+  if (timing === 'now') {
+    if (btnNow) btnNow.classList.add('active');
+    if (btnLater) btnLater.classList.remove('active');
+    if (picker) picker.style.display = 'none';
+    scheduledTimeStr = '';
+  } else {
+    if (btnLater) btnLater.classList.add('active');
+    if (btnNow) btnNow.classList.remove('active');
+    if (picker) picker.style.display = 'block';
+    const sel = document.getElementById('selectScheduleTime');
+    scheduledTimeStr = sel ? sel.value : '18:30';
+  }
+}
+
+function triggerAppleGooglePayExpress() {
+  if (cart.length === 0) {
+    alert("Votre panier est vide.");
+    return;
+  }
+
+  const sub = cart.reduce((a, b) => a + b.price, 0);
+  let deliveryFee = currentFulfillment === 'delivery' ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99)) : 0.00;
+  const total = (sub + deliveryFee) * 1.14975;
+
+  const confirmPay = confirm(` Pay / Google Pay Express\n\nTotal: $${total.toFixed(2)} CAD\nMode: ${currentFulfillment === 'delivery' ? 'Livraison' : 'Cueillette'}\n\nConfirmer le paiement instantané avec TouchID / FaceID ?`);
+  if (confirmPay) {
+    triggerStripeCheckout();
+  }
 }
 
 function updateDeliveryDistance(addr) {
