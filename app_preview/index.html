@@ -867,6 +867,11 @@
           </div>
 
           <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 4px;">Adresse de Livraison</label>
+            <input type="text" id="gateSignupAddress" placeholder="Ex: 123 Rue Lindsay, Drummondville, QC" value="" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 16px; color: #ffffff; font-size: 14px; outline: none;">
+          </div>
+
+          <div style="margin-bottom: 12px;">
             <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 4px;">Confirmer le Mot de Passe</label>
             <div style="position: relative; display: flex; align-items: center;">
               <input type="password" id="gateSignupPassConfirm" placeholder="Confirmer votre mot de passe" value="" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 14px; padding: 12px 44px 12px 16px; color: #ffffff; font-size: 14px; outline: none;">
@@ -3048,6 +3053,13 @@ function submitGateSignup() {
   saveRegisteredAccount(clientProfile);
   isUserLoggedIn = true;
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  
+  const deliveryInput = document.getElementById('deliveryAddressInput');
+  if (deliveryInput && address) {
+    deliveryInput.value = address;
+    updateDeliveryDistance(address);
+  }
+
   updateUserProfileUI();
 
   // Hide Gateway & Reveal Main Restaurant App
@@ -3057,7 +3069,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name} !\n\n✅ Votre compte a été créé avec succès !\n🎁 +50 Points de Fidélité crédités.`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name} !\n\n✅ Votre compte a été créé avec succès !\n📍 Adresse de livraison : ${address || 'À renseigner lors de la commande'}\n🎁 +50 Points de Fidélité crédités.`);
 }
 
 function enterAsGuest() {
