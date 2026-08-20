@@ -1,3 +1,4 @@
+import { AppMetrics } from 'expo-observe';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +11,12 @@ interface AdminScreenProps {
 }
 
 export const AdminScreen: React.FC<AdminScreenProps> = ({ onSwitchView }) => {
+  React.useEffect(() => {
+    try {
+      AppMetrics?.markInteractive?.();
+    } catch(e) {}
+  }, []);
+
   const { user, language, switchRolePreview, activeRolePreview } = useAuth();
   const [usersList, setUsersList] = useState<UserProfile[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);

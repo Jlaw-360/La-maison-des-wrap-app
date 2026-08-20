@@ -1,3 +1,4 @@
+import { AppMetrics } from 'expo-observe';
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -15,6 +16,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToScan,
   onNavigateToTracking,
 }) => {
+  React.useEffect(() => {
+    try {
+      AppMetrics?.markInteractive?.();
+    } catch(e) {}
+  }, []);
+
   const { user, points, language } = useAuth();
   const { fulfillmentType, setFulfillmentType, activeOrder } = useCart();
 

@@ -12,19 +12,31 @@ import { KitchenScreen } from './src/screens/KitchenScreen';
 import { DriverScreen } from './src/screens/DriverScreen';
 import { AdminScreen } from './src/screens/AdminScreen';
 
+import { Observe, ObserveRoot, AppMetrics, AppMetricsRoot } from 'expo-observe';
+
+// Configure EAS Observe
+try {
+  Observe.configure({
+    dispatchInDebug: true,
+  });
+} catch (e) {
+  console.warn('[EAS Observe] Configure error:', e);
+}
+
 type CustomerTab = 'home' | 'order' | 'scan' | 'tracking' | 'account';
 
 const MainNavigator: React.FC = () => {
   const { isAuthenticated, role, user, signOut, switchRolePreview, activeRolePreview } = useAuth();
   const [activeTab, setActiveTab] = useState<CustomerTab>('home');
+  const [kitchenClientView, setKitchenClientView] = useState<boolean>(false);
 
   // Gatekeeping: Require Authentication First
   if (!isAuthenticated) {
     return <AuthScreen />;
   }
 
-  // 1. Kitchen Staff View (Strict Role Enforcement)
-  if (role === 'kitchen') {
+  // 1. Kitchen Staff View (Strict Role Enforcement + Toggle to Client App)
+  if (role === 'kitchen' && !kitchenClientView) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle="light-content" />
@@ -33,15 +45,22 @@ const MainNavigator: React.FC = () => {
             <Text style={{ fontSize: 18 }}>👨‍🍳</Text>
             <Text style={styles.roleHeaderText}>Cuisine Kanban KDS · {user?.full_name}</Text>
           </View>
-          {user?.role === 'admin' && activeRolePreview ? (
-            <TouchableOpacity style={styles.roleHeaderBtn} onPress={() => switchRolePreview(null)}>
-              <Text style={styles.roleHeaderBtnText}>Quitter Démo</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.roleHeaderBtn} onPress={signOut}>
-              <Text style={styles.roleHeaderBtnText}>Déconnexion</Text>
-            </TouchableOpacity>
-          )}
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            {user?.role === 'admin' && activeRolePreview ? (
+              <TouchableOpacity style={styles.roleHeaderBtn} onPress={() => switchRolePreview(null)}>
+                <Text style={styles.roleHeaderBtnText}>Quitter Démo</Text>
+              </TouchableOpacity>
+            ) : (
+              <>
+                <TouchableOpacity style={[styles.roleHeaderBtn, { backgroundColor: '#FF5500' }]} onPress={() => setKitchenClientView(true)}>
+                  <Text style={[styles.roleHeaderBtnText, { color: '#FFF' }]}>📱 App Client</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.roleHeaderBtn} onPress={signOut}>
+                  <Text style={styles.roleHeaderBtnText}>Déconnexion</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
         </View>
         <KitchenScreen />
       </SafeAreaView>
@@ -92,17 +111,27 @@ const MainNavigator: React.FC = () => {
     );
   }
 
-  // 4. Customer 5-Tab Application (Default for all registered clients)
+  // 4. Customer 5-Tab Application (Default for all registered clients & staff preview)
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
 
-      {/* Top Demo Bar for Admin Testing only if Admin */}
+      {/* Top Demo Bar for Admin Testing */}
       {user?.role === 'admin' && activeRolePreview && (
         <View style={styles.adminDemoBanner}>
           <Text style={styles.adminDemoText}>👑 Mode Prévisualisation Admin : {role.toUpperCase()}</Text>
           <TouchableOpacity style={styles.adminDemoBtn} onPress={() => switchRolePreview(null)}>
             <Text style={styles.adminDemoBtnText}>Retour Admin</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Top Bar for Kitchen Staff viewing Client App */}
+      {user?.role === 'kitchen' && kitchenClientView && (
+        <View style={[styles.adminDemoBanner, { backgroundColor: '#0D3B29', borderBottomColor: '#10B981' }]}>
+          <Text style={[styles.adminDemoText, { color: '#A7F3D0' }]}>👨‍🍳 Personnel Cuisine : Mode Client</Text>
+          <TouchableOpacity style={[styles.adminDemoBtn, { backgroundColor: '#10B981' }]} onPress={() => setKitchenClientView(false)}>
+            <Text style={styles.adminDemoBtnText}>Retour Cuisine</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -185,7 +214,7 @@ const MainNavigator: React.FC = () => {
   );
 };
 
-export default function App() {
+function App() {
   return (
     <AuthProvider>
       <CartProvider>
@@ -194,6 +223,13 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+// EAS Observe Root Layout Wrapping (Compatible with SDK 52-56+)
+const WrappedApp = typeof ObserveRoot?.wrap === 'function'
+  ? ObserveRoot.wrap(App)
+  : (typeof AppMetricsRoot?.wrap === 'function' ? AppMetricsRoot.wrap(App) : App);
+
+export default WrappedApp;
 
 const styles = StyleSheet.create({
   safeArea: {

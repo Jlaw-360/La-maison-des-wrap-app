@@ -12,6 +12,17 @@ import { KitchenScreen } from './src/screens/KitchenScreen';
 import { DriverScreen } from './src/screens/DriverScreen';
 import { AdminScreen } from './src/screens/AdminScreen';
 
+import { Observe, ObserveRoot, AppMetrics, AppMetricsRoot } from 'expo-observe';
+
+// Configure EAS Observe
+try {
+  Observe.configure({
+    dispatchInDebug: true,
+  });
+} catch (e) {
+  console.warn('[EAS Observe] Configure error:', e);
+}
+
 type CustomerTab = 'home' | 'order' | 'scan' | 'tracking' | 'account';
 
 const MainNavigator: React.FC = () => {
@@ -203,7 +214,7 @@ const MainNavigator: React.FC = () => {
   );
 };
 
-export default function App() {
+function App() {
   return (
     <AuthProvider>
       <CartProvider>
@@ -212,6 +223,13 @@ export default function App() {
     </AuthProvider>
   );
 }
+
+// EAS Observe Root Layout Wrapping (Compatible with SDK 52-56+)
+const WrappedApp = typeof ObserveRoot?.wrap === 'function'
+  ? ObserveRoot.wrap(App)
+  : (typeof AppMetricsRoot?.wrap === 'function' ? AppMetricsRoot.wrap(App) : App);
+
+export default WrappedApp;
 
 const styles = StyleSheet.create({
   safeArea: {

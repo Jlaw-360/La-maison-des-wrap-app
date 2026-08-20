@@ -1,3 +1,4 @@
+import { AppMetrics } from 'expo-observe';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -5,6 +6,12 @@ import { Order, OrderStatus } from '../types';
 import { fetchLiveOrders, updateOrderStatus, subscribeToOrders } from '../services/supabase';
 
 export const KitchenScreen: React.FC = () => {
+  React.useEffect(() => {
+    try {
+      AppMetrics?.markInteractive?.();
+    } catch(e) {}
+  }, []);
+
   const { language } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

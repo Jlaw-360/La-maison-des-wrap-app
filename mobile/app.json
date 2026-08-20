@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "La Maison des Wraps",
-    "slug": "la-maison-des-wraps",
+    "slug": "la-masion-des-wrap-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,6 +37,7 @@
     "web": {
       "favicon": "./assets/logo.png",
       "bundler": "metro"
-    }
+    },
+    "owner": "jlaw-360"
   }
 }

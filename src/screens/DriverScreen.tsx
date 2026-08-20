@@ -1,3 +1,4 @@
+import { AppMetrics } from 'expo-observe';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, ActivityIndicator, Linking } from 'react-native';
 import { useAuth } from '../context/AuthContext';
@@ -5,6 +6,12 @@ import { Order } from '../types';
 import { fetchLiveOrders, updateOrderStatus, updateDriverLocation, subscribeToOrders } from '../services/supabase';
 
 export const DriverScreen: React.FC = () => {
+  React.useEffect(() => {
+    try {
+      AppMetrics?.markInteractive?.();
+    } catch(e) {}
+  }, []);
+
   const { user, language } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [activeDelivery, setActiveDelivery] = useState<Order | null>(null);

@@ -1,8 +1,15 @@
+import { AppMetrics } from 'expo-observe';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
 export const AuthScreen: React.FC = () => {
+  React.useEffect(() => {
+    try {
+      AppMetrics?.markInteractive?.();
+    } catch(e) {}
+  }, []);
+
   const { signIn, signUp, language, setLanguage } = useAuth();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
