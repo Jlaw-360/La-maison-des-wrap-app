@@ -905,17 +905,14 @@
   <!-- ==================== VIEW 1: HOME (ACCUEIL) ==================== -->
   <div class="app-view active" id="view-home">
     
-    <!-- Tim Hortons Canada Style Fulfillment Selector (Livraison / Comptoir / Service au Volant) -->
+    <!-- Fulfillment Selector (Livraison / Cueillette au Comptoir) -->
     <div style="margin: 12px 16px 14px 16px; background: linear-gradient(135deg, #1C1C24 0%, #141419 100%); border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
-      <div style="display: flex; gap: 6px; margin-bottom: 12px;">
-        <button type="button" class="cat-btn active" id="btnModeDelivery" onclick="selectTimsMode('delivery')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <button type="button" class="cat-btn active" id="btnModeDelivery" onclick="selectTimsMode('delivery')" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; padding: 10px 6px;">
           <i class="fa-solid fa-motorcycle"></i> Livraison
         </button>
-        <button type="button" class="cat-btn" id="btnModePickup" onclick="selectTimsMode('pickup')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
-          <i class="fa-solid fa-bag-shopping"></i> Comptoir
-        </button>
-        <button type="button" class="cat-btn" id="btnModeDrive" onclick="selectTimsMode('drive')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px;">
-          <i class="fa-solid fa-car-side"></i> Au Volant
+        <button type="button" class="cat-btn" id="btnModePickup" onclick="selectTimsMode('pickup')" style="flex: 1; text-align: center; font-size: 12px; font-weight: 700; padding: 10px 6px;">
+          <i class="fa-solid fa-bag-shopping"></i> Cueillette au Comptoir
         </button>
       </div>
 
@@ -3501,9 +3498,9 @@ function enterAsGuest() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Tim Hortons Canada 3-Way Fulfillment Selector
+// Fulfillment Mode Selector (Livraison / Cueillette)
 function selectTimsMode(mode) {
-  ['btnModeDelivery', 'btnModePickup', 'btnModeDrive'].forEach(id => {
+  ['btnModeDelivery', 'btnModePickup'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active');
   });
@@ -3519,20 +3516,13 @@ function selectTimsMode(mode) {
     if (iconTop) iconTop.className = "fa-solid fa-motorcycle";
     if (lblMode) lblMode.innerText = "Livraison • 25-35 min";
     if (lblAddr) lblAddr.innerText = clientProfile.address || "Drummondville, QC";
-  } else if (mode === 'pickup') {
+  } else {
     const b = document.getElementById('btnModePickup');
     if (b) b.classList.add('active');
     currentFulfillment = 'pickup';
     if (iconTop) iconTop.className = "fa-solid fa-bag-shopping";
     if (lblMode) lblMode.innerText = "Cueillette au Comptoir • 10-15 min";
     if (lblAddr) lblAddr.innerText = "998 110e Avenue, Drummondville, QC J2B 6X2";
-  } else if (mode === 'drive') {
-    const b = document.getElementById('btnModeDrive');
-    if (b) b.classList.add('active');
-    currentFulfillment = 'pickup';
-    if (iconTop) iconTop.className = "fa-solid fa-car-side";
-    if (lblMode) lblMode.innerText = "Service au Volant • 5-10 min";
-    if (lblAddr) lblAddr.innerText = "Voie Drive-Thru • 998 110e Avenue, Drummondville";
   }
   recalcCartPrices();
 }
