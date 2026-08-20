@@ -777,90 +777,95 @@
 
 <div class="app-container">
 
-  <!-- ==================== CLEAN MOBILE LOGIN & SIGN-UP GATEWAY (MATCHING DESIGN) ==================== -->
-  <div id="view-login-gate" style="min-height: 100vh; background: #E11D23; display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', sans-serif;">
+  <!-- ==================== LUXURY BLACK & ORANGE MOBILE LOGIN & SIGN-UP GATEWAY ==================== -->
+  <div id="view-login-gate" style="min-height: 100vh; background: radial-gradient(circle at 50% 15%, rgba(255, 85, 0, 0.2) 0%, #0C0C0E 70%); display: flex; flex-direction: column; justify-content: space-between; font-family: 'Plus Jakarta Sans', sans-serif; padding-top: 24px;">
     
-    <!-- Top Red Brand Banner -->
-    <div style="padding: 40px 24px 28px 24px; text-align: center; display: flex; flex-direction: column; align-items: center;">
-      <div style="background: #ffffff; width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.25); margin-bottom: 12px;">
-        <img src="/logo.png" alt="Logo" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120'">
+    <!-- Top Brand Header (Black & Orange) -->
+    <div style="padding: 24px 20px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+      <div style="background: #1C1C22; width: 76px; height: 76px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #FF5500; box-shadow: 0 10px 30px rgba(255, 85, 0, 0.35); margin-bottom: 12px;">
+        <img src="/logo.png" alt="Logo" style="width: 62px; height: 62px; border-radius: 50%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=120'">
       </div>
-      <h1 style="color: #ffffff; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin: 0;">La Maison des Wraps</h1>
-      <p style="color: rgba(255,255,255,0.88); font-size: 12px; margin-top: 4px; font-weight: 500;">998 110e Avenue, Drummondville • (819) 850-3972</p>
+      <h1 style="color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin: 0;">La Maison des Wraps</h1>
+      <p style="color: #FF5500; font-size: 12px; margin-top: 4px; font-weight: 700;">Restauration Rapide Indienne • Drummondville</p>
+      <p style="color: #8E8E9A; font-size: 11px; margin-top: 2px;"><i class="fa-solid fa-location-dot" style="color: #FF5500;"></i> 998 110e Avenue • (819) 850-3972</p>
     </div>
 
-    <!-- Floating White/Dark Form Card -->
-    <div style="background: #ffffff; border-radius: 32px 32px 0 0; padding: 30px 24px 34px 24px; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); flex: 1; display: flex; flex-direction: column; justify-content: space-between; color: #1E1E26;">
+    <!-- Floating Dark Onyx Form Card with Orange Accents -->
+    <div style="background: #151519; border-top: 1.5px solid rgba(255, 85, 0, 0.35); border-radius: 32px 32px 0 0; padding: 28px 22px 34px 22px; box-shadow: 0 -12px 45px rgba(0,0,0,0.65); flex: 1; display: flex; flex-direction: column; justify-content: space-between; color: #FFFFFF;">
       
       <div>
         <!-- Screen 1: Sign In (Active by Default) -->
         <div id="formGateLogin">
-          <h2 style="font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 18px;">Connexion • Sign In</h2>
+          <h2 style="font-size: 19px; font-weight: 800; color: #ffffff; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-lock" style="color: #FF5500; font-size: 16px;"></i> Connexion • Sign In
+          </h2>
 
           <!-- Email Field -->
           <div style="margin-bottom: 16px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Email Address</label>
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Email Address</label>
             <div style="position: relative;">
-              <input type="email" id="gateLoginUser" value="walksenon@gmail.com" placeholder="Enter your email address" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 16px; color: #111827; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#E11D23'" onblur="this.style.borderColor='#E5E7EB'">
+              <input type="email" id="gateLoginUser" value="walksenon@gmail.com" placeholder="Enter your email address" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 16px; color: #ffffff; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
             </div>
           </div>
 
           <!-- Password Field with Eye Toggle -->
           <div style="margin-bottom: 12px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Password</label>
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Password</label>
             <div style="position: relative; display: flex; align-items: center;">
-              <input type="password" id="gateLoginPass" value="password123" placeholder="Enter your password" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 44px 14px 16px; color: #111827; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#E11D23'" onblur="this.style.borderColor='#E5E7EB'">
-              <button type="button" onclick="togglePassVisibility('gateLoginPass', 'iconEyeLogin')" style="position: absolute; right: 14px; background: none; border: none; color: #9CA3AF; cursor: pointer; font-size: 15px;">
+              <input type="password" id="gateLoginPass" value="password123" placeholder="Enter your password" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 44px 14px 16px; color: #ffffff; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <button type="button" onclick="togglePassVisibility('gateLoginPass', 'iconEyeLogin')" style="position: absolute; right: 14px; background: none; border: none; color: #8E8E9A; cursor: pointer; font-size: 15px;">
                 <i class="fa-solid fa-eye" id="iconEyeLogin"></i>
               </button>
             </div>
             <div style="text-align: right; margin-top: 6px;">
-              <a href="javascript:void(0)" onclick="alert('Pour réinitialiser votre mot de passe, utilisez le compte test walksenon@gmail.com / password123 ou créez un nouveau compte.')" style="color: #6B7280; font-size: 12px; text-decoration: none; font-weight: 600;">Forgot password?</a>
+              <a href="javascript:void(0)" onclick="alert('Pour réinitialiser votre mot de passe, utilisez le compte test walksenon@gmail.com / password123 ou créez un nouveau compte.')" style="color: #8E8E9A; font-size: 12px; text-decoration: none; font-weight: 600;">Forgot password?</a>
             </div>
           </div>
 
           <!-- Agreement Checkbox -->
           <div style="display: flex; align-items: center; gap: 8px; margin: 16px 0 20px 0;">
-            <input type="checkbox" id="chkAgreementLogin" checked style="width: 16px; height: 16px; accent-color: #E11D23; cursor: pointer;">
-            <label for="chkAgreementLogin" style="font-size: 12px; color: #6B7280; cursor: pointer;">
-              I've read and agreed to <span style="color: #E11D23; font-weight: 700;">User Agreement</span> and <span style="color: #E11D23; font-weight: 700;">Privacy Policy</span>
+            <input type="checkbox" id="chkAgreementLogin" checked style="width: 16px; height: 16px; accent-color: #FF5500; cursor: pointer;">
+            <label for="chkAgreementLogin" style="font-size: 12px; color: #8E8E9A; cursor: pointer;">
+              I've read and agreed to <span style="color: #FF5500; font-weight: 700;">User Agreement</span> and <span style="color: #FF5500; font-weight: 700;">Privacy Policy</span>
             </label>
           </div>
 
-          <!-- Large Red Sign In Button -->
-          <button type="button" onclick="submitGateLogin()" style="width: 100%; background: #E11D23; color: #ffffff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(225, 29, 35, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <!-- Large Orange Sign In Button -->
+          <button type="button" onclick="submitGateLogin()" style="width: 100%; background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); color: #ffffff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px;">
             <span>Sign In • Entrer</span>
             <i class="fa-solid fa-arrow-right"></i>
           </button>
 
           <!-- 1-Click Fast Pass for Instant Testing -->
-          <button type="button" onclick="quickLoginTest()" style="width: 100%; background: #F3F4F6; color: #1F2937; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-            <span>⚡ Connexion Rapide Test (1-Clic Walkse)</span>
+          <button type="button" onclick="quickLoginTest()" style="width: 100%; background: #1C1C22; color: #FFFFFF; border: 1.5px solid rgba(255, 85, 0, 0.4); border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <span style="color: #FF5500;">⚡ Connexion Rapide Test (1-Clic Walkse)</span>
           </button>
         </div>
 
         <!-- Screen 2: Sign Up (Switched with 1 tap) -->
         <div id="formGateSignup" style="display: none;">
-          <h2 style="font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 18px;">Inscription • Sign Up (+50 Pts)</h2>
+          <h2 style="font-size: 19px; font-weight: 800; color: #ffffff; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-user-plus" style="color: #FF5500; font-size: 16px;"></i> Inscription • Sign Up (+50 Pts)
+          </h2>
 
           <!-- Full Name -->
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Nom et Prénom</label>
-            <input type="text" id="gateSignupName" placeholder="Ex: Walkse" value="Walkse" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 16px; color: #111827; font-size: 14px; outline: none;">
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Nom et Prénom</label>
+            <input type="text" id="gateSignupName" placeholder="Ex: Walkse" value="Walkse" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 16px; color: #ffffff; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
           </div>
 
           <!-- Email Address -->
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Email Address</label>
-            <input type="email" id="gateSignupEmail" placeholder="Enter your email address" value="walksenon@gmail.com" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 16px; color: #111827; font-size: 14px; outline: none;">
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Email Address</label>
+            <input type="email" id="gateSignupEmail" placeholder="Enter your email address" value="walksenon@gmail.com" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 16px; color: #ffffff; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
           </div>
 
           <!-- Password with Eye -->
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Password</label>
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Password</label>
             <div style="position: relative; display: flex; align-items: center;">
-              <input type="password" id="gateSignupPass" placeholder="Enter your password" value="password123" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 44px 14px 16px; color: #111827; font-size: 14px; outline: none;">
-              <button type="button" onclick="togglePassVisibility('gateSignupPass', 'iconEyeSignup1')" style="position: absolute; right: 14px; background: none; border: none; color: #9CA3AF; cursor: pointer; font-size: 15px;">
+              <input type="password" id="gateSignupPass" placeholder="Enter your password" value="password123" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 44px 14px 16px; color: #ffffff; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <button type="button" onclick="togglePassVisibility('gateSignupPass', 'iconEyeSignup1')" style="position: absolute; right: 14px; background: none; border: none; color: #8E8E9A; cursor: pointer; font-size: 15px;">
                 <i class="fa-solid fa-eye" id="iconEyeSignup1"></i>
               </button>
             </div>
@@ -868,10 +873,10 @@
 
           <!-- Confirm Password with Eye -->
           <div style="margin-bottom: 14px;">
-            <label style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Confirm Password</label>
+            <label style="font-size: 12px; font-weight: 700; color: #8E8E9A; display: block; margin-bottom: 6px;">Confirm Password</label>
             <div style="position: relative; display: flex; align-items: center;">
-              <input type="password" id="gateSignupPassConfirm" placeholder="Confirm your password" value="password123" style="width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 14px 44px 14px 16px; color: #111827; font-size: 14px; outline: none;">
-              <button type="button" onclick="togglePassVisibility('gateSignupPassConfirm', 'iconEyeSignup2')" style="position: absolute; right: 14px; background: none; border: none; color: #9CA3AF; cursor: pointer; font-size: 15px;">
+              <input type="password" id="gateSignupPassConfirm" placeholder="Confirm your password" value="password123" style="width: 100%; background: #1C1C22; border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 14px; padding: 14px 44px 14px 16px; color: #ffffff; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#FF5500'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <button type="button" onclick="togglePassVisibility('gateSignupPassConfirm', 'iconEyeSignup2')" style="position: absolute; right: 14px; background: none; border: none; color: #8E8E9A; cursor: pointer; font-size: 15px;">
                 <i class="fa-solid fa-eye" id="iconEyeSignup2"></i>
               </button>
             </div>
@@ -879,14 +884,14 @@
 
           <!-- Agreement Checkbox -->
           <div style="display: flex; align-items: center; gap: 8px; margin: 16px 0 20px 0;">
-            <input type="checkbox" id="chkAgreementSignup" checked style="width: 16px; height: 16px; accent-color: #E11D23; cursor: pointer;">
-            <label for="chkAgreementSignup" style="font-size: 12px; color: #6B7280; cursor: pointer;">
-              I've read and agreed to <span style="color: #E11D23; font-weight: 700;">User Agreement</span> and <span style="color: #E11D23; font-weight: 700;">Privacy Policy</span>
+            <input type="checkbox" id="chkAgreementSignup" checked style="width: 16px; height: 16px; accent-color: #FF5500; cursor: pointer;">
+            <label for="chkAgreementSignup" style="font-size: 12px; color: #8E8E9A; cursor: pointer;">
+              I've read and agreed to <span style="color: #FF5500; font-weight: 700;">User Agreement</span> and <span style="color: #FF5500; font-weight: 700;">Privacy Policy</span>
             </label>
           </div>
 
-          <!-- Large Red Sign Up Button -->
-          <button type="button" onclick="submitGateSignup()" style="width: 100%; background: #E11D23; color: #ffffff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(225, 29, 35, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <!-- Large Orange Sign Up Button -->
+          <button type="button" onclick="submitGateSignup()" style="width: 100%; background: linear-gradient(135deg, #FF5500 0%, #FF3D00 100%); color: #ffffff; border: none; border-radius: 14px; padding: 15px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4); display: flex; align-items: center; justify-content: center; gap: 8px;">
             <span>Sign Up • Créer mon Compte (+50 Pts)</span>
             <i class="fa-solid fa-circle-check"></i>
           </button>
@@ -894,14 +899,14 @@
       </div>
 
       <!-- Bottom Toggle Switch (Don't have an account? Sign Up / Already have an account? Sign In) -->
-      <div style="text-align: center; margin-top: 24px; padding-top: 14px; border-top: 1px solid #F3F4F6;">
-        <div id="switchLinkToSignup" style="font-size: 13px; color: #6B7280;">
+      <div style="text-align: center; margin-top: 24px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <div id="switchLinkToSignup" style="font-size: 13px; color: #8E8E9A;">
           Don't have an account? 
-          <a href="javascript:void(0)" onclick="switchGateTab('signup')" style="color: #E11D23; font-weight: 800; text-decoration: none; margin-left: 4px;">Sign Up</a>
+          <a href="javascript:void(0)" onclick="switchGateTab('signup')" style="color: #FF5500; font-weight: 800; text-decoration: none; margin-left: 4px;">Sign Up</a>
         </div>
-        <div id="switchLinkToLogin" style="font-size: 13px; color: #6B7280; display: none;">
+        <div id="switchLinkToLogin" style="font-size: 13px; color: #8E8E9A; display: none;">
           Already have an account? 
-          <a href="javascript:void(0)" onclick="switchGateTab('login')" style="color: #E11D23; font-weight: 800; text-decoration: none; margin-left: 4px;">Sign In</a>
+          <a href="javascript:void(0)" onclick="switchGateTab('login')" style="color: #FF5500; font-weight: 800; text-decoration: none; margin-left: 4px;">Sign In</a>
         </div>
       </div>
 
