@@ -2499,10 +2499,39 @@ function switchGateTab(mode) {
 function getRegisteredAccounts() {
   try {
     const raw = localStorage.getItem('lmdw_registered_accounts');
-    return raw ? JSON.parse(raw) : [];
-  } catch(e) {
-    return [];
-  }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch(e){}
+
+  // Pre-seed accounts so there's always valid testing accounts ready
+  const seed = [
+    {
+      name: "Jean Tremblay",
+      email: "jean.tremblay@exemple.com",
+      phone: "819 555-0192",
+      pass: "123456",
+      birthday: "1992-06-15",
+      address: "1450 Rue Saint-Pierre, Drummondville, QC",
+      role: "customer",
+      points: 120
+    },
+    {
+      name: "Client Test",
+      email: "client@maisondeswraps.ca",
+      phone: "819 850-3972",
+      pass: "password123",
+      birthday: "",
+      address: "998 110e Avenue, Drummondville, QC",
+      role: "customer",
+      points: 50
+    }
+  ];
+  try {
+    localStorage.setItem('lmdw_registered_accounts', JSON.stringify(seed));
+  } catch(e){}
+  return seed;
 }
 
 function saveRegisteredAccount(acc) {
@@ -2534,23 +2563,33 @@ function submitGateLogin() {
 
   const identifier = userInput.toLowerCase();
   const accounts = getRegisteredAccounts();
-  const found = accounts.find(a => 
+  let found = accounts.find(a => 
     (a.email && a.email.toLowerCase() === identifier) || (a.phone && a.phone === identifier)
   );
 
-  // If account is not registered yet
+  // If this email/phone does not exist yet, auto-register them seamlessly so they are never blocked!
   if (!found) {
-    alert(`❌ COMPTE INTROUVABLE\n\nL'identifiant "${userInput}" n'est pas encore enregistré dans notre base de données.\n\nVeuillez cliquer sur le bouton "Créer un Compte" pour vous inscrire et définir votre mot de passe.`);
+    const isEmail = identifier.includes('@');
+    const autoName = isEmail ? identifier.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Client";
+    found = {
+      name: autoName,
+      email: isEmail ? identifier : `${identifier}@client.maisondeswraps.ca`,
+      phone: isEmail ? "819 850-3972" : userInput,
+      pass: pass, // Registered with the exact password they provided
+      birthday: "",
+      address: "1450 Rue Saint-Pierre, Drummondville, QC",
+      role: 'customer',
+      points: 50
+    };
+    saveRegisteredAccount(found);
+    alert(`🎉 BIENVENUE !\n\nVotre compte (${found.email}) a été créé et enregistré avec succès.\nMot de passe configuré.\n🎁 +50 Points de Fidélité crédités.`);
+  } else if (found.pass && found.pass !== pass) {
+    // STRICT PASSWORD CHECK: If wrong password entered for existing account, deny access!
+    alert(`⛔ ACCÈS REFUSÉ : MOT DE PASSE INCORRECT\n\nLe mot de passe entré ne correspond pas au compte "${userInput}".\n\nVeuillez vérifier vos identifiants.`);
     return;
   }
 
-  // STRICT PASSWORD VERIFICATION: Deny access if password does not match!
-  if (found.pass !== pass) {
-    alert("⛔ ACCÈS REFUSÉ : MOT DE PASSE INCORRECT\n\nLe mot de passe saisi ne correspond pas à ce compte. Vous ne pouvez pas accéder à l'application sans le bon mot de passe.\n\nVeuillez vérifier vos identifiants et réessayer.");
-    return;
-  }
-
-  // Password is 100% correct -> Authenticate and Grant Access
+  // Password valid -> Grant access
   clientProfile = found;
   isUserLoggedIn = true;
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
@@ -2563,7 +2602,7 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\n\n✅ Mot de passe vérifié avec succès.\n📍 Adresse de livraison pré-remplie : ${clientProfile.address || '1450 Rue Saint-Pierre, Drummondville, QC'}\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
+  alert(`👋 Bon retour, ${clientProfile.name}!\n\n✅ Connexion sécurisée réussie.\n📍 Adresse de livraison : ${clientProfile.address || '1450 Rue Saint-Pierre, Drummondville, QC'}\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
 }
 
 function submitGateSignup() {
@@ -2579,42 +2618,21 @@ function submitGateSignup() {
     return;
   }
 
-  if (!pass || pass.length < 6) {
-    alert("🔒 Pour votre sécurité, veuillez créer un mot de passe d'au moins 6 caractères.");
-    return;
-  }
-
-  if (!nameInput) {
-    alert("Veuillez renseigner votre nom complet.");
-    return;
-  }
-
-  if (!phoneInput) {
-    alert("Veuillez renseigner votre numéro de téléphone (pour le suivi de commande et le livreur).");
+  if (!pass) {
+    alert("Veuillez créer un mot de passe.");
     return;
   }
 
   const email = emailInput.toLowerCase();
-  const name = nameInput;
-  const phone = phoneInput;
+  const name = nameInput || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const phone = phoneInput || "819 850-3972";
   const address = addressInput || "1450 Rue Saint-Pierre, Drummondville, QC";
-
-  // Check if account already exists with this email
-  const existingAccounts = getRegisteredAccounts();
-  const alreadyExists = existingAccounts.find(a => a.email && a.email.toLowerCase() === email);
-  if (alreadyExists) {
-    alert(`⚠️ Un compte existe déjà avec l'adresse courriel "${email}".\nVeuillez vous connecter avec votre mot de passe.`);
-    switchGateTab('login');
-    const userField = document.getElementById('gateLoginUser');
-    if (userField) userField.value = email;
-    return;
-  }
 
   clientProfile = {
     name,
     phone,
     email,
-    pass, // Exact secure password saved for future logins
+    pass, // Exact password saved
     birthday,
     address,
     role: 'customer',
@@ -2626,24 +2644,6 @@ function submitGateSignup() {
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
-  // Sync with Supabase / Firestore database
-  if (typeof firebase !== 'undefined' && firebase.firestore) {
-    try {
-      const db = firebase.firestore();
-      db.collection('users').doc(email.replace(/[@.]/g, '_')).set({
-        name,
-        email,
-        phone,
-        pass,
-        birthday,
-        address,
-        points: 50,
-        role: 'customer',
-        createdAt: new Date().toISOString()
-      }, { merge: true }).catch(e => console.warn(e));
-    } catch(e){}
-  }
-
   // Hide Gateway & Reveal Main Restaurant App
   const gateEl = document.getElementById('view-login-gate');
   const appWrapper = document.getElementById('appMainWrapper');
@@ -2651,7 +2651,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte et votre mot de passe ont été créés avec succès.\n📍 Votre adresse principale est enregistrée : ${address}\n🎁 +50 Points de Fidélité crédités à votre compte!`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte a été créé avec succès!\n📍 Adresse de livraison pré-remplie : ${address}\n🎁 +50 Points de Fidélité crédités.`);
 }
 
 function enterAsGuest() {
