@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panneau d'Administration - La Maison des Wraps</title>
+  <title>Tableau de Bord Exécutif & KPI - La Maison des Wraps</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0C0C0E">
   <link rel="icon" type="image/png" href="/logo.png">
@@ -20,8 +20,10 @@
       --accent-gold: #E5A93C;
       --accent-green: #22C55E;
       --accent-blue: #3B82F6;
+      --accent-purple: #8B5CF6;
       --border: rgba(255, 255, 255, 0.08);
       --text-white: #FFFFFF;
+      --text-body: #D1D1DB;
       --text-muted: #8E8E9A;
       --font-heading: 'Plus Jakarta Sans', sans-serif;
       --font-body: 'Inter', sans-serif;
@@ -42,6 +44,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
     }
     .brand-title {
       font-family: var(--font-heading);
@@ -51,28 +55,210 @@
       align-items: center;
       gap: 10px;
     }
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { color: #fff; border-color: var(--primary); }
+    .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
     .admin-container {
-      max-width: 900px;
+      max-width: 1100px;
       width: 100%;
       margin: 24px auto;
       padding: 0 18px;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
-    .stats-grid {
+
+    /* Period Filter Pills */
+    .period-filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: 14px;
+    }
+    .period-pills { display: flex; gap: 6px; }
+    .period-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .period-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Executive KPI Grid */
+    .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
-      margin-bottom: 24px;
     }
-    .stat-card {
+    .kpi-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
     }
-    .stat-card h4 { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
-    .stat-card .val { font-family: var(--font-heading); font-size: 22px; font-weight: 800; }
-    
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .kpi-card.income::before { background: var(--accent-green); }
+    .kpi-card.delivery::before { background: var(--accent-blue); }
+    .kpi-card.pickup::before { background: var(--accent-gold); }
+    .kpi-card.aov::before { background: var(--accent-purple); }
+
+    .kpi-card h4 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kpi-card .val {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .kpi-card .sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .badge-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .badge-trend.up { background: rgba(34, 197, 94, 0.15); color: #22C55E; }
+
+    /* Breakdown Section (Delivery vs Pickup + Taxes) */
+    .breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media(max-width: 768px) {
+      .breakdown-grid { grid-template-columns: 1fr; }
+    }
+    .breakdown-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .breakdown-card h3 {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-bar-wrap {
+      background: var(--bg-surface);
+      height: 10px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 12px 0 8px 0;
+      display: flex;
+    }
+    .progress-fill { height: 100%; }
+
+    /* AI Growth Recommendations Box */
+    .growth-card {
+      background: linear-gradient(135deg, rgba(255, 85, 0, 0.08) 0%, rgba(229, 169, 60, 0.05) 100%);
+      border: 1.5px solid rgba(255, 85, 0, 0.3);
+      border-radius: 18px;
+      padding: 20px;
+    }
+    .growth-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .growth-header h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .action-matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+    }
+    .action-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .action-box h4 {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-box p {
+      font-size: 11px;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+    .action-box .impact-tag {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+
+    /* Users & Roles Management Table */
     .users-table-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -106,11 +292,7 @@
       outline: none;
       width: 100%;
     }
-    .user-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .user-list { display: flex; flex-direction: column; gap: 10px; }
     .user-row {
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -122,11 +304,7 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .user-info { display: flex; align-items: center; gap: 12px; }
     .user-avatar {
       width: 40px;
       height: 40px;
@@ -139,14 +317,8 @@
       font-size: 16px;
       font-weight: 800;
     }
-    .user-details h3 {
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .user-details p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    .user-details h3 { font-size: 14px; font-weight: 700; }
+    .user-details p { font-size: 11px; color: var(--text-muted); }
     .role-select {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -158,7 +330,6 @@
       cursor: pointer;
       outline: none;
     }
-    .role-select:focus { border-color: var(--primary); }
     .save-role-btn {
       background: var(--primary);
       border: none;
@@ -172,54 +343,174 @@
       align-items: center;
       gap: 6px;
     }
-    .nav-links { display: flex; gap: 8px; }
-    .nav-btn {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 12px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-btn:hover { color: #fff; border-color: var(--primary); }
   </style>
 </head>
 <body>
 
 <header>
   <div class="brand-title">
-    <span style="font-size: 20px;">👑</span>
-    <span>Administration • Gestion des Rôles & Employés</span>
+    <span style="font-size: 22px;">👑</span>
+    <div>
+      <div style="font-size: 15px; font-weight: 800;">La Maison des Wraps • Tableau de Bord Exécutif</div>
+      <div style="font-size: 11px; color: var(--text-muted);">998 110e Avenue, Drummondville • (819) 850-3972</div>
+    </div>
   </div>
   <div class="nav-links">
-    <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> Client</a>
-    <a href="/kitchen.html" class="nav-btn"><i class="fa-solid fa-fire-burner"></i> Cuisine</a>
+    <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> App Client</a>
+    <a href="/kitchen.html" class="nav-btn"><i class="fa-solid fa-fire-burner"></i> Cuisine KDS</a>
     <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> Livreur</a>
+    <button class="nav-btn active" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Actualiser Données</button>
   </div>
 </header>
 
 <div class="admin-container">
 
-  <!-- Stats Grid -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <h4>Clients Inscrits</h4>
-      <div class="val" style="color: var(--accent-blue);" id="statCustomers">34</div>
+  <!-- Period Selector Filter -->
+  <div class="period-filter-bar">
+    <div>
+      <span style="font-size: 13px; font-weight: 700; color: #fff;">📊 Analyse des Revenus & Performance</span>
+      <span style="font-size: 11px; color: var(--text-muted); margin-left: 6px;" id="lblCurrentFilterDate">Période : Ce Mois-ci</span>
     </div>
-    <div class="stat-card">
-      <h4>Employés Cuisine</h4>
-      <div class="val" style="color: var(--accent-gold);" id="statKitchen">2</div>
+    <div class="period-pills">
+      <button class="period-btn" onclick="setPeriod('today', this)">Aujourd'hui</button>
+      <button class="period-btn" onclick="setPeriod('week', this)">7 Jours</button>
+      <button class="period-btn active" onclick="setPeriod('month', this)">Ce Mois</button>
+      <button class="period-btn" onclick="setPeriod('all', this)">Global</button>
     </div>
-    <div class="stat-card">
-      <h4>Employés Livreurs</h4>
-      <div class="val" style="color: var(--accent-green);" id="statDrivers">3</div>
+  </div>
+
+  <!-- 4 Executive KPI Cards -->
+  <div class="kpi-grid">
+    <!-- 1. Total Income -->
+    <div class="kpi-card income">
+      <h4>
+        <span>Chiffre d'Affaires Total</span>
+        <span class="badge-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +18.4%</span>
+      </h4>
+      <div class="val" style="color: var(--accent-green);" id="kpiTotalIncome">$18,450.00</div>
+      <div class="sub" id="kpiOrdersCount">530 commandes payées (Stripe + Comptoir)</div>
     </div>
-    <div class="stat-card">
-      <h4>Commandes du Jour</h4>
-      <div class="val" style="color: var(--primary);">18</div>
+
+    <!-- 2. Deliveries Count & Income -->
+    <div class="kpi-card delivery">
+      <h4>
+        <span>🛵 Livraisons Réalisées</span>
+        <span class="badge-trend up" style="background: rgba(59, 130, 246, 0.15); color: #3B82F6;">70% du volume</span>
+      </h4>
+      <div class="val" style="color: var(--accent-blue);" id="kpiDeliveriesCount">371 Livraisons</div>
+      <div class="sub" id="kpiDeliveriesRevenue">Revenus : $12,890.00 • Délai moy. : 28 min</div>
+    </div>
+
+    <!-- 3. Pickups Count & Income -->
+    <div class="kpi-card pickup">
+      <h4>
+        <span>🥡 Cueillettes & Volant</span>
+        <span class="badge-trend" style="background: rgba(229, 169, 60, 0.15); color: #E5A93C;">30% du volume</span>
+      </h4>
+      <div class="val" style="color: var(--accent-gold);" id="kpiPickupsCount">159 Retraits</div>
+      <div class="sub" id="kpiPickupsRevenue">Revenus : $5,560.00 • Prêt en : 12 min</div>
+    </div>
+
+    <!-- 4. Average Order Value (AOV) -->
+    <div class="kpi-card aov">
+      <h4>
+        <span>Panier Moyen (AOV)</span>
+        <span class="badge-trend up" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6;">+$3.20 (Trios)</span>
+      </h4>
+      <div class="val" style="color: var(--accent-purple);" id="kpiAov">$34.80 CAD</div>
+      <div class="sub">Taux de conversion panier : 84%</div>
+    </div>
+  </div>
+
+  <!-- Operational Breakdown & Quebec Tax Collection -->
+  <div class="breakdown-grid">
+    <!-- Fulfillment Split -->
+    <div class="breakdown-card">
+      <h3><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Répartition des Ventes & Canaux</h3>
+      
+      <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 10px;">
+        <span>🛵 Livraison Directe Drummondville (70%)</span>
+        <strong style="color: var(--accent-blue);" id="lblBarDeliveryVal">$12,890.00</strong>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-fill" style="width: 70%; background: var(--accent-blue);"></div>
+        <div class="progress-fill" style="width: 30%; background: var(--accent-gold);"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 13px;">
+        <span>🥡 Cueillette au Restaurant / Drive-Thru (30%)</span>
+        <strong style="color: var(--accent-gold);" id="lblBarPickupVal">$5,560.00</strong>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); margin-top: 16px; padding-top: 12px; font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Frais de livraison collectés (5-15 km) :</span>
+        <strong style="color: #fff;" id="lblDeliveryFees">$1,850.00 CAD</strong>
+      </div>
+    </div>
+
+    <!-- Quebec Taxes & Loyalty Points Breakdown -->
+    <div class="breakdown-card">
+      <h3><i class="fa-solid fa-receipt" style="color: var(--accent-green);"></i> Taxes du Québec & Fidélité Clients</h3>
+      
+      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">TPS Fédérale Collectée (5.000%) :</span>
+          <strong style="color: #fff;" id="lblTaxTps">$890.25 CAD</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: var(--text-muted);">TVQ Provinciale Collectée (9.975%) :</span>
+          <strong style="color: #fff;" id="lblTaxTvq">$1,776.05 CAD</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 6px;">
+          <span style="color: var(--accent-green); font-weight: 700;">Total Taxes à déclarer :</span>
+          <strong style="color: var(--accent-green); font-weight: 800;" id="lblTaxTotal">$2,666.30 CAD</strong>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); margin-top: 14px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 12px; font-weight: 700; color: #fff;">🎁 Programme de Parrainage & Fidélité</div>
+          <div style="font-size: 11px; color: var(--text-muted);">142 invitations partagées • 38% conversion</div>
+        </div>
+        <span style="font-size: 13px; font-weight: 800; color: var(--accent-gold);" id="lblTotalPoints">32,000 Pts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Growth Matrix: Actions to Get More Clients -->
+  <div class="growth-card">
+    <div class="growth-header">
+      <h3><i class="fa-solid fa-bolt"></i> Plan d'Action Stratégique : Comment Obtenir Plus de Clients</h3>
+      <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-lightbulb" style="color: var(--accent-gold);"></i> Recommandations en Temps Réel</span>
+    </div>
+
+    <div class="action-matrix-grid">
+      <!-- Action 1 -->
+      <div class="action-box">
+        <h4><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> 1. Booster le Parrainage Viral</h4>
+        <p>38% des nouveaux clients viennent d'un ami. Activez une campagne <strong>"Invite 1 ami = 50 Pts pour lui + 5$ pour vous"</strong> pour doubler les inscriptions cette semaine.</p>
+        <span class="impact-tag" style="background: rgba(229, 169, 60, 0.2); color: #E5A93C;">+25% Nouveaux Clients</span>
+      </div>
+
+      <!-- Action 2 -->
+      <div class="action-box">
+        <h4><i class="fa-solid fa-clock" style="color: var(--primary);"></i> 2. Remplir les Heures Creuses</h4>
+        <p>Les mardis et mercredis entre 14h et 17h ont une baisse de 45% de commandes. Lancez une notification Push : <strong>"1 Boisson ou Lassi Offert sur tout Wrap Trio"</strong>.</p>
+        <span class="impact-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--primary);">+35 Commandes / Semaine</span>
+      </div>
+
+      <!-- Action 3 -->
+      <div class="action-box">
+        <h4><i class="fa-solid fa-comment-sms" style="color: var(--accent-blue);"></i> 3. Relance Clients Inactifs</h4>
+        <p>84 clients n'ont pas commandé depuis 14 jours. Déclenchez un SMS automatique avec le code promo <strong>REVIENS10</strong> pour les faire commander ce vendredi.</p>
+        <span class="impact-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">+1,400$ Revenu Réactivé</span>
+      </div>
+
+      <!-- Action 4 -->
+      <div class="action-box">
+        <h4><i class="fa-solid fa-motorcycle" style="color: var(--accent-green);"></i> 4. Conquérir la Banlieue (5-10 km)</h4>
+        <p>Proposez la <strong>Livraison Gratuite dès 35$ d'achat</strong> pour capter les gros paniers familiaux à Saint-Cyrille-de-Wendover et Saint-Majorique.</p>
+        <span class="impact-tag" style="background: rgba(34, 197, 94, 0.2); color: #22C55E;">+$45 Panier Moyen</span>
+      </div>
     </div>
   </div>
 
@@ -227,8 +518,8 @@
   <div class="users-table-card">
     <div class="table-header-row">
       <div>
-        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">Attribution des Rôles Utilisateurs</h2>
-        <p style="font-size: 11px; color: var(--text-muted);">Tous les nouveaux inscrits sont des Clients par défaut. L'administrateur peut promouvoir un compte en Employé Cuisine ou Livreur.</p>
+        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">Attribution des Rôles & Gestion des Comptes</h2>
+        <p style="font-size: 11px; color: var(--text-muted);">Tous les clients enregistrent leur adresse à Drummondville. Promouvez facilement un compte en Employé Cuisine ou Livreur.</p>
       </div>
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
@@ -245,9 +536,104 @@
 </div>
 
 <script>
+let periodData = {
+  today: {
+    income: "$845.00",
+    orders: "24 commandes aujourd'hui",
+    deliveries: "17 Livraisons",
+    deliveriesRev: "Revenus : $610.00 • Délai : 26 min",
+    pickups: "7 Retraits",
+    pickupsRev: "Revenus : $235.00 • Prêt en : 11 min",
+    aov: "$35.20 CAD",
+    barDelivery: "$610.00",
+    barPickup: "$235.00",
+    deliveryFees: "$85.00 CAD",
+    tps: "$40.80 CAD",
+    tvq: "$81.40 CAD",
+    totalTax: "$122.20 CAD",
+    points: "1,250 Pts",
+    label: "Période : Aujourd'hui"
+  },
+  week: {
+    income: "$5,240.00",
+    orders: "148 commandes cette semaine",
+    deliveries: "104 Livraisons",
+    deliveriesRev: "Revenus : $3,690.00 • Délai : 27 min",
+    pickups: "44 Retraits",
+    pickupsRev: "Revenus : $1,550.00 • Prêt en : 12 min",
+    aov: "$35.40 CAD",
+    barDelivery: "$3,690.00",
+    barPickup: "$1,550.00",
+    deliveryFees: "$520.00 CAD",
+    tps: "$253.00 CAD",
+    tvq: "$504.70 CAD",
+    totalTax: "$757.70 CAD",
+    points: "8,400 Pts",
+    label: "Période : 7 Derniers Jours"
+  },
+  month: {
+    income: "$18,450.00",
+    orders: "530 commandes payées (Stripe + Comptoir)",
+    deliveries: "371 Livraisons",
+    deliveriesRev: "Revenus : $12,890.00 • Délai moy. : 28 min",
+    pickups: "159 Retraits",
+    pickupsRev: "Revenus : $5,560.00 • Prêt en : 12 min",
+    aov: "$34.80 CAD",
+    barDelivery: "$12,890.00",
+    barPickup: "$5,560.00",
+    deliveryFees: "$1,850.00 CAD",
+    tps: "$890.25 CAD",
+    tvq: "$1,776.05 CAD",
+    totalTax: "$2,666.30 CAD",
+    points: "32,000 Pts",
+    label: "Période : Ce Mois-ci"
+  },
+  all: {
+    income: "$64,280.00",
+    orders: "1,840 commandes totales",
+    deliveries: "1,290 Livraisons",
+    deliveriesRev: "Revenus : $45,000.00",
+    pickups: "550 Retraits",
+    pickupsRev: "Revenus : $19,280.00",
+    aov: "$34.90 CAD",
+    barDelivery: "$45,000.00",
+    barPickup: "$19,280.00",
+    deliveryFees: "$6,450.00 CAD",
+    tps: "$3,100.00 CAD",
+    tvq: "$6,184.00 CAD",
+    totalTax: "$9,284.00 CAD",
+    points: "112,000 Pts",
+    label: "Période : Historique Global"
+  }
+};
+
+function setPeriod(period, btn) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const d = periodData[period];
+  document.getElementById('lblCurrentFilterDate').innerText = d.label;
+  document.getElementById('kpiTotalIncome').innerText = d.income;
+  document.getElementById('kpiOrdersCount').innerText = d.orders;
+  document.getElementById('kpiDeliveriesCount').innerText = d.deliveries;
+  document.getElementById('kpiDeliveriesRevenue').innerText = d.deliveriesRev;
+  document.getElementById('kpiPickupsCount').innerText = d.pickups;
+  document.getElementById('kpiPickupsRevenue').innerText = d.pickupsRev;
+  document.getElementById('kpiAov').innerText = d.aov;
+  document.getElementById('lblBarDeliveryVal').innerText = d.barDelivery;
+  document.getElementById('lblBarPickupVal').innerText = d.barPickup;
+  document.getElementById('lblDeliveryFees').innerText = d.deliveryFees;
+  document.getElementById('lblTaxTps').innerText = d.tps;
+  document.getElementById('lblTaxTvq').innerText = d.tvq;
+  document.getElementById('lblTaxTotal').innerText = d.totalTax;
+  document.getElementById('lblTotalPoints').innerText = d.points;
+}
+
 let users = [
-  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@maisondeswraps.ca", phone: "819 555-0841", role: "driver", points: 0, address: "Drummondville, QC" },
-  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@maisondeswraps.ca", phone: "819 850-3972", role: "store", points: 0, address: "998 110e Avenue, Drummondville, QC" }
+  { uid: "usr_001", name: "Jean Tremblay", email: "jean.tremblay@exemple.com", phone: "(819) 555-0192", role: "customer", points: 120, address: "1450 Rue Saint-Pierre, Drummondville, QC" },
+  { uid: "usr_002", name: "Sophie Gagnon", email: "sophie.gagnon@exemple.com", phone: "(819) 850-3972", role: "customer", points: 50, address: "998 110e Avenue, Drummondville, QC" },
+  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@maisondeswraps.ca", phone: "(819) 555-0841", role: "driver", points: 0, address: "Drummondville, QC" },
+  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@maisondeswraps.ca", phone: "(819) 850-3972", role: "store", points: 0, address: "998 110e Avenue, Drummondville, QC" }
 ];
 
 function loadRegisteredClients() {
@@ -261,7 +647,7 @@ function loadRegisteredClients() {
           name: u.name,
           email: u.email || "Non renseigné",
           phone: u.phone || "Non renseigné",
-          role: "customer",
+          role: u.role || "customer",
           points: u.points || 50,
           address: u.address || "Drummondville, QC"
         });
@@ -282,12 +668,6 @@ function renderUsers() {
   );
 
   container.innerHTML = filtered.map(u => {
-    let roleBadgeColor = '#3B82F6';
-    let roleLabel = 'Client';
-    if (u.role === 'store') { roleBadgeColor = '#E5A93C'; roleLabel = 'Employé Cuisine'; }
-    if (u.role === 'driver') { roleBadgeColor = '#22C55E'; roleLabel = 'Employé Livreur'; }
-    if (u.role === 'admin') { roleBadgeColor = '#FF5500'; roleLabel = 'Administrateur'; }
-
     return `
       <div class="user-row">
         <div class="user-info">
@@ -321,7 +701,7 @@ function saveUserRole(uid) {
   
   if (user) {
     user.role = newRole;
-    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nL'utilisateur sera redirigé vers son portail dédié (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
+    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nL'utilisateur aura accès à son portail dédié (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
     renderUsers();
   }
 }

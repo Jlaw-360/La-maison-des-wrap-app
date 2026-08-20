@@ -1447,18 +1447,41 @@
   </div>
 </div>
 
-<!-- Gift Card Viral Sharing Modal -->
+<!-- Gift Card & Parrainage / Viral Sharing Modal -->
 <div class="modal-overlay" id="giftModal">
-  <div class="modal-sheet">
+  <div class="modal-sheet" style="max-height: 90vh;">
     <div class="sheet-header">
       <div>
-        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">Cadeau & Parrainage</div>
-        <div class="sheet-title">Envoyer une Carte Cadeau</div>
+        <div style="font-size: 10px; color: var(--accent-gold); font-weight: 700; text-transform: uppercase;">🎁 Programme Cadeaux & Parrainage</div>
+        <div class="sheet-title">Cartes Cadeaux & Invitations</div>
       </div>
       <button class="close-btn" onclick="closeModal('giftModal')"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 14px;">
-      Offrez un festin à vos amis à Drummondville! Votre ami recevra un lien pour télécharger l'application et débloquer son crédit.
+
+    <!-- Section 1: Entrer un Code d'Invitation / Parrainage (Redeem Code) -->
+    <div style="background: rgba(229, 169, 60, 0.12); border: 1.5px dashed var(--accent-gold); border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+      <div style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 4px;">
+        🎟️ Vous avez reçu un Code d'Invitation ou Carte Cadeau ?
+      </div>
+      <p style="font-size: 11px; color: var(--text-body); margin-bottom: 10px;">
+        Entrez le code partagé par votre ami pour débloquer instantanément vos points et récompenses exclusives.
+      </p>
+      
+      <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+        <input type="text" id="inputInvitationCode" placeholder="Ex: AMI-JEAN-50 ou BIENVENUE50" style="flex: 1; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 10px 12px; color: #fff; font-size: 13px; text-transform: uppercase; font-weight: 700; outline: none;">
+        <button type="button" class="btn-main" style="background: var(--accent-gold); color: #000; padding: 10px 16px; font-size: 12px; white-space: nowrap;" onclick="redeemInvitationCode()">
+          Valider le Code
+        </button>
+      </div>
+      <div id="invitationFeedbackMsg" style="display: none; font-size: 11px; margin-top: 6px; font-weight: 600;"></div>
+    </div>
+
+    <!-- Section 2: Offrir et Parrainer un Ami (Send & Share) -->
+    <div style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 6px;">
+      📤 Parrainer un Ami ou Envoyer une Carte Cadeau
+    </div>
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 12px;">
+      Offrez un repas savoureux à vos proches à Drummondville! Votre ami recevra un lien personnalisé.
     </p>
 
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
@@ -1474,9 +1497,12 @@
 
     <input type="text" id="giftFriendName" placeholder="Nom de votre ami(e)" style="width: 100%; background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 12px; font-size: 13px; outline: none;">
 
-    <button class="btn-main" style="background: var(--accent-gold); color: #000;" onclick="shareGiftCardLink()">
-      <span><i class="fa-solid fa-share-nodes"></i> Générer & Partager le Lien</span>
-      <span>25.00$</span>
+    <button type="button" class="btn-main" style="background: var(--primary); color: #fff;" onclick="shareGiftCardLink()">
+      <span><i class="fa-solid fa-share-nodes"></i> Partager le Lien d'Invitation & Cadeau</span>
+      <span id="lblGiftBtnPrice">25.00$</span>
+    </button>
+  </div>
+</div>
 <!-- ==================== CLIENT SIGN-UP & GOURMET ONBOARDING SURVEY MODAL ==================== -->
 <div class="modal-overlay" id="signupSurveyModal">
   <div class="modal-sheet" style="max-height: 90vh;">
@@ -2294,6 +2320,56 @@ function openGiftCardModal() {
 function selectGiftTier(el, amount) {
   el.parentElement.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
+  const btnPrice = document.getElementById('lblGiftBtnPrice');
+  if (btnPrice) btnPrice.innerText = `${amount}.00$`;
+}
+
+function redeemInvitationCode() {
+  const codeInput = document.getElementById('inputInvitationCode');
+  const feedbackEl = document.getElementById('invitationFeedbackMsg');
+  const code = (codeInput ? codeInput.value : '').trim().toUpperCase();
+
+  if (!code) {
+    if (feedbackEl) {
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.color = '#EF4444';
+      feedbackEl.innerHTML = "⚠️ Veuillez saisir un code d'invitation ou de parrainage.";
+    }
+    alert("Veuillez saisir un code d'invitation.");
+    return;
+  }
+
+  // Valid promo & referral codes database
+  const validCodes = {
+    'BIENVENUE50': { points: 50, desc: 'Bonus de Bienvenue (+50 Points de Fidélité)' },
+    'WRAP2026': { points: 75, desc: 'Promo Spéciale Wraps Drummondville (+75 Points)' },
+    'AMI-JEAN-50': { points: 50, desc: 'Parrainage Jean Tremblay (+50 Points)' },
+    'TIMS50': { points: 50, desc: 'Carte Récompense (+50 Points)' },
+    'FESTIN25': { points: 100, desc: 'Carte Cadeau 25$ Débloquée (+100 Points)' }
+  };
+
+  if (validCodes[code]) {
+    const bonus = validCodes[code];
+    clientProfile.points = (clientProfile.points || 0) + bonus.points;
+    localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+    updateUserProfileUI();
+
+    if (feedbackEl) {
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.color = '#22C55E';
+      feedbackEl.innerHTML = `✅ <strong>Code Validé avec Succès !</strong><br>${bonus.desc}. Nouveau solde : <strong>${clientProfile.points} points</strong>.`;
+    }
+    codeInput.value = '';
+    alert(`🎉 CODE D'INVITATION VALIDÉ !\n\n${bonus.desc} a été crédité sur votre compte.\nVotre nouveau solde : ${clientProfile.points} points.`);
+  } else {
+    // WRONG / INVALID INVITATION CODE: Provide crystal-clear feedback so customer is aware
+    if (feedbackEl) {
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.color = '#EF4444';
+      feedbackEl.innerHTML = `❌ <strong>Code Invalide ou Expiré ("${code}")</strong><br>Ce code d'invitation n'existe pas ou n'est plus actif. Vérifiez avec votre ami ou utilisez le code <strong>BIENVENUE50</strong>.`;
+    }
+    alert(`❌ CODE D'INVITATION INTROUVABLE\n\nLe code "${code}" n'est pas reconnu dans notre système ou a déjà expiré.\n\n💡 Conseil : Demandez à votre ami de vérifier son code exact, ou utilisez le code de bienvenue : BIENVENUE50.`);
+  }
 }
 
 function shareGiftCardLink() {
