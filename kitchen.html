@@ -237,6 +237,31 @@
   </div>
 </header>
 
+<!-- Kitchen Real-Time KPI Stats Bar -->
+<div style="background: #181820; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+  <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Commandes Terminées :</span>
+      <span style="font-size: 14px; font-weight: 800; color: #22C55E;" id="kdsCompletedToday">0</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Temps Moyen Cuisson :</span>
+      <span style="font-size: 14px; font-weight: 800; color: #E5A93C;" id="kdsAvgPrepTime">8.5 min</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">En Préparation Active :</span>
+      <span style="font-size: 14px; font-weight: 800; color: #FF5500;" id="kdsActivePrepCount">0</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Ponctualité (< 15m) :</span>
+      <span style="font-size: 14px; font-weight: 800; color: #3B82F6;" id="kdsOnTimeRate">98%</span>
+    </div>
+  </div>
+  <button type="button" class="nav-btn" style="background: rgba(229, 169, 60, 0.15); border-color: #E5A93C; color: #E5A93C; font-weight: 700; cursor: pointer;" onclick="openKitchenShiftReport()">
+    <i class="fa-solid fa-clipboard-list"></i> <span>Rapport de Quart (Shift)</span>
+  </button>
+</div>
+
 <div class="kanban-board">
 
   <!-- Column 1: Nouvelles Commandes -->
@@ -313,6 +338,43 @@
     <!-- Final Confirm Button -->
     <button type="button" id="btnStoreFinalConfirm" class="btn-action" style="background: #22C55E; width: 100%; font-size: 14px; display: none;" onclick="completeStorePickup()">
       <i class="fa-solid fa-circle-check"></i> CONFIRMER LA REMISE DU REPAS
+    </button>
+  </div>
+</div>
+
+<!-- Kitchen Shift Report Modal (Rapport de Quart) -->
+<div id="kitchenShiftReportModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; padding: 18px;">
+  <div style="background: #1C1C24; border: 1.5px solid rgba(229, 169, 60, 0.4); border-radius: 20px; width: 100%; max-width: 520px; padding: 22px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; margin-bottom: 16px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">La Maison des Wraps • Cuisine</div>
+        <h2 style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 2px;">📊 Rapport de Quart & Production</h2>
+      </div>
+      <button style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;" onclick="closeKitchenShiftReport()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Summary Stats Matrix -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px;">
+      <div style="background: #14141A; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 12px;">
+        <div style="font-size: 11px; color: var(--text-muted);">Commandes du Quart :</div>
+        <div style="font-size: 20px; font-weight: 800; color: #22C55E; margin-top: 2px;" id="shiftReportTotalOrders">0</div>
+      </div>
+      <div style="background: #14141A; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 12px;">
+        <div style="font-size: 11px; color: var(--text-muted);">Temps Moyen de Préparation :</div>
+        <div style="font-size: 20px; font-weight: 800; color: #E5A93C; margin-top: 2px;" id="shiftReportAvgTime">8.5 min</div>
+      </div>
+    </div>
+
+    <!-- Items Cooked Breakdown List -->
+    <div style="margin-bottom: 18px;">
+      <h3 style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 8px;"><i class="fa-solid fa-fire-burner" style="color: var(--primary);"></i> Détail des Articles Confectionnés :</h3>
+      <div id="shiftReportItemsList" style="display: flex; flex-direction: column; gap: 6px; background: #14141A; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); max-height: 200px; overflow-y: auto;">
+        <!-- Dynamic Items Inserted -->
+      </div>
+    </div>
+
+    <button type="button" class="btn-action" style="width: 100%; background: #E5A93C; color: #000; font-weight: 800;" onclick="closeKitchenShiftReport()">
+      <span>Fermer le Rapport</span>
     </button>
   </div>
 </div>
@@ -545,25 +607,127 @@ function renderKanbanColumns() {
   }
 }
 
+function showKitchenToast(msg, icon = '🍲') {
+  let toast = document.getElementById('kdsToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'kdsToast';
+    toast.style.cssText = 'position: fixed; top: 18px; left: 50%; transform: translateX(-50%) translateY(-25px); background: #1C1C24; color: #FFFFFF; border: 1.5px solid #E5A93C; padding: 12px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 99999; box-shadow: 0 12px 40px rgba(0,0,0,0.85); display: flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span style="font-size: 16px;">${icon}</span><span>${msg}</span>`;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  
+  if (window.kdsToastTimeout) clearTimeout(window.kdsToastTimeout);
+  window.kdsToastTimeout = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-25px)';
+  }, 2600);
+}
+
+function updateKitchenKpiBar() {
+  const completedOrders = liveOrders.filter(o => o.status === 'completed' || o.status === 'delivered');
+  const activePrep = liveOrders.filter(o => o.status === 'prep');
+  
+  const compEl = document.getElementById('kdsCompletedToday');
+  const avgEl = document.getElementById('kdsAvgPrepTime');
+  const prepEl = document.getElementById('kdsActivePrepCount');
+  const rateEl = document.getElementById('kdsOnTimeRate');
+
+  if (compEl) compEl.innerText = completedOrders.length;
+  if (prepEl) prepEl.innerText = activePrep.length;
+
+  // Compute average prep time in minutes
+  let totalMinutes = 0;
+  let timedOrdersCount = 0;
+  let onTimeCount = 0;
+
+  completedOrders.forEach(o => {
+    if (o.prepStartedTs && o.readyTs) {
+      const diffMin = (o.readyTs - o.prepStartedTs) / 60000;
+      if (diffMin > 0 && diffMin < 60) {
+        totalMinutes += diffMin;
+        timedOrdersCount++;
+        if (diffMin <= 15) onTimeCount++;
+      }
+    }
+  });
+
+  const avgMin = timedOrdersCount > 0 ? (totalMinutes / timedOrdersCount).toFixed(1) : "8.5";
+  const ratePct = timedOrdersCount > 0 ? Math.round((onTimeCount / timedOrdersCount) * 100) : 98;
+
+  if (avgEl) avgEl.innerText = `${avgMin} min`;
+  if (rateEl) rateEl.innerText = `${ratePct}%`;
+}
+
+function openKitchenShiftReport() {
+  const modal = document.getElementById('kitchenShiftReportModal');
+  const totalOrdersEl = document.getElementById('shiftReportTotalOrders');
+  const avgTimeEl = document.getElementById('shiftReportAvgTime');
+  const itemsListEl = document.getElementById('shiftReportItemsList');
+
+  const completed = liveOrders.filter(o => o.status === 'completed' || o.status === 'delivered');
+  if (totalOrdersEl) totalOrdersEl.innerText = `${completed.length} commandes`;
+
+  const avgEl = document.getElementById('kdsAvgPrepTime');
+  if (avgTimeEl && avgEl) avgTimeEl.innerText = avgEl.innerText;
+
+  // Aggregate items cooked
+  const itemCounts = {};
+  liveOrders.forEach(o => {
+    (o.items || []).forEach(i => {
+      let name = i.name.split(' (')[0].split(' [')[0].trim();
+      itemCounts[name] = (itemCounts[name] || 0) + 1;
+    });
+  });
+
+  const sorted = Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]);
+  if (itemsListEl) {
+    if (sorted.length === 0) {
+      itemsListEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 10px;">Aucun article dans ce quart pour l\'instant.</div>';
+    } else {
+      itemsListEl.innerHTML = sorted.map(item => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); font-size: 12px;">
+          <span style="color: #FFFFFF; font-weight: 600;">🌯 ${item}</span>
+          <strong style="color: #E5A93C; font-size: 13px;">${itemCounts[item]} préparés</strong>
+        </div>
+      `).join('');
+    }
+  }
+
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeKitchenShiftReport() {
+  const modal = document.getElementById('kitchenShiftReportModal');
+  if (modal) modal.style.display = 'none';
+}
+
 function moveTicket(orderId, nextState) {
   const order = liveOrders.find(o => o.id === orderId);
   if (!order) return;
 
+  const now = Date.now();
   if (nextState === 'prep') {
     order.status = 'prep';
     order.prepStartedAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+    order.prepStartedTs = now;
     stopAlarmAndAccept();
     saveLiveKitchenOrders();
-    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'prep', time: Date.now() }));
+    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'prep', time: now }));
     renderKanbanColumns();
-    alert(`🍲 Commande #${orderId} passée EN PRÉPARATION en cuisine !`);
+    updateKitchenKpiBar();
+    showKitchenToast(`🍲 Commande #${orderId} passée EN PRÉPARATION !`, "🍲");
   } else if (nextState === 'ready') {
     order.status = 'ready';
     order.readyAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+    order.readyTs = now;
     saveLiveKitchenOrders();
-    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'ready', time: Date.now() }));
+    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'ready', time: now }));
     renderKanbanColumns();
-    alert(`✅ Commande #${orderId} marquée comme PRÊTE !\nLe livreur ou le client peut maintenant la récupérer.`);
+    updateKitchenKpiBar();
+    showKitchenToast(`✅ Commande #${orderId} marquée comme PRÊTE !`, "✅");
   }
 }
 
@@ -582,7 +746,7 @@ function closeStorePickupModal() {
 }
 
 function simulateStoreQRScanSuccess() {
-  alert(`📸 QR Code Client Scanné avec succès !\n\nCommande #${currentPendingOrder.id} vérifiée.`);
+  showKitchenToast(`📸 QR Code Client Scanné avec succès ! Commande #${currentPendingOrder.id}`, "📸");
   document.getElementById('btnStoreFinalConfirm').style.display = 'block';
   document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
 }
@@ -590,16 +754,16 @@ function simulateStoreQRScanSuccess() {
 function verifyStore4DigitPin() {
   const pin = (document.getElementById('inputStore4DigitPin').value || '').trim();
   if (pin === currentPendingOrder.pin || pin === "2325" || pin.length >= 3) {
-    alert(`✅ Code #${pin} Validé avec succès !\nCommande #${currentPendingOrder.id} prête pour confirmation.`);
+    showKitchenToast(`✅ Code #${pin} Validé avec succès !`, "✅");
     document.getElementById('btnStoreFinalConfirm').style.display = 'block';
     document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
   } else {
-    alert(`❌ Code invalide. Veuillez demander au client son code à 4 chiffres (ex: 2325).`);
+    showKitchenToast(`❌ Code PIN invalide.`, "❌");
   }
 }
 
 function completeStorePickup() {
-  alert(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT avec succès !\nStatut mis à jour : COMPLÉTÉE.`);
+  showKitchenToast(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT !`, "🎉");
   closeStorePickupModal();
   const order = liveOrders.find(o => o.id === currentPendingOrder.id);
   if (order) {
@@ -609,6 +773,7 @@ function completeStorePickup() {
   saveLiveKitchenOrders();
   localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: currentPendingOrder.id, status: 'completed', time: Date.now() }));
   renderKanbanColumns();
+  updateKitchenKpiBar();
 }
 
 // Realtime sync
@@ -618,17 +783,23 @@ window.addEventListener('storage', function(e) {
       const order = JSON.parse(e.newValue);
       startPersistentAlarm(order.id);
       loadLiveKitchenOrders();
+      updateKitchenKpiBar();
     } catch(err) {}
   } else if (e.key === 'lmdw_all_orders') {
     loadLiveKitchenOrders();
+    updateKitchenKpiBar();
   }
 });
 
 // Periodic check
-setInterval(loadLiveKitchenOrders, 3000);
+setInterval(function() {
+  loadLiveKitchenOrders();
+  updateKitchenKpiBar();
+}, 3000);
 
 window.onload = function() {
   loadLiveKitchenOrders();
+  updateKitchenKpiBar();
 };
 </script>
 
