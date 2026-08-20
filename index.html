@@ -873,13 +873,6 @@
       </button>
     </div>
 
-    <!-- Guest Mode Option to Explore Menu Immediately -->
-    <div style="text-align: center; margin-top: 18px;">
-      <button type="button" onclick="enterAsGuest()" style="background: transparent; border: none; color: var(--text-muted); font-size: 13px; text-decoration: underline; cursor: pointer; padding: 6px;">
-        Ou continuer en tant qu'invité pour voir le menu <i class="fa-solid fa-arrow-right" style="font-size: 10px; margin-left: 4px;"></i>
-      </button>
-    </div>
-
   </div>
 
   <!-- ==================== MAIN RESTAURANT APP CONTAINER (Visible when authenticated) ==================== -->
@@ -2541,30 +2534,23 @@ function submitGateLogin() {
 
   const identifier = userInput.toLowerCase();
   const accounts = getRegisteredAccounts();
-  let found = accounts.find(a => 
+  const found = accounts.find(a => 
     (a.email && a.email.toLowerCase() === identifier) || (a.phone && a.phone === identifier)
   );
 
-  // If first time logging in with this email, automatically create account so the customer is never blocked
+  // If account is not registered yet
   if (!found) {
-    const isEmail = identifier.includes('@');
-    const autoName = isEmail ? identifier.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Client";
-    found = {
-      name: autoName,
-      email: isEmail ? identifier : `${identifier}@client.maisondeswraps.ca`,
-      phone: isEmail ? "819 850-3972" : userInput,
-      pass: pass,
-      birthday: "",
-      address: "1450 Rue Saint-Pierre, Drummondville, QC",
-      role: 'customer',
-      points: 50
-    };
-    saveRegisteredAccount(found);
-  } else if (found.pass && found.pass !== pass) {
-    alert("❌ Mot de passe incorrect pour ce compte. Veuillez vérifier votre saisie.");
+    alert(`❌ COMPTE INTROUVABLE\n\nL'identifiant "${userInput}" n'est pas encore enregistré dans notre base de données.\n\nVeuillez cliquer sur le bouton "Créer un Compte" pour vous inscrire et définir votre mot de passe.`);
     return;
   }
 
+  // STRICT PASSWORD VERIFICATION: Deny access if password does not match!
+  if (found.pass !== pass) {
+    alert("⛔ ACCÈS REFUSÉ : MOT DE PASSE INCORRECT\n\nLe mot de passe saisi ne correspond pas à ce compte. Vous ne pouvez pas accéder à l'application sans le bon mot de passe.\n\nVeuillez vérifier vos identifiants et réessayer.");
+    return;
+  }
+
+  // Password is 100% correct -> Authenticate and Grant Access
   clientProfile = found;
   isUserLoggedIn = true;
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
@@ -2577,7 +2563,7 @@ function submitGateLogin() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\n\n✅ Connexion réussie.\n📍 Adresse de livraison : ${clientProfile.address || '1450 Rue Saint-Pierre, Drummondville, QC'}\n🎁 50 Points de Fidélité actifs.`);
+  alert(`👋 Bon retour parmi nous, ${clientProfile.name}!\n\n✅ Mot de passe vérifié avec succès.\n📍 Adresse de livraison pré-remplie : ${clientProfile.address || '1450 Rue Saint-Pierre, Drummondville, QC'}\n🎁 Solde : ${clientProfile.points || 50} Points de Fidélité.`);
 }
 
 function submitGateSignup() {
@@ -2589,25 +2575,46 @@ function submitGateSignup() {
   const addressInput = (document.getElementById('gateSignupAddress') ? document.getElementById('gateSignupAddress').value : '').trim();
 
   if (!emailInput) {
-    alert("Veuillez entrer une adresse courriel valide.");
+    alert("Veuillez renseigner votre adresse courriel.");
     return;
   }
 
-  if (!pass) {
-    alert("Veuillez choisir un mot de passe (min 6 caractères).");
+  if (!pass || pass.length < 6) {
+    alert("🔒 Pour votre sécurité, veuillez créer un mot de passe d'au moins 6 caractères.");
+    return;
+  }
+
+  if (!nameInput) {
+    alert("Veuillez renseigner votre nom complet.");
+    return;
+  }
+
+  if (!phoneInput) {
+    alert("Veuillez renseigner votre numéro de téléphone (pour le suivi de commande et le livreur).");
     return;
   }
 
   const email = emailInput.toLowerCase();
-  const name = nameInput || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-  const phone = phoneInput || "819 850-3972";
+  const name = nameInput;
+  const phone = phoneInput;
   const address = addressInput || "1450 Rue Saint-Pierre, Drummondville, QC";
+
+  // Check if account already exists with this email
+  const existingAccounts = getRegisteredAccounts();
+  const alreadyExists = existingAccounts.find(a => a.email && a.email.toLowerCase() === email);
+  if (alreadyExists) {
+    alert(`⚠️ Un compte existe déjà avec l'adresse courriel "${email}".\nVeuillez vous connecter avec votre mot de passe.`);
+    switchGateTab('login');
+    const userField = document.getElementById('gateLoginUser');
+    if (userField) userField.value = email;
+    return;
+  }
 
   clientProfile = {
     name,
     phone,
     email,
-    pass,
+    pass, // Exact secure password saved for future logins
     birthday,
     address,
     role: 'customer',
@@ -2619,7 +2626,7 @@ function submitGateSignup() {
   localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
   updateUserProfileUI();
 
-  // Sync with database
+  // Sync with Supabase / Firestore database
   if (typeof firebase !== 'undefined' && firebase.firestore) {
     try {
       const db = firebase.firestore();
@@ -2644,7 +2651,7 @@ function submitGateSignup() {
   if (appWrapper) appWrapper.style.display = 'block';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte a été créé avec succès.\n📍 Adresse de livraison pré-remplie : ${address}\n🎁 +50 Points de Fidélité crédités!`);
+  alert(`🎉 Bienvenue à La Maison des Wraps, ${name}!\n\n✅ Votre compte et votre mot de passe ont été créés avec succès.\n📍 Votre adresse principale est enregistrée : ${address}\n🎁 +50 Points de Fidélité crédités à votre compte!`);
 }
 
 function enterAsGuest() {
