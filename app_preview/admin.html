@@ -1048,23 +1048,53 @@ let users = [
 ];
 
 function loadRegisteredClients() {
-  const savedUser = localStorage.getItem('lmdw_user');
-  if (savedUser) {
-    try {
+  try {
+    const rawList = localStorage.getItem('lmdw_all_clients_list');
+    if (rawList) {
+      const parsed = JSON.parse(rawList);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(c => {
+          const existing = users.find(u => (u.email && u.email === c.email) || u.name === c.name);
+          if (existing) {
+            existing.points = c.points || existing.points;
+            existing.ordersCount = c.ordersCount || 1;
+            existing.totalSpent = c.totalSpent || 0;
+            existing.address = c.address || existing.address;
+          } else {
+            users.unshift({
+              uid: 'client_' + Date.now() + Math.floor(Math.random() * 1000),
+              name: c.name || "Client",
+              email: c.email || "Non renseigné",
+              phone: c.phone || "(819) 850-3972",
+              role: c.role || "customer",
+              points: c.points || 50,
+              address: c.address || "Drummondville, QC",
+              ordersCount: c.ordersCount || 1,
+              totalSpent: c.totalSpent || 0
+            });
+          }
+        });
+      }
+    }
+
+    const savedUser = localStorage.getItem('lmdw_user');
+    if (savedUser) {
       const u = JSON.parse(savedUser);
-      if (u && u.name && !users.find(x => x.email === u.email)) {
+      if (u && u.name && !users.find(x => x.email === u.email || x.name === u.name)) {
         users.unshift({
           uid: 'client_' + Date.now(),
           name: u.name,
           email: u.email || "Non renseigné",
-          phone: u.phone || "Non renseigné",
+          phone: u.phone || "(819) 850-3972",
           role: u.role || "customer",
           points: u.points || 50,
-          address: u.address || "Drummondville, QC"
+          address: u.address || "Drummondville, QC",
+          ordersCount: 1,
+          totalSpent: 0
         });
       }
-    } catch(e){}
-  }
+    }
+  } catch(e){}
 }
 
 function renderUsers() {

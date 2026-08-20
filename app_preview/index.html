@@ -2951,11 +2951,33 @@ function processAndFinalizeOrder(paymentMethodType = 'stripe_card') {
     localStorage.setItem('lmdw_active_order', JSON.stringify(lastPlacedOrder));
   } catch(e){}
 
-  // Award loyalty points (+1 point per dollar spent)
+  // Award loyalty points (+1 point per dollar spent) & persist customer in directory
   const earnedPoints = Math.round(grandTotal);
   clientProfile.points = (clientProfile.points || 0) + earnedPoints;
   try {
     localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+    
+    // Save to cumulative permanent clientele database
+    let allClients = [];
+    const rawClients = localStorage.getItem('lmdw_all_clients_list');
+    if (rawClients) allClients = JSON.parse(rawClients);
+    const existingIdx = allClients.findIndex(c => (c.email && c.email === clientProfile.email) || c.name === clientProfile.name);
+    if (existingIdx >= 0) {
+      allClients[existingIdx] = { 
+        ...allClients[existingIdx],
+        ...clientProfile, 
+        ordersCount: (allClients[existingIdx].ordersCount || 0) + 1, 
+        totalSpent: parseFloat(((allClients[existingIdx].totalSpent || 0) + grandTotal).toFixed(2)) 
+      };
+    } else {
+      allClients.unshift({ 
+        ...clientProfile, 
+        ordersCount: 1, 
+        totalSpent: parseFloat(grandTotal.toFixed(2)), 
+        joinedAt: new Date().toLocaleDateString('fr-CA') 
+      });
+    }
+    localStorage.setItem('lmdw_all_clients_list', JSON.stringify(allClients));
   } catch(e){}
   updateUserProfileUI();
 
