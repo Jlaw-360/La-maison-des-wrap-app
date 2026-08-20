@@ -1,4 +1,4 @@
-name = "la-maison-des-wraps"
+name = "la-maison-des-wrap-app"
 account_id = "c67bc5032024bb38d910f5a0723fc3fa"
 compatibility_date = "2024-01-01"
 main = "worker.js"

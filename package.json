@@ -15,7 +15,7 @@
     "mobile:build:android": "npm --prefix mobile run build:android:apk",
     "mobile:build:ios": "npm --prefix mobile run build:ios:sim",
     "mobile:build:all": "npm --prefix mobile run build:all",
-    "deploy:cloudflare": "wrangler pages deploy . --project-name=la-maison-des-wraps"
+    "deploy:cloudflare": "wrangler pages deploy . --project-name=la-maison-des-wrap-app"
   },
   "dependencies": {
     "@better-auth/infra": "^0.4.1",
