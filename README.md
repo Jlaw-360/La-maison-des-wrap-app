@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-# La-maison-des-wrap-app
-=======
 # La Maison des Wraps - Full-Stack Restaurant & Delivery App
 
-Official mobile and web ordering, kitchen operations, and in-house delivery system for **La Maison des Wraps** (998 110e Avenue, Drummondville, QC · 819 850-3972 · [lamaisondeswraps.ca](https://www.lamaisondeswraps.ca/menu)).
+Official mobile and web ordering, kitchen operations, and in-house delivery system for **La Maison des Wraps** (998 110e Avenue, Drummondville, QC · 819 850-3972 · [maisondeswraps.ca](https://www.maisondeswraps.ca/)).
 
 ---
 
@@ -57,7 +54,8 @@ A unified application connected to FlutterFlow project `maison-wraps-7fbdj4` sup
 ---
 
 ## 📍 Location & Contact
-- **Address**: 998 110e Avenue, Drummondville, QC
-- **Phone**: 819 850-3972
-- **Website**: https://www.lamaisondeswraps.ca
->>>>>>> 1f8277c (Initial commit: Complete La Maison des Wraps restaurant app architecture, menu, skills, and design system)
+- **Address**: 998 110e Avenue, Drummondville, QC J2B 6X2
+- **Phone**: (819) 850-3972
+- **Website**: https://www.maisondeswraps.ca
+- **App Domain**: https://app.maisondeswraps.ca (or https://la-maison-des-wrap-app.vercel.app)
+
