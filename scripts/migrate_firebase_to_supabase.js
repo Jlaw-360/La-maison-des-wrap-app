@@ -32,7 +32,7 @@ async function runMigration() {
   console.log("==================================================");
 
   // Check Supabase table status
-  const { data: testData, error: tableError } = await supabase.from('menu_items').select('*').limit(1);
+  const { data: existingMenu, error: tableError } = await supabase.from('menu_items').select('*').limit(1);
 
   if (tableError && tableError.code === 'PGRST205') {
     console.log("⚠️ Supabase tables (menu_items, users, orders) are not created yet.");
@@ -40,30 +40,40 @@ async function runMigration() {
     return;
   }
 
-  // --- A. Migrate Menu Items from menu.json ---
+  // --- A. Sync Menu Items from menu.json ---
   const menuPath = path.join(__dirname, '../menu.json');
   if (fs.existsSync(menuPath)) {
     const rawMenu = JSON.parse(fs.readFileSync(menuPath, 'utf8'));
     console.log(`📦 Found ${rawMenu.length} dishes in Menu catalog.`);
     
-    const records = rawMenu.map(i => ({
-      name_fr: i.item_name_fr,
-      name_en: i.item_name_en,
-      category_slug: (i.category_fr || 'wraps').toLowerCase().replace(/[^a-z0-9]/g, '_'),
-      description_fr: i.description_fr || '',
-      description_en: i.description_en || '',
-      base_price_cad: parseFloat(i.base_price_cad) || 8.95,
-      price_seul: i.price_seul || '',
-      price_trio: i.price_trio_or_combo || '',
-      options_modifiers: i.options_and_modifiers || '',
-      is_available: true
-    }));
+    // Check if items already exist in Supabase
+    const { data: currentItems } = await supabase.from('menu_items').select('name_fr');
+    const existingNames = new Set((currentItems || []).map(i => i.name_fr));
 
-    const { error: menuInsertError } = await supabase.from('menu_items').upsert(records, { onConflict: 'name_fr' });
-    if (menuInsertError) {
-      console.error("❌ Menu migration error:", menuInsertError.message);
+    const newRecords = rawMenu
+      .filter(i => !existingNames.has(i.item_name_fr))
+      .map(i => ({
+        name_fr: i.item_name_fr,
+        name_en: i.item_name_en,
+        category_slug: (i.category_fr || 'wraps').toLowerCase().replace(/[^a-z0-9]/g, '_'),
+        description_fr: i.description_fr || '',
+        description_en: i.description_en || '',
+        base_price_cad: parseFloat(i.base_price_cad) || 8.95,
+        price_seul: i.price_seul || '',
+        price_trio: i.price_trio_or_combo || '',
+        options_modifiers: i.options_and_modifiers || '',
+        is_available: true
+      }));
+
+    if (newRecords.length > 0) {
+      const { error: insertErr } = await supabase.from('menu_items').insert(newRecords);
+      if (insertErr) {
+        console.error("❌ Menu insert error:", insertErr.message);
+      } else {
+        console.log(`✅ Inserted ${newRecords.length} new dishes into Supabase menu_items!`);
+      }
     } else {
-      console.log(`✅ Successfully migrated ${records.length} dishes to Supabase (menu_items)!`);
+      console.log(`✅ All ${rawMenu.length} menu items are already present in Supabase!`);
     }
   }
 
@@ -117,8 +127,16 @@ async function runMigration() {
     console.log("ℹ️ Firestore orders check:", err.message);
   }
 
+  // Verification Summary
+  const { count: totalDishes } = await supabase.from('menu_items').select('*', { count: 'exact', head: true });
+  const { count: totalUsers } = await supabase.from('users').select('*', { count: 'exact', head: true });
+  const { count: totalOrders } = await supabase.from('orders').select('*', { count: 'exact', head: true });
+
   console.log("==================================================");
-  console.log("🎉 ALL DATA HAS BEEN TRANSFERRED TO SUPABASE!");
+  console.log("🎉 LIVE SUPABASE DATABASE AUDIT:");
+  console.log(`   🍽️ Total Menu Items: ${totalDishes}`);
+  console.log(`   👥 Total User Accounts: ${totalUsers}`);
+  console.log(`   🧾 Total Orders: ${totalOrders}`);
   console.log("==================================================");
 }
 
