@@ -1,4 +1,48 @@
-import { MenuItem, BreadOption } from '../types';
+﻿const fs = require('fs');
+
+console.log("Updating menu data files with image URLs...");
+
+// Update menu.json
+if (fs.existsSync('menu.json')) {
+  const menuList = JSON.parse(fs.readFileSync('menu.json', 'utf8'));
+  const updatedMenu = menuList.map(item => {
+    let img = '/assets/food/wrap_kebab_poulet.png';
+    const name = (item.item_name_fr || '').toLowerCase();
+    
+    if (name.includes('biryani') && name.includes('raita')) img = '/assets/food/assiette_biryani_raita.png';
+    else if (name.includes('biryani')) img = '/assets/food/assiette_biryani.png';
+    else if (name.includes('kebab') && (name.includes('dinde') || name.includes('boeuf'))) img = '/assets/food/wrap_kebab_dinde_boeuf.png';
+    else if (name.includes('kebab') && name.includes('assiette')) img = '/assets/food/assiette_kebab_poulet.png';
+    else if (name.includes('kebab')) img = '/assets/food/wrap_kebab_poulet.png';
+    else if (name.includes('masala') && name.includes('assiette')) img = '/assets/food/assiette_poulet_masala.png';
+    else if (name.includes('masala')) img = '/assets/food/wrap_naan_poulet_masala.png';
+    else if (name.includes('tikka') && name.includes('assiette')) img = '/assets/food/assiette_poulet_tikka.png';
+    else if (name.includes('tikka') && name.includes('trio')) img = '/assets/food/trio_naan_poulet_tikka.png';
+    else if (name.includes('tikka')) img = '/assets/food/wrap_naan_poulet_tikka.png';
+    else if (name.includes('curry')) img = '/assets/food/wrap_poulet_curry.png';
+    else if (name.includes('malai')) img = '/assets/food/wrap_poulet_malai_tikka.png';
+    else if (name.includes('mix') || name.includes('2 viandes')) img = '/assets/food/assiette_mix_2_viandes.png';
+    else if (name.includes('burger')) img = '/assets/food/burger.png';
+    else if (name.includes('ail')) img = '/assets/food/pain_naan_ail.png';
+    else if (name.includes('naan')) img = '/assets/food/pain_naan_nature.png';
+    else if (name.includes('riz')) img = '/assets/food/bol_riz.png';
+    else if (name.includes('lassi') && name.includes('mangue')) img = '/assets/food/lassi_mangue.png';
+    else if (name.includes('lassi') && name.includes('rose')) img = '/assets/food/lassi_rose.png';
+    else if (name.includes('gulab')) img = '/assets/food/dessert_gulab_jamun.png';
+    else if (name.includes('ras malai')) img = '/assets/food/dessert_ras_malai.png';
+    else if (name.includes('beurre') || name.includes('curry')) img = '/assets/food/combo_bol_curry.png';
+
+    return {
+      ...item,
+      image_url: img
+    };
+  });
+  fs.writeFileSync('menu.json', JSON.stringify(updatedMenu, null, 2));
+  console.log('Updated menu.json with high quality image URLs');
+}
+
+// Update src/data/menu.ts and mobile/src/data/menu.ts
+const menuTsCode = `import { MenuItem, BreadOption } from '../types';
 
 export const BREAD_OPTIONS: BreadOption[] = [
   { id: 'kebab', name_fr: 'Pain Kebab', name_en: 'Kebab Bread', price_modifier: 0.0 },
@@ -13,7 +57,7 @@ export const SAUCE_OPTIONS = [
   { id: 'harissa', name_fr: 'Harissa Épicée', name_en: 'Spicy Harissa' },
   { id: 'maison', name_fr: 'Sauce Maison', name_en: 'House Special Sauce' },
   { id: 'verte', name_fr: 'Sauce Verte Menthe', name_en: 'Green Mint Sauce' },
-  { id: 'ail', name_fr: 'Sauce à l\'Ail', name_en: 'Garlic Sauce' },
+  { id: 'ail', name_fr: 'Sauce à l\\'Ail', name_en: 'Garlic Sauce' },
   { id: 'thai', name_fr: 'Sauce Thaï Sweet Chili', name_en: 'Sweet Chili Thai' },
 ];
 
@@ -24,12 +68,12 @@ export const EXTRA_OPTIONS = [
 
 export const SIDE_CHOICES = [
   { id: 'frites', name_fr: 'Frites Croustillantes', name_en: 'Crispy Fries', price: 0.0 },
-  { id: 'patates_ail', name_fr: 'Patates à l\'Ail Maison', name_en: 'House Garlic Potatoes', price: 0.0 },
+  { id: 'patates_ail', name_fr: 'Patates à l\\'Ail Maison', name_en: 'House Garlic Potatoes', price: 0.0 },
 ];
 
 export const DRINK_CHOICES = [
   { id: 'canette', name_fr: 'Canette (Coke/Sprite/7Up)', name_en: 'Can (Coke/Sprite/7Up)', price: 0.0 },
-  { id: 'eau', name_fr: 'Bouteille d\'Eau', name_en: 'Bottled Water', price: 0.0 },
+  { id: 'eau', name_fr: 'Bouteille d\\'Eau', name_en: 'Bottled Water', price: 0.0 },
   { id: 'jarritos', name_fr: 'Jarritos Mexicain (+1.00$)', name_en: 'Jarritos Soda (+1.00$)', price: 1.0 },
   { id: 'lassi', name_fr: 'Lassi Mangue Maison (+2.25$)', name_en: 'House Mango Lassi (+2.25$)', price: 2.25 },
 ];
@@ -68,7 +112,7 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
     category: 'wraps',
     name_fr: 'Wrap Kebab au Poulet',
     name_en: 'Chicken Kebab Wrap',
-    description_fr: 'Poulet assaisonné d\'herbes fraîches et grillé à la perfection.',
+    description_fr: 'Poulet assaisonné d\\'herbes fraîches et grillé à la perfection.',
     description_en: 'Seasoned chicken kebab grilled with fresh aromatic herbs.',
     price_cad: 8.95,
     points_cost: 350,
@@ -96,7 +140,7 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
     category: 'wraps',
     name_fr: 'Wrap au Poulet Masala',
     name_en: 'Chicken Masala Wrap',
-    description_fr: 'Poulet mariné dans un mélange d\'épices masala traditionnelles.',
+    description_fr: 'Poulet mariné dans un mélange d\\'épices masala traditionnelles.',
     description_en: 'Chicken marinated in traditional aromatic masala spices.',
     price_cad: 8.95,
     points_cost: 350,
@@ -152,7 +196,7 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
     category: 'biryani',
     name_fr: 'Biryani Royal au Poulet',
     name_en: 'Royal Chicken Biryani',
-    description_fr: 'Riz basmati parfumé cuit à l\'étouffée avec poulet mariné, safran et amandes.',
+    description_fr: 'Riz basmati parfumé cuit à l\\'étouffée avec poulet mariné, safran et amandes.',
     description_en: 'Fragrant basmati rice slow-cooked with spiced chicken, saffron, and almonds.',
     price_cad: 18.85,
     points_cost: 750,
@@ -178,7 +222,7 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
     category: 'assiettes',
     name_fr: 'Assiette Kebab au Poulet',
     name_en: 'Chicken Kebab Plate',
-    description_fr: 'Servie avec salade au choix, frites croustillantes ou patates à l\'ail, riz basmati et pain.',
+    description_fr: 'Servie avec salade au choix, frites croustillantes ou patates à l\\'ail, riz basmati et pain.',
     description_en: 'Served with salad, crispy fries or garlic potatoes, basmati rice and bread.',
     price_cad: 17.65,
     points_cost: 700,
@@ -228,9 +272,9 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
   {
     id: 'naan-ail',
     category: 'sides',
-    name_fr: 'Naan Frais à l\'Ail',
+    name_fr: 'Naan Frais à l\\'Ail',
     name_en: 'Fresh Garlic Naan',
-    description_fr: 'Pain naan chaud badigeonné de beurre à l\'ail et coriandre.',
+    description_fr: 'Pain naan chaud badigeonné de beurre à l\\'ail et coriandre.',
     description_en: 'Hot naan brushed with garlic butter and fresh coriander.',
     price_cad: 4.50,
     points_cost: 150,
@@ -312,3 +356,8 @@ export const LOCAL_MENU_ITEMS: MenuItem[] = [
     is_available: true,
   }
 ];
+`;
+
+fs.writeFileSync('src/data/menu.ts', menuTsCode);
+fs.writeFileSync('mobile/src/data/menu.ts', menuTsCode);
+console.log('Updated src/data/menu.ts and mobile/src/data/menu.ts');

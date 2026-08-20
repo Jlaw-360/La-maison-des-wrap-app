@@ -144,6 +144,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <View style={styles.featuredList}>
         {featuredItems.map((item) => (
           <TouchableOpacity key={item.id} style={styles.itemCard} onPress={onNavigateToOrder}>
+            <View style={styles.featuredImgContainer}>
+              <Image source={{ uri: item.image_url || '/assets/food/wrap_kebab_poulet.png' }} style={styles.featuredImg} resizeMode="cover" />
+            </View>
             <View style={styles.itemCardContent}>
               <Text style={styles.itemName}>
                 {language === 'fr' ? item.name_fr : item.name_en}
@@ -387,6 +390,18 @@ const styles = StyleSheet.create({
   featuredList: {
     gap: 12,
     marginBottom: 20,
+  },
+  featuredImgContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#1E1E28',
+    marginRight: 12,
+  },
+  featuredImg: {
+    width: '100%',
+    height: '100%',
   },
   itemCard: {
     backgroundColor: '#1C1C1E',

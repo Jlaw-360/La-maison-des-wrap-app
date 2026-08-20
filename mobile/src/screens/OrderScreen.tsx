@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { MENU_CATEGORIES, LOCAL_MENU_ITEMS } from '../data/menu';
@@ -79,13 +79,20 @@ export const OrderScreen: React.FC<OrderScreenProps> = ({ onNavigateToTracking }
             onPress={() => setCustomizingItem(item)}
           >
             <View style={styles.cardHeader}>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1, paddingRight: 10 }}>
                 <Text style={styles.itemName}>
                   {language === 'fr' ? item.name_fr : item.name_en}
                 </Text>
                 <Text style={styles.itemDescription} numberOfLines={2}>
                   {language === 'fr' ? item.description_fr : item.description_en}
                 </Text>
+              </View>
+              <View style={styles.itemThumbnailContainer}>
+                <Image 
+                  source={{ uri: item.image_url || '/assets/food/wrap_kebab_poulet.png' }} 
+                  style={styles.itemThumbnail} 
+                  resizeMode="cover"
+                />
               </View>
             </View>
 
@@ -196,6 +203,17 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 90,
     gap: 12,
+  },
+  itemThumbnailContainer: {
+    width: 72,
+    height: 72,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#1E1E28',
+  },
+  itemThumbnail: {
+    width: '100%',
+    height: '100%',
   },
   menuCard: {
     backgroundColor: '#1C1C1E',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Modal, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { MenuItem, OrderItemOption } from '../types';
 import { BREAD_OPTIONS, SAUCE_OPTIONS, EXTRA_OPTIONS, SIDE_CHOICES, DRINK_CHOICES } from '../data/menu';
 import { useAuth } from '../context/AuthContext';
@@ -91,6 +91,14 @@ export const CustomizerModal: React.FC<CustomizerModalProps> = ({
           </View>
 
           <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
+            {/* Dish Photo Banner */}
+            <View style={styles.dishImageBannerContainer}>
+              <Image 
+                source={{ uri: item.image_url || '/assets/food/wrap_kebab_poulet.png' }} 
+                style={styles.dishImageBanner}
+                resizeMode="cover"
+              />
+            </View>
             {/* Step 1: Bread Selection (Mandatory for Wraps) */}
             {item.allows_bread_selection && (
               <View style={styles.section}>
@@ -325,6 +333,18 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: '700',
+  },
+  dishImageBannerContainer: {
+    width: '100%',
+    height: 160,
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginBottom: 16,
+    backgroundColor: '#1E1E28',
+  },
+  dishImageBanner: {
+    width: '100%',
+    height: '100%',
   },
   scrollArea: {
     padding: 20,
