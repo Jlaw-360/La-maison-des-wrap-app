@@ -242,12 +242,15 @@ function loadDriverDeliveries() {
           </div>
         </div>
 
-        <div style="display: flex; gap: 8px;">
-          <a href="https://maps.google.com/?q=${encodeURIComponent(currentDriverOrder.address || 'Drummondville')}" target="_blank" class="btn-outline" style="flex: 1; border-color: #3B82F6; color: #3B82F6;">
-            <i class="fa-solid fa-location-arrow"></i> Ouvrir GPS
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentDriverOrder.address || 'Drummondville, QC')}" target="_blank" class="btn-outline" style="border-color: #3B82F6; color: #3B82F6; font-size: 11px; padding: 10px 4px; text-align: center;">
+            <i class="fa-solid fa-map-location-dot"></i> Google Maps
           </a>
-          <a href="tel:${currentDriverOrder.customerPhone || '8198503972'}" class="btn-outline" style="flex: 1; border-color: #10B981; color: #10B981;">
-            <i class="fa-solid fa-phone"></i> Appeler Client
+          <a href="https://waze.com/ul?q=${encodeURIComponent(currentDriverOrder.address || 'Drummondville, QC')}&navigate=yes" target="_blank" class="btn-outline" style="border-color: #06B6D4; color: #06B6D4; font-size: 11px; padding: 10px 4px; text-align: center;">
+            <i class="fa-solid fa-diamond-turn-right"></i> Waze
+          </a>
+          <a href="tel:${currentDriverOrder.customerPhone || '8198503972'}" class="btn-outline" style="border-color: #10B981; color: #10B981; font-size: 11px; padding: 10px 4px; text-align: center;">
+            <i class="fa-solid fa-phone"></i> Appeler
           </a>
         </div>
 
