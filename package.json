@@ -18,17 +18,21 @@
   },
   "dependencies": {
     "@better-auth/infra": "^0.4.1",
+    "@prisma/client": "^7.9.1",
     "@supabase/supabase-js": "^2.49.1",
+    "better-auth": "^1.7.1",
     "expo": "~52.0.0",
     "expo-app-metrics": "^0.1.0",
     "expo-asset": "~11.0.5",
     "expo-constants": "~17.0.8",
     "expo-observe": "^0.1.0",
     "expo-status-bar": "~2.0.0",
+    "prisma": "^7.9.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "stripe": "^22.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
