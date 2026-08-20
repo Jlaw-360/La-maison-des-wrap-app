@@ -299,16 +299,63 @@
           <canvas id="qrCanvas"></canvas>
         </div>
         <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Code PIN Client :</div>
-        <div class="backup-pin-badge">PIN : 52325</div>
-      </div>
-
+        <div class="backup-pin-badge">PIN : 2325</div>
+      
       <!-- Cashier Confirm Pickup Button -->
-      <button class="btn-action" style="background: #22C55E; margin-top: 6px;" onclick="confirmCustomerPickup('CMD-4092')">
-        <i class="fa-solid fa-camera"></i> Scanner QR Client ou Valider Retrait
-      </button>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <button class="btn-action" style="background: #22C55E; font-size: 13px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio), 1x Lassi Mangue')">
+          <i class="fa-solid fa-camera"></i> 1. Scanner QR Code Client
+        </button>
+        <button class="btn-action" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); font-size: 12px;" onclick="openStorePickupModal('CMD-4092', '2325', '2x Kebab au Poulet (Trio), 1x Lassi Mangue')">
+          <i class="fa-solid fa-keyboard"></i> 2. Entrer Code (4 chiffres : 2325)
+        </button>
+      </div>
     </div>
   </div>
 
+</div>
+
+<!-- ==================== RESTAURANT STORE OWNER PICKUP CONFIRMATION MODAL ==================== -->
+<div id="storePickupModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: #181820; border: 1.5px solid var(--primary); border-radius: 20px; width: 100%; max-width: 440px; padding: 22px; color: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+      <div>
+        <span style="font-size: 11px; color: var(--primary); font-weight: 800; text-transform: uppercase;">Validation en Caisse</span>
+        <h3 style="margin: 2px 0 0 0; font-size: 18px;" id="lblModalOrderTitle">Commande #CMD-4092</h3>
+      </div>
+      <button onclick="closeStorePickupModal()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;">✕</button>
+    </div>
+
+    <div style="background: rgba(255, 85, 0, 0.1); border: 1px solid rgba(255, 85, 0, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 13px;">
+      📦 <strong>Détail :</strong> <span id="lblModalOrderItems">2x Kebab au Poulet (Trio Naan), 1x Lassi Mangue</span>
+    </div>
+
+    <!-- Scanner Camera View Simulation -->
+    <div id="scannerCameraView" style="background: #000; border: 2px dashed #22C55E; border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 16px;">
+      <i class="fa-solid fa-qrcode" style="font-size: 40px; color: #22C55E; margin-bottom: 8px;"></i>
+      <div style="font-size: 13px; font-weight: 700; color: #fff;">Pointez la caméra vers le téléphone du client</div>
+      <button type="button" class="btn-action" style="background: #22C55E; margin-top: 10px; width: auto; display: inline-flex;" onclick="simulateStoreQRScanSuccess()">
+        <i class="fa-solid fa-bolt"></i> Simuler Scan QR Réussi
+      </button>
+    </div>
+
+    <!-- 4-Digit Manual PIN Fallback -->
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; margin-bottom: 16px;">
+      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
+        ⚠️ Le QR Code ne fonctionne pas ? Entrez le code à 4 chiffres du client :
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="inputStore4DigitPin" placeholder="2325" maxlength="4" style="flex: 1; background: #0F0F14; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 4px; outline: none;">
+        <button type="button" class="btn-action" style="background: var(--primary); padding: 0 18px;" onclick="verifyStore4DigitPin()">Valider</button>
+      </div>
+    </div>
+
+    <!-- Final Confirm Button -->
+    <button type="button" id="btnStoreFinalConfirm" class="btn-action" style="background: #22C55E; width: 100%; font-size: 14px; display: none;" onclick="completeStorePickup()">
+      <i class="fa-solid fa-circle-check"></i> CONFIRMER LA REMISE DU REPAS
+    </button>
+  </div>
 </div>
 
 <script>
@@ -316,6 +363,7 @@
 let audioCtx = null;
 let alarmInterval = null;
 let isAlarmRinging = false;
+let currentPendingOrder = { id: 'CMD-4092', pin: '2325' };
 
 function initAudioContext() {
   if (!audioCtx) {
@@ -369,7 +417,7 @@ function startPersistentAlarm(orderNumber) {
     if (isAlarmRinging) {
       playRestaurantAlarmDingDong();
     }
-  }, 1800);
+  }, 2500);
 }
 
 // Stop ringtone and accept order
@@ -400,7 +448,7 @@ window.addEventListener('storage', function(e) {
 });
 
 window.onload = function() {
-  QRCode.toCanvas(document.getElementById('qrCanvas'), 'LMDW-CMD-4092-PIN52325', {
+  QRCode.toCanvas(document.getElementById('qrCanvas'), 'LMDW-CMD-4092-PIN2325', {
     width: 140,
     margin: 1
   });
@@ -414,11 +462,44 @@ function moveTicket(orderId, nextState) {
   }
 }
 
-function confirmCustomerPickup(orderId) {
-  const pinEntered = prompt("Entrez le code PIN du client (ex: 52325) ou confirmez le scan QR :");
-  if (pinEntered === "52325" || pinEntered === "" || pinEntered) {
-    alert(`✅ Commande #${orderId} remise au client avec succès!\nStatut mis à jour : RÉCUPÉRÉE.`);
-    document.getElementById('ticket-ready-container').style.opacity = '0.5';
+// In-Store Pickup Modal Functions
+function openStorePickupModal(orderId, pin, items) {
+  currentPendingOrder = { id: orderId, pin: pin || '2325' };
+  document.getElementById('lblModalOrderTitle').innerText = `Commande #${orderId}`;
+  document.getElementById('lblModalOrderItems').innerText = items || 'Plats prêts';
+  document.getElementById('inputStore4DigitPin').value = '';
+  document.getElementById('btnStoreFinalConfirm').style.display = 'none';
+  document.getElementById('storePickupModal').style.display = 'flex';
+}
+
+function closeStorePickupModal() {
+  document.getElementById('storePickupModal').style.display = 'none';
+}
+
+function simulateStoreQRScanSuccess() {
+  alert(`📸 QR Code Client Scanné avec succès!\n\nCommande #${currentPendingOrder.id} vérifiée.`);
+  document.getElementById('btnStoreFinalConfirm').style.display = 'block';
+  document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function verifyStore4DigitPin() {
+  const pin = (document.getElementById('inputStore4DigitPin').value || '').trim();
+  if (pin === currentPendingOrder.pin || pin === "2325" || pin.length >= 3) {
+    alert(`✅ Code #${pin} Validé avec succès!\nCommande #${currentPendingOrder.id} prête pour confirmation.`);
+    document.getElementById('btnStoreFinalConfirm').style.display = 'block';
+    document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    alert(`❌ Code invalide. Veuillez demander au client son code à 4 chiffres (ex: 2325).`);
+  }
+}
+
+function completeStorePickup() {
+  alert(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT avec succès!\nStatut mis à jour : COMPLÉTÉE.`);
+  closeStorePickupModal();
+  const ticket = document.getElementById('ticket-ready-container');
+  if (ticket) {
+    ticket.style.opacity = '0.4';
+    ticket.innerHTML += '<div style="background: #22C55E; color: #fff; padding: 6px; border-radius: 8px; font-weight: 800; margin-top: 8px; text-align: center;">✅ REMISE AU CLIENT EFFECTUÉE</div>';
   }
 }
 </script>

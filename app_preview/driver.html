@@ -205,25 +205,31 @@
       </a>
     </div>
 
-    <!-- Complete Delivery Method 1: Photo Proof for "Leave at door" -->
+    <!-- Complete Delivery Option 1: QR Scan or 4-digit PIN for "Hand it to me" -->
     <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
-      <div style="font-size: 12px; font-weight: 700; color: #22C55E; margin-bottom: 6px;">
-        📷 Option 1 : Preuve Photo (Laisser à la porte)
+      <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
+        🤝 Option 1 : Remise en main propre (Client Présent)
       </div>
-      <button class="btn-primary" style="background: #10B981; width: 100%;" onclick="completeDeliveryWithPhoto()">
-        <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
-      </button>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="scanCustomerDoorQR()">
+          <i class="fa-solid fa-camera"></i> A. Scanner le QR Code du Client
+        </button>
+        <div style="font-size: 11px; color: var(--text-muted); text-align: center;">OU</div>
+        <div class="pin-input-group">
+          <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="2325" maxlength="4" style="letter-spacing: 4px; font-size: 16px;">
+          <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin()">B. Valider Code (4 chiffres)</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Complete Delivery Method 2: PIN Validation for "Hand it to me" -->
-    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px;">
-      <div style="font-size: 12px; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
-        🤝 Option 2 : Remise en main propre (Code PIN du Client)
+    <!-- Complete Delivery Option 2: Photo Proof for "Leave at door" -->
+    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
+      <div style="font-size: 12px; font-weight: 700; color: #3B82F6; margin-bottom: 6px;">
+        📷 Option 2 : Dépôt sans contact (Laisser à la porte)
       </div>
-      <div class="pin-input-group">
-        <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="52325" maxlength="5">
-        <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin()">Valider</button>
-      </div>
+      <button class="btn-primary" style="background: #3B82F6; width: 100%;" onclick="completeDeliveryWithPhoto()">
+        <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
+      </button>
     </div>
 
   </div>
@@ -232,17 +238,17 @@
 
 <script>
 function simulateCameraScan() {
-  alert("📸 Caméra Activée!\n\nQR Code 'LMDW-CMD-4092-PIN52325' scanné en cuisine avec succès!\nCommande assignée à Marc Livreur.");
+  alert("📸 Caméra Activée!\n\nQR Code 'LMDW-CMD-4092-PIN2325' scanné en cuisine avec succès!\nCommande assignée à Marc Livreur.");
   startDelivery();
 }
 
 function verifyManualPin() {
   const pin = document.getElementById('manualPinInput').value.trim();
-  if (pin === "52325" || pin.length === 5) {
-    alert(`✅ Code PIN #${pin} validé avec succès!\nCommande #CMD-4092 récupérée en cuisine par le livreur.`);
+  if (pin === "2325" || pin === "52325" || pin.length >= 3) {
+    alert(`✅ Code #${pin} validé avec succès!\nCommande #CMD-4092 récupérée en cuisine par le livreur.`);
     startDelivery();
   } else {
-    alert("❌ Code invalide. Veuillez entrer le code à 5 chiffres (ex: 52325).");
+    alert("❌ Code invalide. Veuillez entrer le code à 4 chiffres (ex: 2325).");
   }
 }
 
@@ -251,16 +257,23 @@ function startDelivery() {
   document.getElementById('deliveryTransitCard').style.display = 'flex';
 }
 
+function scanCustomerDoorQR() {
+  alert("📸 QR Code Client Scanné à la porte avec succès!\n\nClient Jean Tremblay vérifié.\n🎉 Livraison terminée et validée !");
+  document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
+}
+
 function completeDeliveryWithPhoto() {
   alert("📸 Photo de preuve de livraison capturée à la porte!\n\nCommande #CMD-4092 marquée comme LIVRÉE à l'adresse 1450 Rue Saint-Pierre!\nLe client a reçu la confirmation avec la photo.");
+  document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
 }
 
 function verifyCustomerDeliveryPin() {
   const pin = document.getElementById('customerDeliveryPinInput').value.trim();
-  if (pin === "52325" || pin.length === 5) {
-    alert(`🎉 Code PIN Client #${pin} validé avec succès!\n\nRemise en main propre confirmée pour Jean Tremblay!\nCommande terminée.`);
+  if (pin === "2325" || pin === "52325" || pin.length >= 3) {
+    alert(`🎉 Code Client #${pin} validé avec succès!\n\nRemise en main propre confirmée pour Jean Tremblay!\nLivraison complétée.`);
+    document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
   } else {
-    alert("❌ Code PIN client incorrect. Demandez au client son code PIN de l'application (ex: 52325).");
+    alert("❌ Code client incorrect. Demandez au client son code à 4 chiffres (ex: 2325).");
   }
 }
 </script>
