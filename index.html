@@ -1797,7 +1797,11 @@ let activeCat = 'Nos Wraps';
 let cart = [];
 let curDish = null;
 let curBreadAddon = 0;
+let curBreadName = 'Pain Kebab';
 let curFormatAddon = 0;
+let curFormatName = 'Seul';
+let curDrinkAddon = 0;
+let curDrinkName = 'Coca-Cola (Canette)';
 
 // Order fulfillment settings
 let currentFulfillment = 'delivery'; // 'delivery' or 'pickup'
@@ -1963,13 +1967,6 @@ function renderMenuDishes(query = '') {
     </div>
   `).join('');
 }
-
-let curBreadAddon = 0;
-let curBreadName = 'Pain Kebab';
-let curFormatAddon = 0;
-let curFormatName = 'Seul';
-let curDrinkAddon = 0;
-let curDrinkName = 'Coca-Cola (Canette)';
 
 function filterMenuBySearch(val) {
   renderMenuDishes(val.toLowerCase().trim());
