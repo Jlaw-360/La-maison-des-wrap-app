@@ -2545,6 +2545,9 @@ function triggerStripeCheckout() {
   const orderNum = 'CMD-' + Math.floor(1000 + Math.random() * 9000);
   lastPlacedOrder = {
     id: orderNum,
+    customerName: clientProfile.name || "Client",
+    customerEmail: clientProfile.email || "client@exemple.com",
+    customerPhone: clientProfile.phone || "(819) 850-3972",
     items: [...cart],
     subtotal: subtotal,
     deliveryFee: deliveryFee,
@@ -2553,9 +2556,30 @@ function triggerStripeCheckout() {
     total: grandTotal,
     fulfillment: currentFulfillment,
     dropoff: currentDropoffOption,
-    address: document.getElementById('deliveryAddressInput')?.value || "1450 Rue Saint-Pierre, Drummondville, QC",
-    pin: '52325'
+    address: document.getElementById('deliveryAddressInput')?.value || clientProfile.address || "1450 Rue Saint-Pierre, Drummondville, QC",
+    pin: '2325',
+    status: 'new',
+    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
   };
+
+  // Sync to local kitchen KDS and driver app
+  try {
+    let allOrders = [];
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) allOrders = JSON.parse(raw);
+    allOrders.unshift(lastPlacedOrder);
+    localStorage.setItem('lmdw_all_orders', JSON.stringify(allOrders));
+    localStorage.setItem('lmdw_new_order', JSON.stringify(lastPlacedOrder));
+    localStorage.setItem('lmdw_active_order', JSON.stringify(lastPlacedOrder));
+  } catch(e){}
+
+  // Award loyalty points (+1 point per dollar spent)
+  const earnedPoints = Math.round(grandTotal);
+  clientProfile.points = (clientProfile.points || 0) + earnedPoints;
+  try {
+    localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+  } catch(e){}
+  updateUserProfileUI();
 
   setTimeout(() => {
     cart = [];

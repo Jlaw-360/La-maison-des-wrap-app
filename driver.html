@@ -148,138 +148,219 @@
   </div>
 </header>
 
-<div class="main-content">
-
-  <!-- Step 1: Scan / Pickup Card at Kitchen -->
-  <div class="card" id="pickupStepCard">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <span class="status-pill">PRÊT AU RESTAURANT</span>
-      <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
-    </div>
-    
-    <div style="font-size: 13px;">
-      📍 <strong>Prise en charge :</strong> 998 110e Avenue, Drummondville<br>
-      🏁 <strong>Destination :</strong> 1450 Rue Saint-Pierre, Drummondville (3.5 km)
-    </div>
-
-    <!-- Scanner Button -->
-    <button class="btn-primary" onclick="simulateCameraScan()">
-      <i class="fa-solid fa-camera"></i> 1. Scanner le QR Code en Cuisine
-    </button>
-
-    <!-- Manual PIN Backup Form -->
-    <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px; border: 1px dashed var(--border);">
-      <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">
-        ⚠️ Le scan ne fonctionne pas ? Entrez le code à 5 chiffres de la cuisine :
-      </div>
-      <div class="pin-input-group">
-        <input type="text" id="manualPinInput" class="pin-input" placeholder="52325" maxlength="5">
-        <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyManualPin()">Valider</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Step 2: Active Delivery Transit Card (Appears after pickup) -->
-  <div class="card" id="deliveryTransitCard" style="display: none; border-color: var(--primary);">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <span style="font-size: 11px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: 800;">EN ROUTE VERS LE CLIENT</span>
-      <span style="font-weight: 800; color: var(--primary);">#CMD-4092</span>
-    </div>
-
-    <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px;">
-      <div style="font-size: 14px; font-weight: 700;">👤 Client: Jean Tremblay</div>
-      <div style="font-size: 11px; color: var(--primary); margin-top: 2px;">✉️ jean.tremblay@exemple.com • 📞 (819) 555-0192</div>
-      <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">📍 1450 Rue Saint-Pierre, Drummondville, QC (3.5 km • Livraison Gratuite)</div>
-      <div style="font-size: 11px; color: #E0E0E0; margin-top: 6px; padding: 6px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 6px;">
-        🛍️ <strong>Contenu :</strong> 1x Wrap Poulet Tikka [Trio: Frites + Coke], 1x Poutine Poulet Tikka
-      </div>
-      <div style="font-size: 11px; color: #FF9800; margin-top: 6px;" id="driverInstructionBadge">
-        📝 Instruction Client : <strong>Remise en main propre</strong>
-      </div>
-    </div>
-
-    <div style="display: flex; gap: 8px;">
-      <!-- GPS Navigation Button -->
-      <a href="https://maps.google.com/?q=1450+Rue+Saint-Pierre,+Drummondville,+QC" target="_blank" class="btn-outline" style="flex: 1; border-color: #3B82F6; color: #3B82F6;">
-        <i class="fa-solid fa-location-arrow"></i> Ouvrir GPS
-      </a>
-      <!-- Call Customer Button -->
-      <a href="tel:8195550192" class="btn-outline" style="flex: 1; border-color: #10B981; color: #10B981;">
-        <i class="fa-solid fa-phone"></i> Appeler Client
-      </a>
-    </div>
-
-    <!-- Complete Delivery Option 1: QR Scan or 4-digit PIN for "Hand it to me" -->
-    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
-      <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
-        🤝 Option 1 : Remise en main propre (Client Présent)
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="scanCustomerDoorQR()">
-          <i class="fa-solid fa-camera"></i> A. Scanner le QR Code du Client
-        </button>
-        <div style="font-size: 11px; color: var(--text-muted); text-align: center;">OU</div>
-        <div class="pin-input-group">
-          <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="2325" maxlength="4" style="letter-spacing: 4px; font-size: 16px;">
-          <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin()">B. Valider Code (4 chiffres)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Complete Delivery Option 2: Photo Proof for "Leave at door" -->
-    <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
-      <div style="font-size: 12px; font-weight: 700; color: #3B82F6; margin-bottom: 6px;">
-        📷 Option 2 : Dépôt sans contact (Laisser à la porte)
-      </div>
-      <button class="btn-primary" style="background: #3B82F6; width: 100%;" onclick="completeDeliveryWithPhoto()">
-        <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
-      </button>
-    </div>
-
-  </div>
-
+<div class="main-content" id="driverMainContent">
+  <!-- Dynamic live delivery cards will render here -->
 </div>
 
 <script>
-function simulateCameraScan() {
-  alert("📸 Caméra Activée!\n\nQR Code 'LMDW-CMD-4092-PIN2325' scanné en cuisine avec succès!\nCommande assignée à Marc Livreur.");
-  startDelivery();
-}
+let currentDriverOrder = null;
 
-function verifyManualPin() {
-  const pin = document.getElementById('manualPinInput').value.trim();
-  if (pin === "2325" || pin === "52325" || pin.length >= 3) {
-    alert(`✅ Code #${pin} validé avec succès!\nCommande #CMD-4092 récupérée en cuisine par le livreur.`);
-    startDelivery();
-  } else {
-    alert("❌ Code invalide. Veuillez entrer le code à 4 chiffres (ex: 2325).");
+function loadDriverDeliveries() {
+  const container = document.getElementById('driverMainContent');
+  if (!container) return;
+
+  let allOrders = [];
+  try {
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) allOrders = JSON.parse(raw);
+  } catch(e){}
+
+  const readyDeliveries = allOrders.filter(o => o.fulfillment === 'delivery' && (o.status === 'ready' || o.status === 'in_transit'));
+
+  if (readyDeliveries.length === 0) {
+    container.innerHTML = `
+      <div class="card" style="text-align: center; padding: 36px 20px;">
+        <i class="fa-solid fa-motorcycle" style="font-size: 40px; color: rgba(255, 85, 0, 0.4); margin-bottom: 12px; display: block;"></i>
+        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Aucune livraison prête pour le moment</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
+          Dès que la cuisine marque une commande comme <strong style="color: #10B981;">PRÊTE</strong>, elle apparaîtra ici instantanément.
+        </p>
+        <button class="btn-outline" style="margin-top: 18px;" onclick="loadDriverDeliveries()">
+          <i class="fa-solid fa-rotate"></i> Actualiser les Livraisons
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  currentDriverOrder = readyDeliveries[0];
+
+  if (currentDriverOrder.status === 'ready') {
+    // Step 1: Ready at Kitchen - Driver Pickup Card
+    container.innerHTML = `
+      <div class="card" id="pickupStepCard" style="border-color: #10B981;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="status-pill">PRÊT AU RESTAURANT</span>
+          <span style="font-weight: 800; color: var(--primary);">#${currentDriverOrder.id}</span>
+        </div>
+        
+        <div style="font-size: 13px;">
+          📍 <strong>Prise en charge :</strong> 998 110e Avenue, Drummondville<br>
+          🏁 <strong>Destination :</strong> ${currentDriverOrder.address || '1450 Rue Saint-Pierre, Drummondville'}
+        </div>
+
+        <div style="background: var(--surface-elevated); padding: 10px; border-radius: 10px; font-size: 12px;">
+          👤 Client : <strong>${currentDriverOrder.customerName || 'Client'}</strong> (${currentDriverOrder.customerPhone || ''})<br>
+          🛍️ ${(currentDriverOrder.items || []).map(i => i.name).join(', ')}
+        </div>
+
+        <!-- Scanner Button -->
+        <button class="btn-primary" onclick="simulateCameraScan('${currentDriverOrder.id}')">
+          <i class="fa-solid fa-camera"></i> 1. Scanner le QR Code en Cuisine
+        </button>
+
+        <!-- Manual PIN Backup Form -->
+        <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px; border: 1px dashed var(--border);">
+          <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">
+            ⚠️ Le scan ne fonctionne pas ? Entrez le code à 4 chiffres de la cuisine :
+          </div>
+          <div class="pin-input-group">
+            <input type="text" id="manualPinInput" class="pin-input" placeholder="${currentDriverOrder.pin || '2325'}" maxlength="5">
+            <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyManualPin('${currentDriverOrder.id}')">Valider</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (currentDriverOrder.status === 'in_transit') {
+    // Step 2: In Transit to Customer
+    container.innerHTML = `
+      <div class="card" id="deliveryTransitCard" style="border-color: var(--primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: 800;">EN ROUTE VERS LE CLIENT</span>
+          <span style="font-weight: 800; color: var(--primary);">#${currentDriverOrder.id}</span>
+        </div>
+
+        <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px;">
+          <div style="font-size: 14px; font-weight: 700;">👤 Client: ${currentDriverOrder.customerName || 'Client'}</div>
+          <div style="font-size: 11px; color: var(--primary); margin-top: 2px;">✉️ ${currentDriverOrder.customerEmail || ''} • 📞 ${currentDriverOrder.customerPhone || ''}</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">📍 ${currentDriverOrder.address || 'Drummondville, QC'}</div>
+          <div style="font-size: 11px; color: #E0E0E0; margin-top: 6px; padding: 6px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 6px;">
+            🛍️ <strong>Contenu :</strong> ${(currentDriverOrder.items || []).map(i => i.name).join(', ')}
+          </div>
+          <div style="font-size: 11px; color: #FF9800; margin-top: 6px;">
+            📝 Instruction Client : <strong>${currentDriverOrder.dropoff === 'door' ? 'Laisser à la porte (Photo requise)' : 'Remise en main propre (Code PIN requis)'}</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px;">
+          <a href="https://maps.google.com/?q=${encodeURIComponent(currentDriverOrder.address || 'Drummondville')}" target="_blank" class="btn-outline" style="flex: 1; border-color: #3B82F6; color: #3B82F6;">
+            <i class="fa-solid fa-location-arrow"></i> Ouvrir GPS
+          </a>
+          <a href="tel:${currentDriverOrder.customerPhone || '8198503972'}" class="btn-outline" style="flex: 1; border-color: #10B981; color: #10B981;">
+            <i class="fa-solid fa-phone"></i> Appeler Client
+          </a>
+        </div>
+
+        <!-- Verification Options -->
+        <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
+            🤝 Option 1 : Remise en main propre (Code PIN Client)
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="scanCustomerDoorQR('${currentDriverOrder.id}')">
+              <i class="fa-solid fa-camera"></i> A. Scanner le QR Code du Client
+            </button>
+            <div style="font-size: 11px; color: var(--text-muted); text-align: center;">OU</div>
+            <div class="pin-input-group">
+              <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="${currentDriverOrder.pin || '2325'}" maxlength="4" style="letter-spacing: 4px; font-size: 16px;">
+              <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin('${currentDriverOrder.id}')">B. Valider Code PIN</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
+          <div style="font-size: 12px; font-weight: 700; color: #3B82F6; margin-bottom: 6px;">
+            📷 Option 2 : Dépôt sans contact (Laisser à la porte)
+          </div>
+          <button class="btn-primary" style="background: #3B82F6; width: 100%;" onclick="completeDeliveryWithPhoto('${currentDriverOrder.id}')">
+            <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
+          </button>
+        </div>
+      </div>
+    `;
   }
 }
 
-function startDelivery() {
-  document.getElementById('pickupStepCard').style.display = 'none';
-  document.getElementById('deliveryTransitCard').style.display = 'flex';
+function simulateCameraScan(orderId) {
+  alert(`📸 Caméra Activée !\n\nQR Code de la commande #${orderId} scanné en cuisine avec succès !\nStatut mis à jour : EN ROUTE VERS LE CLIENT.`);
+  startDelivery(orderId);
 }
 
-function scanCustomerDoorQR() {
-  alert("📸 QR Code Client Scanné à la porte avec succès!\n\nClient Jean Tremblay vérifié.\n🎉 Livraison terminée et validée !");
-  document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
-}
-
-function completeDeliveryWithPhoto() {
-  alert("📸 Photo de preuve de livraison capturée à la porte!\n\nCommande #CMD-4092 marquée comme LIVRÉE à l'adresse 1450 Rue Saint-Pierre!\nLe client a reçu la confirmation avec la photo.");
-  document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
-}
-
-function verifyCustomerDeliveryPin() {
-  const pin = document.getElementById('customerDeliveryPinInput').value.trim();
-  if (pin === "2325" || pin === "52325" || pin.length >= 3) {
-    alert(`🎉 Code Client #${pin} validé avec succès!\n\nRemise en main propre confirmée pour Jean Tremblay!\nLivraison complétée.`);
-    document.getElementById('deliveryTransitCard').innerHTML = '<div style="background: #22C55E; color: #fff; padding: 16px; border-radius: 14px; text-align: center; font-weight: 800; font-size: 16px;">🎉 COMMANDE #CMD-4092 LIVRÉE AVEC SUCCÈS !</div>';
+function verifyManualPin(orderId) {
+  const pin = (document.getElementById('manualPinInput') ? document.getElementById('manualPinInput').value : '').trim();
+  const targetPin = currentDriverOrder ? currentDriverOrder.pin : '2325';
+  if (pin === targetPin || pin === "2325" || pin.length >= 3) {
+    alert(`✅ Code #${pin} validé avec succès !\nCommande #${orderId} récupérée en cuisine par le livreur.`);
+    startDelivery(orderId);
   } else {
-    alert("❌ Code client incorrect. Demandez au client son code à 4 chiffres (ex: 2325).");
+    alert(`❌ Code invalide. Veuillez entrer le code à 4 chiffres (ex: ${targetPin}).`);
   }
 }
+
+function startDelivery(orderId) {
+  try {
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) {
+      const orders = JSON.parse(raw);
+      const o = orders.find(x => x.id === orderId);
+      if (o) {
+        o.status = 'in_transit';
+        localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
+      }
+    }
+  } catch(e){}
+  loadDriverDeliveries();
+}
+
+function scanCustomerDoorQR(orderId) {
+  alert(`📸 QR Code Client Scanné à la porte avec succès !\n\nCommande #${orderId} livrée et confirmée.`);
+  finalizeDelivery(orderId);
+}
+
+function completeDeliveryWithPhoto(orderId) {
+  alert(`📸 Photo de preuve de livraison capturée à la porte !\n\nCommande #${orderId} marquée comme LIVRÉE.\nLe client a reçu la notification avec la photo.`);
+  finalizeDelivery(orderId);
+}
+
+function verifyCustomerDeliveryPin(orderId) {
+  const pin = (document.getElementById('customerDeliveryPinInput') ? document.getElementById('customerDeliveryPinInput').value : '').trim();
+  const targetPin = currentDriverOrder ? currentDriverOrder.pin : '2325';
+  if (pin === targetPin || pin === "2325" || pin.length >= 3) {
+    alert(`🎉 Code Client #${pin} validé avec succès !\n\nLivraison de la commande #${orderId} complétée.`);
+    finalizeDelivery(orderId);
+  } else {
+    alert(`❌ Code client incorrect. Demandez au client son code à 4 chiffres (ex: ${targetPin}).`);
+  }
+}
+
+function finalizeDelivery(orderId) {
+  try {
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) {
+      let orders = JSON.parse(raw);
+      orders = orders.filter(x => x.id !== orderId);
+      localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
+    }
+  } catch(e){}
+  const container = document.getElementById('driverMainContent');
+  if (container) {
+    container.innerHTML = '<div style="background: #22C55E; color: #fff; padding: 24px; border-radius: 18px; text-align: center; font-weight: 800; font-size: 16px;"><i class="fa-solid fa-circle-check" style="font-size: 36px; margin-bottom: 10px; display: block;"></i>🎉 COMMANDE LIVRÉE AVEC SUCCÈS !</div>';
+    setTimeout(loadDriverDeliveries, 2500);
+  }
+}
+
+// Storage listener
+window.addEventListener('storage', function(e) {
+  if (e.key === 'lmdw_all_orders' || e.key === 'lmdw_new_order') {
+    loadDriverDeliveries();
+  }
+});
+
+setInterval(loadDriverDeliveries, 3000);
+
+window.onload = function() {
+  loadDriverDeliveries();
+};
 </script>
 
 </body>
