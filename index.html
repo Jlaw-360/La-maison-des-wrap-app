@@ -1377,10 +1377,28 @@
       </div>
     </div>
 
-    <!-- Step 3: Drink Choice (Appears when Trio is selected) -->
+    <!-- Step 3A: Side / Potato Choice (Appears when Trio is selected) -->
+    <div id="trioSideSection" style="display: none; margin-bottom: 14px; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 14px; padding: 12px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 12px; font-weight: 700; color: #22C55E;">🍟 3A. Choix de l'Accompagnement</span>
+        <span style="font-size: 10px; background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 2px 8px; border-radius: 10px; font-weight: 700;">Inclus sans frais</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;" id="trioSidesGrid">
+        <div class="gift-tier-card selected" onclick="setTrioSide(this, 0, 'Frites Classiques')" style="padding: 10px; font-size: 11px;">
+          <span style="font-weight: 700; display: block;">🍟 Frites Classiques</span>
+          <strong style="color: #22C55E; font-size: 10px;">Inclus</strong>
+        </div>
+        <div class="gift-tier-card" onclick="setTrioSide(this, 0, 'Patates à l\'Ail (Garlic Potatoes)')" style="padding: 10px; font-size: 11px;">
+          <span style="font-weight: 700; display: block;">🧄 Patates à l'Ail</span>
+          <strong style="color: #22C55E; font-size: 10px;">Inclus (Maison)</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3B: Drink Choice (Appears when Trio is selected) -->
     <div id="trioDrinkSection" style="display: none; margin-bottom: 16px; background: rgba(255, 85, 0, 0.08); border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 14px; padding: 12px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--primary);">🥤 3. Choix de la Boisson du Trio</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--primary);">🥤 3B. Choix de la Boisson du Trio</span>
         <span style="font-size: 10px; background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 2px 8px; border-radius: 10px; font-weight: 700;">Canette = Inclus</span>
       </div>
 
@@ -1959,9 +1977,10 @@ let activeCat = 'Nos Wraps';
 let cart = [];
 let curDish = null;
 let curBreadAddon = 0;
-let curBreadName = 'Pain Kebab';
 let curFormatAddon = 0;
 let curFormatName = 'Seul';
+let curSideAddon = 0;
+let curSideName = 'Frites Classiques';
 let curDrinkAddon = 0;
 let curDrinkName = 'Coca-Cola (Canette)';
 
@@ -2272,6 +2291,8 @@ function openDishModal(name) {
   curBreadName = curDish.is_wrap ? 'Pain Kebab' : '';
   curFormatAddon = 0;
   curFormatName = 'Seul';
+  curSideAddon = 0;
+  curSideName = 'Frites Classiques';
   curDrinkAddon = 0;
   curDrinkName = 'Coca-Cola (Canette)';
 
@@ -2281,6 +2302,14 @@ function openDishModal(name) {
   
   const breadSec = document.getElementById('breadSection');
   if (breadSec) breadSec.style.display = curDish.is_wrap ? 'block' : 'none';
+
+  const sideSec = document.getElementById('trioSideSection');
+  if (sideSec) {
+    sideSec.style.display = 'none';
+    sideSec.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
+    const firstSide = sideSec.querySelector('.gift-tier-card');
+    if (firstSide) firstSide.classList.add('selected');
+  }
 
   const drinkSec = document.getElementById('trioDrinkSection');
   if (drinkSec) drinkSec.style.display = 'none';
@@ -2309,20 +2338,36 @@ function setBread(el, price, name) {
   updateModalTotal();
 }
 
+function setTrioSide(el, price, name) {
+  curSideAddon = price || 0;
+  curSideName = name;
+  const container = document.getElementById('trioSideSection');
+  if (container) {
+    container.querySelectorAll('.gift-tier-card').forEach(c => c.classList.remove('selected'));
+  }
+  el.classList.add('selected');
+  updateModalTotal();
+}
+
 function setFormat(format, price) {
   curFormatAddon = price;
   curFormatName = format;
+  const sideSec = document.getElementById('trioSideSection');
   const drinkSec = document.getElementById('trioDrinkSection');
 
   if (format === 'Seul') {
     document.getElementById('btnFormatSeul').classList.add('active');
     document.getElementById('btnFormatTrio').classList.remove('active');
+    if (sideSec) sideSec.style.display = 'none';
     if (drinkSec) drinkSec.style.display = 'none';
     curDrinkAddon = 0;
+    curSideAddon = 0;
   } else {
     document.getElementById('btnFormatTrio').classList.add('active');
     document.getElementById('btnFormatSeul').classList.remove('active');
+    if (sideSec) sideSec.style.display = 'block';
     if (drinkSec) drinkSec.style.display = 'block';
+    if (!curSideName) curSideName = 'Frites Classiques';
     if (!curDrinkName) curDrinkName = 'Coca-Cola (Canette)';
   }
   updateModalTotal();
@@ -2341,19 +2386,19 @@ function setTrioDrink(el, price, name) {
 }
 
 function updateModalTotal() {
-  const total = curDish.price + curBreadAddon + curFormatAddon + (curFormatName === 'Trio' ? curDrinkAddon : 0);
+  const total = curDish.price + curBreadAddon + curFormatAddon + (curFormatName === 'Trio' ? (curDrinkAddon + curSideAddon) : 0);
   document.getElementById('modalPriceLabel').innerText = `$${total.toFixed(2)}`;
 }
 
 function addDishToCart() {
-  const total = curDish.price + curBreadAddon + curFormatAddon + (curFormatName === 'Trio' ? curDrinkAddon : 0);
+  const total = curDish.price + curBreadAddon + curFormatAddon + (curFormatName === 'Trio' ? (curDrinkAddon + curSideAddon) : 0);
   
   let itemTitle = curDish.name_fr;
   if (curDish.is_wrap && curBreadName) {
     itemTitle += ` (${curBreadName})`;
   }
   if (curFormatName === 'Trio') {
-    itemTitle += ` [Trio: Frites + ${curDrinkName || 'Canette Inclus'}]`;
+    itemTitle += ` [Trio: ${curSideName} + ${curDrinkName || 'Canette Inclus'}]`;
   }
 
   cart.push({ name: itemTitle, price: total });
