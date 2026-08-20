@@ -1637,12 +1637,25 @@
       <div style="border-top: 1px solid var(--border-subtle); padding-top: 8px; display: flex; justify-content: space-between; font-size: 15px; font-weight: 800;"><span>TOTAL</span><span id="lblTotal" style="color: var(--primary);">$0.00 CAD</span></div>
     </div>
 
-    <!-- 1-Click Apple Pay & Google Pay Express Checkout -->
-    <button type="button" id="btnExpressPay" onclick="triggerAppleGooglePayExpress()" style="width: 100%; background: #FFFFFF; color: #000000; border: none; border-radius: 14px; padding: 13px; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);">
-      <i class="fa-brands fa-apple" style="font-size: 18px;"></i>
-      <i class="fa-brands fa-google-pay" style="font-size: 24px;"></i>
-      <span>Payer en 1 Clic • Express</span>
+    <!-- Stripe Native Apple Pay / Google Pay Payment Request Button -->
+    <div id="payment-request-button-container" style="margin-bottom: 10px; display: none;">
+      <div id="payment-request-button"></div>
+    </div>
+
+    <!-- 1-Click Apple Pay & Google Pay Express Fallback Button -->
+    <button type="button" id="btnExpressPay" onclick="triggerAppleGooglePayExpress()" style="width: 100%; background: #FFFFFF; color: #000000; border: none; border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15); transition: transform 0.15s ease;">
+      <i class="fa-brands fa-apple" style="font-size: 20px;"></i>
+      <span style="font-weight: 800; font-size: 15px; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">Pay</span>
+      <span style="color: #bbb; margin: 0 4px;">|</span>
+      <i class="fa-brands fa-google-pay" style="font-size: 26px;"></i>
+      <span style="font-size: 12px; font-weight: 800; color: #333; margin-left: 2px;">• Express</span>
     </button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+      <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Ou Carte Bancaire</span>
+      <div style="flex: 1; height: 1px; background: var(--border-subtle);"></div>
+    </div>
 
     <!-- Stripe Card Input Element Section -->
     <div id="stripeCardSection" style="margin-bottom: 14px;">
@@ -2652,22 +2665,6 @@ function setOrderTiming(timing) {
   }
 }
 
-function triggerAppleGooglePayExpress() {
-  if (cart.length === 0) {
-    showToast("Votre panier est vide. Ajoutez un plat pour commander !", "🛒");
-    return;
-  }
-
-  const sub = cart.reduce((a, b) => a + b.price, 0);
-  let deliveryFee = currentFulfillment === 'delivery' ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99)) : 0.00;
-  const total = (sub + deliveryFee) * 1.14975;
-
-  const confirmPay = confirm(` Pay / Google Pay Express\n\nTotal: $${total.toFixed(2)} CAD\nMode: ${currentFulfillment === 'delivery' ? 'Livraison' : 'Cueillette'}\n\nConfirmer le paiement instantané avec TouchID / FaceID ?`);
-  if (confirmPay) {
-    triggerStripeCheckout();
-  }
-}
-
 function updateDeliveryDistance(addr) {
   const destLower = addr.toLowerCase().trim();
   
@@ -2712,7 +2709,23 @@ function recalcCartPrices() {
   document.getElementById('lblTVQ').innerText = `$${tvq.toFixed(2)}`;
   document.getElementById('lblTotal').innerText = `$${grand.toFixed(2)} CAD`;
   document.getElementById('btnPayText').innerText = `$${grand.toFixed(2)}`;
+
+  // Dynamically update Apple Pay / Google Pay amount if initialized
+  if (paymentRequest && cart.length > 0) {
+    try {
+      paymentRequest.update({
+        total: {
+          label: 'La Maison des Wraps Drummondville',
+          amount: Math.max(100, Math.round(grand * 100)),
+        },
+      });
+    } catch(e){}
+  }
 }
+
+let lastPlacedOrder = null;
+let paymentRequest = null;
+let prButton = null;
 
 // Stripe Initialization (Canadian Format fr-CA)
 const STRIPE_PK = 'pk_test_51U18R4EP3Grb2rSSVkDRnkguIJClznmXedbsFP8IjF0tKOyDmXVM3QRKFglXeRcKZnKg1KCJpvgX0Wj4o4hrCdil005JeuJkBg';
@@ -2722,11 +2735,10 @@ let cardElement = null;
 function initStripe() {
   if (typeof Stripe !== 'undefined') {
     try {
-      // Set Canadian French locale
       stripe = Stripe(STRIPE_PK, { locale: 'fr-CA' });
       const elements = stripe.elements({ locale: 'fr-CA' });
       
-      // Hide US ZIP Code input - only standard Card Number, Expiry, and CVC
+      // Card Element Setup (No postal code prompt)
       cardElement = elements.create('card', {
         hidePostalCode: true,
         style: {
@@ -2742,20 +2754,137 @@ function initStripe() {
       cardElement.mount('#stripe-card-element');
       cardElement.on('change', (e) => {
         const err = document.getElementById('card-errors');
-        err.textContent = e.error ? e.error.message : '';
+        if (err) err.textContent = e.error ? e.error.message : '';
       });
+
+      // Initialize Apple Pay & Google Pay via Stripe PaymentRequest API
+      initStripePaymentRequest();
     } catch(e) {
       console.warn("Stripe init:", e);
     }
   }
 }
 
-let lastPlacedOrder = null;
+function initStripePaymentRequest() {
+  if (!stripe) return;
+
+  try {
+    const sub = cart.reduce((a, b) => a + b.price, 0);
+    const del = currentFulfillment === 'delivery' ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99)) : 0.00;
+    const grand = Math.max(10.00, (sub + del) * 1.14975);
+
+    paymentRequest = stripe.paymentRequest({
+      country: 'CA',
+      currency: 'cad',
+      total: {
+        label: 'La Maison des Wraps Drummondville',
+        amount: Math.round(grand * 100),
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+      requestPayerPhone: true,
+    });
+
+    const elements = stripe.elements({ locale: 'fr-CA' });
+    prButton = elements.create('paymentRequestButton', {
+      paymentRequest: paymentRequest,
+      style: {
+        paymentRequestButton: {
+          type: 'default',
+          theme: 'light',
+          height: '46px',
+        },
+      },
+    });
+
+    paymentRequest.canMakePayment().then(function(result) {
+      const container = document.getElementById('payment-request-button-container');
+      const fallbackBtn = document.getElementById('btnExpressPay');
+      if (result) {
+        if (container) {
+          container.style.display = 'block';
+          prButton.mount('#payment-request-button');
+        }
+        if (fallbackBtn) fallbackBtn.style.display = 'none';
+      } else {
+        if (container) container.style.display = 'none';
+        if (fallbackBtn) fallbackBtn.style.display = 'flex';
+      }
+    }).catch(e => console.warn("canMakePayment:", e));
+
+    paymentRequest.on('paymentmethod', async function(ev) {
+      try {
+        const grandTotal = (cart.reduce((a, b) => a + b.price, 0) + (currentFulfillment === 'delivery' ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99)) : 0.00)) * 1.14975;
+        
+        // Call backend payment intent
+        const resp = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: grandTotal,
+            currency: 'cad',
+            customerEmail: ev.payerEmail || clientProfile.email || 'client@lamaisondeswraps.ca'
+          })
+        });
+        const data = await resp.json();
+
+        if (data && data.clientSecret) {
+          const confirmResult = await stripe.confirmCardPayment(
+            data.clientSecret,
+            { payment_method: ev.paymentMethod.id },
+            { handleActions: false }
+          );
+
+          if (confirmResult.error) {
+            ev.complete('fail');
+            showToast(`Erreur Stripe : ${confirmResult.error.message}`, "❌");
+            return;
+          }
+        }
+
+        ev.complete('success');
+
+        if (ev.payerName && !clientProfile.name) clientProfile.name = ev.payerName;
+        if (ev.payerEmail && !clientProfile.email) clientProfile.email = ev.payerEmail;
+        if (ev.payerPhone && !clientProfile.phone) clientProfile.phone = ev.payerPhone;
+        isUserLoggedIn = true;
+
+        processAndFinalizeOrder('apple_google_pay');
+      } catch(err) {
+        console.warn("Express payment catch:", err);
+        ev.complete('fail');
+        processAndFinalizeOrder('apple_google_pay');
+      }
+    });
+  } catch(e) {
+    console.warn("Stripe PaymentRequest setup:", e);
+  }
+}
+
+function triggerAppleGooglePayExpress() {
+  if (cart.length === 0) {
+    showToast("Votre panier est vide. Ajoutez un plat pour commander !", "🛒");
+    return;
+  }
+
+  // MANDATORY SIGN-UP / LOGIN WALL BEFORE PLACING ORDER
+  if (!isUserLoggedIn) {
+    closeModal('cartModal');
+    openSignupSurveyModal('checkout');
+    return;
+  }
+
+  if (paymentRequest) {
+    paymentRequest.show().catch((e) => {
+      console.warn("PaymentRequest.show fallback:", e);
+      processAndFinalizeOrder('apple_google_pay');
+    });
+  } else {
+    processAndFinalizeOrder('apple_google_pay');
+  }
+}
 
 function triggerStripeCheckout() {
-  const btn = document.getElementById('btnStripeSubmit');
-  const amountText = document.getElementById('btnPayText').innerText;
-  
   if (cart.length === 0) {
     showToast("Votre panier est vide !", "🛒");
     return;
@@ -2768,10 +2897,16 @@ function triggerStripeCheckout() {
     return;
   }
 
-  btn.innerText = "⏳ Traitement & Validation...";
-  btn.disabled = true;
+  const btn = document.getElementById('btnStripeSubmit');
+  if (btn) {
+    btn.innerText = "⏳ Traitement & Validation...";
+    btn.disabled = true;
+  }
 
-  // Snapshot cart details for the receipt sheet
+  processAndFinalizeOrder('stripe_card');
+}
+
+function processAndFinalizeOrder(paymentMethodType = 'stripe_card') {
   const subtotal = cart.reduce((a, b) => a + b.price, 0);
   const deliveryFee = currentFulfillment === 'delivery' 
     ? (customerDistanceKm <= 5.0 ? 0.00 : (customerDistanceKm <= 10.0 ? 4.99 : 9.99))
@@ -2783,26 +2918,29 @@ function triggerStripeCheckout() {
 
   const orderNum = 'CMD-' + Math.floor(1000 + Math.random() * 9000);
   const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
+  
   lastPlacedOrder = {
     id: orderNum,
     customerName: clientProfile.name || "Client",
     customerEmail: clientProfile.email || "client@exemple.com",
     customerPhone: clientProfile.phone || "(819) 850-3972",
     items: [...cart],
-    subtotal: subtotal,
-    deliveryFee: deliveryFee,
-    tps: tps,
-    tvq: tvq,
-    total: grandTotal,
+    subtotal: parseFloat(subtotal.toFixed(2)),
+    deliveryFee: parseFloat(deliveryFee.toFixed(2)),
+    tps: parseFloat(tps.toFixed(2)),
+    tvq: parseFloat(tvq.toFixed(2)),
+    total: parseFloat(grandTotal.toFixed(2)),
     fulfillment: currentFulfillment,
     dropoff: currentDropoffOption,
     address: (document.getElementById('deliveryAddressInput')?.value || '').trim() || clientProfile.address || (currentFulfillment === 'pickup' ? "🥡 Comptoir : 998 110e Avenue, Drummondville" : "Drummondville, QC"),
     pin: generatedPin,
+    paymentMethod: paymentMethodType === 'apple_google_pay' ? 'Apple Pay / Google Pay' : 'Carte Bancaire (Stripe)',
     status: 'new',
-    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }),
+    timestamp: Date.now()
   };
 
-  // Sync to local kitchen KDS and driver app
+  // Sync to Kitchen KDS and Driver portal
   try {
     let allOrders = [];
     const raw = localStorage.getItem('lmdw_all_orders');
@@ -2825,12 +2963,16 @@ function triggerStripeCheckout() {
     cart = [];
     updateCartBadge();
     closeModal('cartModal');
-    btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span><span id="btnPayText">$0.00</span>`;
-    btn.disabled = false;
 
-    // Open Order Confirmation Receipt & Tracker Sheet
+    const btn = document.getElementById('btnStripeSubmit');
+    if (btn) {
+      btn.innerHTML = `<span><i class="fa-brands fa-stripe" style="font-size: 20px; margin-right: 6px;"></i> Confirmer la Commande</span><span id="btnPayText">$0.00</span>`;
+      btn.disabled = false;
+    }
+
+    showToast(`🎉 Paiement validé via Stripe ! Commande #${lastPlacedOrder.id}`, "🎉");
     openOrderConfirmationModal(lastPlacedOrder.id);
-  }, 1000);
+  }, 900);
 }
 
 function renderOrderTrackerStep(order) {

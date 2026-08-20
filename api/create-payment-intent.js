@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: currency.toLowerCase(),
-      payment_method_types: ['card'],
+      automatic_payment_methods: { enabled: true },
       metadata: {
         orderId: orderId || `CMD-${Date.now()}`,
         restaurant: 'La Maison des Wraps Drummondville',
