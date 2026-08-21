@@ -1,0 +1,45 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/auth/:catchall*",
+      "mountPath": "/api/auth",
+      "method": "",
+      "module": [
+        "api/auth/[[catchall]].js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/calculate-distance",
+      "mountPath": "/api",
+      "method": "OPTIONS",
+      "module": [
+        "api/calculate-distance.js:onRequestOptions"
+      ]
+    },
+    {
+      "routePath": "/api/calculate-distance",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/calculate-distance.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/create-payment-intent",
+      "mountPath": "/api",
+      "method": "OPTIONS",
+      "module": [
+        "api/create-payment-intent.js:onRequestOptions"
+      ]
+    },
+    {
+      "routePath": "/api/create-payment-intent",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/create-payment-intent.js:onRequestPost"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}
