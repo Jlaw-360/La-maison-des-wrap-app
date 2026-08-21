@@ -1137,12 +1137,61 @@ function renderUsers() {
 
 function saveUserRole(uid) {
   const select = document.getElementById(`select_${uid}`);
-  const newRole = select.value;
+  const newRole = select ? select.value : 'customer';
   const user = users.find(u => u.uid === uid);
   
   if (user) {
     user.role = newRole;
-    alert(`✅ Rôle de ${user.name} mis à jour vers : ${newRole.toUpperCase()}!\n\nL'utilisateur aura accès à son portail dédié (${newRole === 'store' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : 'Client /index.html')}).`);
+    
+    // Save to registered clients list
+    let allClients = [];
+    try {
+      const raw = localStorage.getItem('lmdw_all_clients_list');
+      if (raw) allClients = JSON.parse(raw);
+    } catch(e){}
+    
+    const clientIdx = allClients.findIndex(c => c.uid === uid || (c.email && c.email === user.email) || c.name === user.name);
+    if (clientIdx >= 0) {
+      allClients[clientIdx].role = newRole;
+    } else {
+      allClients.push({ uid: user.uid, name: user.name, email: user.email, phone: user.phone, role: newRole, points: user.points, address: user.address });
+    }
+    localStorage.setItem('lmdw_all_clients_list', JSON.stringify(allClients));
+
+    // If this is the active saved user, update their active session
+    try {
+      const savedUser = localStorage.getItem('lmdw_user');
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        if (parsed.email === user.email || parsed.name === user.name || parsed.uid === uid) {
+          parsed.role = newRole;
+          localStorage.setItem('lmdw_user', JSON.stringify(parsed));
+        }
+      }
+    } catch(e){}
+
+    // Broadcast role update event to all open tabs and windows
+    localStorage.setItem('lmdw_role_update_event', JSON.stringify({
+      uid: user.uid,
+      email: user.email,
+      name: user.name,
+      role: newRole,
+      timestamp: Date.now()
+    }));
+
+    const roleNameMap = {
+      customer: '👤 Client',
+      store: '👨‍🍳 Employé Cuisine',
+      kitchen: '👨‍🍳 Employé Cuisine',
+      driver: '🛵 Employé Livreur',
+      admin: '👑 Administrateur'
+    };
+
+    alert(`✅ Rôle de ${user.name} mis à jour avec succès !
+
+Nouveau rôle : ${roleNameMap[newRole] || newRole.toUpperCase()}
+
+L'utilisateur a désormais accès immédiat à son interface (${newRole === 'store' || newRole === 'kitchen' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : (newRole === 'admin' ? 'Direction /admin.html' : 'Client /index.html'))}).`);
     renderUsers();
   }
 }

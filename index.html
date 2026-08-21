@@ -1262,32 +1262,8 @@
           <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
         </div>
 
-        <!-- Role Switching Quick Links -->
-        <div class="profile-menu-item" onclick="window.location.href='/admin.html'">
-          <div class="profile-menu-item-left">
-            <i class="fa-solid fa-crown" style="color: var(--primary);"></i>
-            <span>Portail Administrateur & Rôles</span>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
-        </div>
-
-        <div class="profile-menu-item" onclick="openLoginGateModal()" style="border-top: 1px solid var(--border-subtle); margin-top: 8px;">
-          <div class="profile-menu-item-left">
-            <i class="fa-solid fa-user-gear" style="color: var(--accent-gold);"></i>
-            <span style="color: #fff; font-weight: 700;">Changer de Compte / S'inscrire / Mot de Passe</span>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
-        </div>
-
-        <div class="profile-menu-item" onclick="handleLogOut()">
-          <div class="profile-menu-item-left">
-            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #EF4444;"></i>
-            <span style="color: #EF4444; font-weight: 600;">Se Déconnecter</span>
-          </div>
-          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
-        </div>
-
-      </div>
+        <!-- Dynamic Staff Workplace Access (Populated only for Promoted Roles) -->
+        <div id="profileWorkplaceActionContainer"></div>
 
     </div>
   </div>
@@ -4135,6 +4111,45 @@ function handleGoogleSignIn() {
 }
 
 function updateUserProfileUI() {
+  const roleContainer = document.getElementById('profileWorkplaceActionContainer');
+  const roleBadge = document.getElementById('profileRoleBadge');
+  const user = clientProfile || {};
+
+  if (roleContainer) {
+    if (user.role === 'kitchen' || user.role === 'store') {
+      roleContainer.innerHTML = `
+        <div class="profile-menu-item" onclick="window.location.href='/kitchen.html'" style="background: rgba(59, 130, 246, 0.15); border: 1.5px solid #3B82F6; margin: 8px 0; border-radius: 14px;">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-fire-burner" style="color: #3B82F6;"></i>
+            <span style="color: #93C5FD; font-weight: 800;">👨‍🍳 Accéder au Poste Cuisine KDS</span>
+          </div>
+          <i class="fa-solid fa-arrow-right" style="color: #3B82F6; font-size: 14px;"></i>
+        </div>
+      `;
+    } else if (user.role === 'driver') {
+      roleContainer.innerHTML = `
+        <div class="profile-menu-item" onclick="window.location.href='/driver.html'" style="background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10B981; margin: 8px 0; border-radius: 14px;">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-motorcycle" style="color: #10B981;"></i>
+            <span style="color: #A7F3D0; font-weight: 800;">🛵 Accéder au Portail Livreur Dispatch</span>
+          </div>
+          <i class="fa-solid fa-arrow-right" style="color: #10B981; font-size: 14px;"></i>
+        </div>
+      `;
+    } else if (user.role === 'admin') {
+      roleContainer.innerHTML = `
+        <div class="profile-menu-item" onclick="window.location.href='/admin.html'" style="background: rgba(139, 92, 246, 0.15); border: 1.5px solid #8B5CF6; margin: 8px 0; border-radius: 14px;">
+          <div class="profile-menu-item-left">
+            <i class="fa-solid fa-crown" style="color: #8B5CF6;"></i>
+            <span style="color: #DDD6FE; font-weight: 800;">👑 Console Administrateur Général</span>
+          </div>
+          <i class="fa-solid fa-arrow-right" style="color: #8B5CF6; font-size: 14px;"></i>
+        </div>
+      `;
+    } else {
+      roleContainer.innerHTML = '';
+    }
+  }
   const profileAvatar = document.querySelector('.profile-avatar');
   if (profileAvatar && clientProfile.name) {
     const initials = clientProfile.name.split(' ').map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2) || "JT";
@@ -4258,6 +4273,21 @@ function toggleLanguage() {
     showToast("Passé en Français 🇫🇷", "🌐");
   }
 }
+
+
+window.addEventListener('storage', function(e) {
+  if (e.key === 'lmdw_role_update_event') {
+    try {
+      const evt = JSON.parse(e.newValue);
+      if (clientProfile && (clientProfile.email === evt.email || clientProfile.name === evt.name || clientProfile.uid === evt.uid)) {
+        clientProfile.role = evt.role;
+        localStorage.setItem('lmdw_user', JSON.stringify(clientProfile));
+        updateUserProfileUI();
+        showToast("Votre rôle a été mis à jour par l'administrateur : " + evt.role.toUpperCase(), "👑");
+      }
+    } catch(err){}
+  }
+});
 
 window.onload = function() {
   init();

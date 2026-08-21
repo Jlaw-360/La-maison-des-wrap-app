@@ -145,9 +145,10 @@
     </div>
   </div>
   <div style="display: flex; gap: 6px; align-items: center;">
-    <a href="/index.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-utensils"></i> Client</a>
-    <a href="/kitchen.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-fire-burner"></i> Cuisine</a>
-    <a href="/admin.html" style="color: #fff; font-size: 11px; text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06);"><i class="fa-solid fa-crown"></i> Admin</a>
+    <span style="font-size: 11px; background: rgba(16, 185, 129, 0.15); color: #10B981; padding: 4px 10px; border-radius: 12px; font-weight: 700;">
+      <i class="fa-solid fa-motorcycle"></i> Livreur En Service
+    </span>
+    <button onclick="logoutDriver()" style="color: #fff; font-size: 11px; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); cursor: pointer;"><i class="fa-solid fa-right-from-bracket"></i> Quitter</button>
   </div>
 </header>
 
@@ -499,23 +500,31 @@ window.onload = function() {
 <input type="file" id="driverPhotoProofInput" accept="image/*" capture="environment" style="display: none;" onchange="handleDriverPhotoCaptured(event)">
 
 
-<!-- Owner & Staff Security Lock Guard -->
-<div id="staffSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
-  <div style="max-width: 400px; width: 100%; background: #1C1C24; border: 1.5px solid #FF5500; border-radius: 24px; padding: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
-    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">
-      🔒
+<!-- Driver Role Guard & Security Lock -->
+<div id="driverSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+  <div style="max-width: 420px; width: 100%; background: #1C1C24; border: 1.5px solid #10B981; border-radius: 24px; padding: 26px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.85);">
+    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 28px; border: 1.5px solid #10B981;">
+      🛵
     </div>
-    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Accès Propriétaire & Personnel</h2>
-    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.4;">
-      Cette interface (Portail Livreur) est strictement réservée au restaurant. Veuillez entrer votre code PIN :
+    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Portail Livreur (In-House)</h2>
+    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.5;">
+      Cette interface est exclusivement réservée aux <strong>Livreurs assignés par le restaurant</strong>.
     </p>
-    <input type="password" id="txtStaffGuardPin" placeholder="Entrez le PIN (2325)" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 12px;">
-    <div id="staffGuardError" style="display: none; color: #FF4444; font-size: 11px; margin-bottom: 12px; font-weight: 700;">Code PIN incorrect.</div>
-    <div style="display: flex; gap: 8px;">
-      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #DDD; font-weight: 700; cursor: pointer;">
-        Retour Client
+
+    <div id="driverRoleMsg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: #FCA5A5;">
+      Votre compte est actuellement défini comme <strong>Client</strong>. Seul l'Administrateur peut promouvoir votre compte en <em>Livreur</em> dans la console Direction.
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <input type="password" id="txtDriverGuardPin" placeholder="Entrez le Code PIN Livreur" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 16px; text-align: center; letter-spacing: 4px; margin-bottom: 8px;">
+      <div id="driverGuardError" style="display: none; color: #FF4444; font-size: 11px; font-weight: 700;">Code PIN incorrect.</div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #D1D1DB; font-weight: 700; font-size: 13px; cursor: pointer;">
+        <i class="fa-solid fa-arrow-left"></i> App Client
       </button>
-      <button type="button" onclick="verifyStaffGuardPin()" style="flex: 1; padding: 12px; background: #FF5500; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; cursor: pointer;">
+      <button type="button" onclick="verifyDriverGuardPin()" style="flex: 1; padding: 12px; background: #10B981; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer;">
         Déverrouiller
       </button>
     </div>
@@ -523,11 +532,35 @@ window.onload = function() {
 </div>
 
 <script>
-function verifyStaffGuardPin() {
-  const pinInput = document.getElementById('txtStaffGuardPin');
+function checkDriverAccess() {
+  const overlay = document.getElementById('driverSecurityLockOverlay');
+  const roleMsg = document.getElementById('driverRoleMsg');
+  
+  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
+    if (overlay) overlay.style.display = 'none';
+    return;
+  }
+
+  try {
+    const savedUser = localStorage.getItem('lmdw_user');
+    if (savedUser) {
+      const u = JSON.parse(savedUser);
+      if (u && (u.role === 'driver' || u.role === 'admin')) {
+        if (overlay) overlay.style.display = 'none';
+        return;
+      }
+    }
+  } catch(e){}
+
+  if (overlay) overlay.style.display = 'flex';
+  if (roleMsg) roleMsg.style.display = 'block';
+}
+
+function verifyDriverGuardPin() {
+  const pinInput = document.getElementById('txtDriverGuardPin');
   const pinVal = (pinInput ? pinInput.value : '').trim();
-  const errorEl = document.getElementById('staffGuardError');
-  const overlay = document.getElementById('staffSecurityLockOverlay');
+  const errorEl = document.getElementById('driverGuardError');
+  const overlay = document.getElementById('driverSecurityLockOverlay');
 
   if (pinVal === '2325' || pinVal.toLowerCase() === 'admin') {
     sessionStorage.setItem('lmdw_owner_authenticated', 'true');
@@ -537,10 +570,15 @@ function verifyStaffGuardPin() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const overlay = document.getElementById('staffSecurityLockOverlay');
-  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
-    if (overlay) overlay.style.display = 'none';
+function logoutDriver() {
+  sessionStorage.removeItem('lmdw_owner_authenticated');
+  window.location.href = '/index.html';
+}
+
+document.addEventListener('DOMContentLoaded', checkDriverAccess);
+window.addEventListener('storage', function(e) {
+  if (e.key === 'lmdw_role_update_event' || e.key === 'lmdw_user') {
+    checkDriverAccess();
   }
 });
 </script>
