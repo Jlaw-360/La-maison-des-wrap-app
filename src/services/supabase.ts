@@ -39,11 +39,16 @@ export async function getCurrentUserProfile(userId: string): Promise<UserProfile
   }
 }
 
-export async function upsertUserProfile(profile: Partial<UserProfile>): Promise<UserProfile | null> {
+export async function upsertUserProfile(profile: Partial<UserProfile> & { name?: string }): Promise<UserProfile | null> {
   try {
+    const payload = {
+      ...profile,
+      name: profile.name || profile.full_name || 'Client',
+      full_name: profile.full_name || profile.name || 'Client',
+    };
     const { data, error } = await supabase
       .from('users')
-      .upsert(profile)
+      .upsert(payload)
       .select()
       .single();
 
