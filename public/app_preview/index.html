@@ -12,70 +12,223 @@
   <link rel="apple-touch-icon" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
   <style>
     :root {
       --bg-body: #060608;
       --bg-main: #0B0B0F;
       --bg-surface: #14141A;
-      --bg-card: #181820;
-      --bg-card-elevated: #1F1F2A;
+      --bg-card: #181822;
+      --bg-card-elevated: #1F1F2C;
       --primary: #FF5500;
       --primary-hover: #E04B00;
-      --primary-glow: rgba(255, 85, 0, 0.35);
+      --primary-glow: rgba(255, 85, 0, 0.4);
       --accent-gold: #E5A93C;
       --accent-green: #22C55E;
       --text-white: #FFFFFF;
-      --text-body: #A5A5B5;
-      --text-muted: #707080;
+      --text-body: #A2A2B4;
+      --text-muted: #6E6E80;
       --border-subtle: rgba(255, 255, 255, 0.08);
-      --font-heading: 'Plus Jakarta Sans', sans-serif;
-      --font-body: 'Inter', sans-serif;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
 
     body {
       background-color: var(--bg-body);
       color: var(--text-white);
-      font-family: var(--font-heading);
+      font-family: var(--font-main);
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 0;
       margin: 0;
+      padding: 0;
       overflow-x: hidden;
     }
 
     @media (min-width: 520px) {
       body {
-        padding: 20px 0;
-        background: radial-gradient(circle at 50% 10%, #1c1524 0%, #060608 100%);
+        padding: 24px 0;
+        background: radial-gradient(circle at 50% 15%, #1d1425 0%, #060608 100%);
       }
-      .app-container {
-        border-radius: 36px !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        box-shadow: 0 12px 60px rgba(0, 0, 0, 0.9) !important;
+      .phone-frame {
+        border-radius: 40px !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 16px 70px rgba(0, 0, 0, 0.9) !important;
       }
     }
 
-    .app-container {
+    .phone-frame {
       width: 100%;
-      max-width: 440px;
+      max-width: 430px;
       min-height: 100vh;
       background-color: var(--bg-main);
       position: relative;
       display: flex;
       flex-direction: column;
-      padding-bottom: 84px;
       overflow-x: hidden;
     }
 
-    /* Top Reference Header */
-    .top-nav-header {
+    /* ==========================================================================
+       SCREEN 1: WELCOME / ONBOARDING SPLASH (SLIDE TO ORDER)
+       ========================================================================== */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      background: #0B0B0F;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 32px 24px 44px 24px;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .splash-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-100%);
+    }
+
+    .splash-header-brand {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .splash-brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .splash-hero-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .splash-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 15px 35px rgba(255, 85, 0, 0.35));
+      animation: floatHero 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatHero {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-10px) scale(1.03); }
+    }
+
+    .splash-aura {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 85, 0, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      z-index: -1;
+    }
+
+    .splash-copy-section {
+      margin-bottom: 20px;
+    }
+
+    .splash-sub {
+      font-size: 13px;
+      font-weight: 600;
+      color: #A2A2B4;
+      margin-bottom: 6px;
+    }
+
+    .splash-heading {
+      font-size: 30px;
+      font-weight: 900;
+      color: #FFFFFF;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+    }
+
+    .splash-heading span {
+      color: var(--primary);
+    }
+
+    /* Interactive Slider Button */
+    .slider-track {
+      position: relative;
+      width: 100%;
+      height: 64px;
+      background: #181822;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 36px;
+      display: flex;
+      align-items: center;
+      padding: 6px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    .slider-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF5500 0%, #E04B00 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 20px;
+      box-shadow: 0 4px 18px rgba(255, 85, 0, 0.5);
+      transition: transform 0.15s ease-out;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .slider-label {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       SCREEN 2: HOME FEED (HEADER, LOCATION, GREETING, CATEGORIES, FULL-BLEED CARDS)
+       ========================================================================== */
+    .main-app-content {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 84px;
+    }
+
+    .ref-header {
       position: sticky;
       top: 0;
       z-index: 100;
@@ -89,7 +242,7 @@
       align-items: center;
     }
 
-    .nav-avatar-circle {
+    .ref-avatar-btn {
       width: 38px;
       height: 38px;
       border-radius: 50%;
@@ -98,30 +251,30 @@
       align-items: center;
       justify-content: center;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
       color: #FFFFFF;
       border: 1.5px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
     }
 
-    .nav-location-pill {
+    .ref-location-badge {
       display: flex;
       align-items: center;
       gap: 6px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       padding: 6px 12px;
       border-radius: 20px;
       cursor: pointer;
     }
 
-    .nav-location-pill span {
+    .ref-location-badge span {
       font-size: 11px;
       font-weight: 700;
       color: #E2E2E8;
     }
 
-    .nav-icon-btn {
+    .ref-action-icon-btn {
       width: 38px;
       height: 38px;
       border-radius: 12px;
@@ -136,7 +289,7 @@
       position: relative;
     }
 
-    .nav-cart-count {
+    .ref-cart-count {
       position: absolute;
       top: -4px;
       right: -4px;
@@ -153,27 +306,12 @@
       border: 1.5px solid #0B0B0F;
     }
 
-    /* Views */
-    .app-view {
-      display: none;
-      animation: fadeIn 0.2s ease-in-out;
+    /* Greeting Section */
+    .greeting-container {
+      padding: 16px 18px 4px 18px;
     }
 
-    .app-view.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Reference Greeting */
-    .greeting-box {
-      padding: 16px 18px 6px 18px;
-    }
-
-    .greeting-box h1 {
+    .greeting-title {
       font-size: 24px;
       font-weight: 800;
       color: #FFFFFF;
@@ -181,61 +319,26 @@
       line-height: 1.2;
     }
 
-    .greeting-box p {
+    .greeting-subtitle {
       font-size: 12px;
       color: var(--text-body);
-      margin-top: 4px;
-    }
-
-    /* Fulfillment Selector */
-    .fulfillment-toggle-bar {
-      margin: 8px 18px 12px 18px;
-      background: #14141A;
-      border: 1px solid rgba(255, 85, 0, 0.25);
-      border-radius: 18px;
-      padding: 8px;
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-fulfillment {
-      flex: 1;
-      text-align: center;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 10px 6px;
-      border-radius: 12px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-
-    .btn-fulfillment.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(255, 85, 0, 0.35);
+      margin-top: 3px;
     }
 
     /* Category Filter Pills (Horizontal Scroll) */
-    .cat-filter-scroll {
+    .category-scroll-bar {
       display: flex;
       gap: 8px;
-      padding: 6px 18px 10px 18px;
+      padding: 10px 18px 8px 18px;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
 
-    .cat-filter-scroll::-webkit-scrollbar { display: none; }
+    .category-scroll-bar::-webkit-scrollbar { display: none; }
 
-    .cat-pill-btn {
-      background: #181820;
+    .category-pill {
+      background: #181822;
       border: 1px solid rgba(255, 255, 255, 0.08);
       color: #D1D1DB;
       padding: 8px 16px;
@@ -247,28 +350,28 @@
       transition: all 0.2s ease;
     }
 
-    .cat-pill-btn.active {
+    .category-pill.active {
       background: #FF5500;
       border-color: #FF5500;
       color: #FFFFFF;
-      box-shadow: 0 4px 16px rgba(255, 85, 0, 0.35);
+      box-shadow: 0 4px 16px rgba(255, 85, 0, 0.4);
     }
 
     /* Section Header */
-    .section-header-row {
+    .section-head {
       padding: 12px 18px 10px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .section-header-row h2 {
+    .section-head h2 {
       font-size: 17px;
       font-weight: 800;
       color: #FFFFFF;
     }
 
-    .section-header-row button {
+    .section-head button {
       font-size: 12px;
       font-weight: 700;
       color: var(--primary);
@@ -277,15 +380,15 @@
       cursor: pointer;
     }
 
-    /* Visual Full-Bleed Food Cards (Mockup Screen 2) */
-    .food-cards-list {
+    /* Full-Bleed Cards List (Screen 2 Mockup Style) */
+    .cards-vertical-list {
       padding: 0 18px 16px 18px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .food-card-wrap {
+    .food-card {
       position: relative;
       border-radius: 26px;
       overflow: hidden;
@@ -296,16 +399,16 @@
       transition: transform 0.2s ease;
     }
 
-    .food-card-wrap:active { transform: scale(0.985); }
+    .food-card:active { transform: scale(0.985); }
 
-    .food-card-img-container {
+    .food-card-img-wrap {
       width: 100%;
       height: 220px;
       position: relative;
       background: #0D0D12;
     }
 
-    .food-card-img-container img {
+    .food-card-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -313,18 +416,18 @@
       transition: transform 0.35s ease;
     }
 
-    .food-card-wrap:hover .food-card-img-container img {
+    .food-card:hover .food-card-img-wrap img {
       transform: scale(1.03);
     }
 
-    .card-mist-gradient {
+    .card-dark-gradient {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 40%, rgba(11,11,15,0.92) 90%);
       pointer-events: none;
     }
 
-    .card-top-badges-row {
+    .card-top-row {
       position: absolute;
       top: 14px;
       left: 14px;
@@ -335,21 +438,21 @@
       z-index: 2;
     }
 
-    .card-price-block {
+    .card-price-stack {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
 
-    .price-text-large {
+    .card-price-val {
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 900;
       color: #FFFFFF;
       text-shadow: 0 2px 8px rgba(0,0,0,0.8);
       letter-spacing: -0.3px;
     }
 
-    .rating-badge-gold {
+    .card-rating-val {
       font-size: 10px;
       font-weight: 700;
       color: #E5A93C;
@@ -359,7 +462,7 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
 
-    .star-fav-btn {
+    .card-fav-circle {
       width: 34px;
       height: 34px;
       border-radius: 50%;
@@ -374,10 +477,10 @@
       cursor: pointer;
     }
 
-    .star-fav-btn.active { color: #FF5500; }
+    .card-fav-circle.active { color: #FF5500; }
 
-    /* Bottom Glass Pill inside Card */
-    .card-glass-bottom-bar {
+    /* Bottom Glass Pill */
+    .card-glass-pill {
       position: absolute;
       bottom: 12px;
       left: 12px;
@@ -394,14 +497,14 @@
       z-index: 2;
     }
 
-    .card-title-text h3 {
+    .card-dish-info h3 {
       font-size: 14px;
       font-weight: 800;
       color: #FFFFFF;
       line-height: 1.2;
     }
 
-    .card-title-text p {
+    .card-dish-info p {
       font-size: 10px;
       color: var(--text-body);
       margin-top: 2px;
@@ -411,7 +514,7 @@
       max-width: 250px;
     }
 
-    .card-arrow-circle-btn {
+    .card-arrow-btn {
       width: 34px;
       height: 34px;
       border-radius: 50%;
@@ -427,14 +530,16 @@
       transition: all 0.2s ease;
     }
 
-    .food-card-wrap:hover .card-arrow-circle-btn {
+    .food-card:hover .card-arrow-btn {
       background: #FF5500;
       color: #FFFFFF;
       transform: rotate(45deg);
     }
 
-    /* Screen 3: Details & Customizer Bottom Sheet Modal */
-    .modal-sheet-overlay {
+    /* ==========================================================================
+       SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET MODAL
+       ========================================================================== */
+    .sheet-modal-backdrop {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0, 0, 0, 0.85);
@@ -445,11 +550,11 @@
       justify-content: center;
     }
 
-    .modal-sheet-overlay.open { display: flex; }
+    .sheet-modal-backdrop.open { display: flex; }
 
-    .details-bottom-sheet {
+    .sheet-modal-container {
       width: 100%;
-      max-width: 440px;
+      max-width: 430px;
       background: #111116;
       border-radius: 28px 28px 0 0;
       border-top: 1.5px solid rgba(255, 255, 255, 0.12);
@@ -465,7 +570,7 @@
       to { transform: translateY(0); }
     }
 
-    .sheet-nav-top {
+    .sheet-top-nav-bar {
       position: absolute;
       top: 14px; left: 14px; right: 14px;
       display: flex;
@@ -474,7 +579,7 @@
       z-index: 10;
     }
 
-    .sheet-circle-btn {
+    .sheet-nav-circle-btn {
       width: 36px;
       height: 36px;
       border-radius: 50%;
@@ -489,20 +594,20 @@
       cursor: pointer;
     }
 
-    .sheet-hero-img-box {
+    .sheet-hero-banner {
       width: 100%;
       height: 220px;
       position: relative;
       background: #08080C;
     }
 
-    .sheet-hero-img-box img {
+    .sheet-hero-banner img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .sheet-content-scroll {
+    .sheet-scroll-body {
       padding: 18px 20px 20px 20px;
       overflow-y: auto;
       flex: 1;
@@ -511,7 +616,7 @@
       gap: 16px;
     }
 
-    .sheet-dish-header-row {
+    .sheet-dish-badge-card {
       background: #171720;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
@@ -521,7 +626,7 @@
       gap: 14px;
     }
 
-    .sheet-dish-thumb-round {
+    .sheet-dish-thumb {
       width: 58px;
       height: 58px;
       border-radius: 50%;
@@ -531,13 +636,13 @@
       flex-shrink: 0;
     }
 
-    .meta-badges-flex {
+    .meta-pills-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .meta-pill-item {
+    .meta-pill {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
@@ -550,7 +655,7 @@
       gap: 6px;
     }
 
-    .sheet-bottom-action-bar {
+    .sheet-bottom-bar {
       padding: 14px 20px 20px 20px;
       border-top: 1px solid var(--border-subtle);
       background: #111116;
@@ -558,7 +663,7 @@
       gap: 10px;
     }
 
-    .btn-sheet-cart {
+    .btn-charcoal-cart {
       flex: 1;
       padding: 14px;
       background: #1E1E28;
@@ -574,7 +679,7 @@
       gap: 6px;
     }
 
-    .btn-sheet-order {
+    .btn-orange-order {
       flex: 1.3;
       padding: 14px;
       background: #FF5500;
@@ -591,14 +696,14 @@
       box-shadow: 0 6px 20px rgba(255, 85, 0, 0.4);
     }
 
-    /* 5-Tab Bottom Navigation Bar */
+    /* 5-Tab Navigation Bar */
     .bottom-tab-bar {
       position: fixed;
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 440px;
+      max-width: 430px;
       background: rgba(12, 12, 16, 0.96);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -610,7 +715,7 @@
       z-index: 99;
     }
 
-    .tab-item-btn {
+    .tab-btn {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -626,13 +731,11 @@
       transition: all 0.2s;
     }
 
-    .tab-item-btn i { font-size: 18px; }
+    .tab-btn i { font-size: 18px; }
 
-    .tab-item-btn.active {
-      color: #FF5500;
-    }
+    .tab-btn.active { color: #FF5500; }
 
-    .tab-center-elevated {
+    .tab-center-icon {
       position: relative;
       top: -12px;
       width: 52px;
@@ -648,9 +751,17 @@
       flex: 0 0 52px;
     }
 
-    .tab-center-elevated i { font-size: 22px; }
+    .tab-center-icon i { font-size: 22px; }
 
-    /* Custom Toast */
+    /* App Views */
+    .app-view {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .app-view.active { display: block; }
+
+    /* Toast */
     #customToast {
       position: fixed;
       top: 20px;
@@ -676,250 +787,292 @@
 </head>
 <body>
 
-<div class="app-container">
+<div class="phone-frame">
 
-  <!-- Reference Top Header (Avatar | Drummondville Location | Cart) -->
-  <header class="top-nav-header">
-    <div class="nav-avatar-circle" onclick="switchTab('profile')" title="Mon Compte">
-      <span id="headerUserInitial">W</span>
+  <!-- ==========================================================================
+       SCREEN 1: WELCOME / ONBOARDING SPLASH (MATCHING REFERENCE MOCKUP SCREEN 1)
+       ========================================================================== -->
+  <div class="splash-screen" id="onboardingSplash">
+    <div class="splash-header-brand">
+      <h1 class="splash-brand-title">LA MAISON DES WRAPS</h1>
     </div>
 
-    <div class="nav-location-pill" onclick="promptChangeAddress()">
-      <i class="fa-solid fa-location-dot" style="color: #FF5500; font-size: 11px;"></i>
-      <span id="lblTopAddress">Drummondville, QC</span>
-      <i class="fa-solid fa-chevron-down" style="color: var(--text-muted); font-size: 9px;"></i>
+    <div class="splash-hero-container">
+      <div class="splash-aura"></div>
+      <img src="/assets/food/wrap_naan_poulet_tikka.png" alt="Hero Dish" class="splash-hero-img" onerror="this.src='/logo.png'">
     </div>
 
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <!-- Loyalty Points Pill -->
-      <button class="nav-location-pill" onclick="switchTab('scan')" style="background: rgba(229, 169, 60, 0.12); border-color: rgba(229, 169, 60, 0.35); color: #E5A93C;">
-        <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
-        <span id="lblHeaderPointsVal" style="color: #E5A93C;">50 Pts</span>
-      </button>
-
-      <!-- Cart Button with Dynamic Counter -->
-      <button class="nav-icon-btn" onclick="openCartModal()" title="Panier">
-        <i class="fa-solid fa-bag-shopping"></i>
-        <span class="nav-cart-count" id="cartCountBadge" style="display: none;">0</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- ==================== VIEW 1: HOME (ACCUEIL) ==================== -->
-  <div class="app-view active" id="view-home">
-    
-    <!-- Reference Greeting -->
-    <div class="greeting-box">
-      <h1 id="greetingUserName">Bonjour, Walkse</h1>
-      <p>Explorez les Meilleurs Wraps & Saveurs Tandoor de Drummondville</p>
+    <div class="splash-copy-section">
+      <p class="splash-sub">Saveurs Tandoori Authentiques</p>
+      <h2 class="splash-heading">Get Your Wrap<br><span>Fix Today!</span></h2>
     </div>
 
-    <!-- Fulfillment Mode Selector -->
-    <div class="fulfillment-toggle-bar">
-      <button type="button" class="btn-fulfillment active" id="btnModeDelivery" onclick="selectTimsMode('delivery')">
-        <i class="fa-solid fa-motorcycle"></i> <span>Livraison</span>
-      </button>
-      <button type="button" class="btn-fulfillment" id="btnModePickup" onclick="selectTimsMode('pickup')">
-        <i class="fa-solid fa-bag-shopping"></i> <span>Cueillette</span>
-      </button>
+    <!-- Interactive Slider to Enter -->
+    <div class="slider-track" id="sliderTrack" onclick="enterAppFromSplash()">
+      <div class="slider-thumb" id="sliderThumb">
+        <i class="fa-solid fa-fire"></i>
+      </div>
+      <div class="slider-label">
+        <span>Slide To Eat Wraps</span>
+        <i class="fa-solid fa-angles-right" style="color: #FF5500;"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN RESTAURANT APP (TABS & VIEWS)
+       ========================================================================== -->
+  <div class="main-app-content">
+
+    <!-- Top Sticky Header -->
+    <header class="ref-header">
+      <div class="ref-avatar-btn" onclick="switchTab('profile')" title="Mon Compte">
+        <span>W</span>
+      </div>
+
+      <div class="ref-location-badge" onclick="promptChangeAddress()">
+        <i class="fa-solid fa-location-dot" style="color: #FF5500; font-size: 11px;"></i>
+        <span id="lblTopAddress">Drummondville, QC</span>
+        <i class="fa-solid fa-chevron-down" style="color: var(--text-muted); font-size: 9px;"></i>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <!-- Points Pill -->
+        <button class="ref-location-badge" onclick="switchTab('scan')" style="background: rgba(229, 169, 60, 0.12); border-color: rgba(229, 169, 60, 0.35); color: #E5A93C;">
+          <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
+          <span style="color: #E5A93C;" id="lblTopPoints">50 Pts</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button class="ref-action-icon-btn" onclick="openCartModal()" title="Panier">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="ref-cart-count" id="cartCountBadge" style="display: none;">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: HOME FEED (MATCHING REFERENCE MOCKUP SCREEN 2) -->
+    <div class="app-view active" id="view-home">
+      
+      <!-- Greeting Section -->
+      <div class="greeting-container">
+        <h1 class="greeting-title">Hello, Walkse</h1>
+        <p class="greeting-subtitle">Let's Explore Wrap World & Authentic Flavors</p>
+      </div>
+
+      <!-- Mode Selector (Livraison vs Cueillette) -->
+      <div style="margin: 8px 18px 10px 18px; background: #14141A; border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 6px; display: flex; gap: 6px;">
+        <button type="button" class="category-pill active" id="btnModeDelivery" onclick="selectFulfillment('delivery')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px; border-radius: 12px;">
+          <i class="fa-solid fa-motorcycle"></i> Livraison
+        </button>
+        <button type="button" class="category-pill" id="btnModePickup" onclick="selectFulfillment('pickup')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px; border-radius: 12px; background: transparent; border-color: transparent;">
+          <i class="fa-solid fa-bag-shopping"></i> Cueillette
+        </button>
+      </div>
+
+      <!-- Category Filter Pills (Horizontal Scroll) -->
+      <div class="category-scroll-bar">
+        <button class="category-pill active" onclick="filterCategory('all', this)">All Types</button>
+        <button class="category-pill" onclick="filterCategory('wraps', this)">🌯 Wraps Naan</button>
+        <button class="category-pill" onclick="filterCategory('assiettes', this)">🍲 Plates & Rice</button>
+        <button class="category-pill" onclick="filterCategory('trios', this)">🍟 Combos Trios</button>
+        <button class="category-pill" onclick="filterCategory('kebabs', this)">🍔 Burgers & Kebabs</button>
+        <button class="category-pill" onclick="filterCategory('desserts', this)">🥤 Drinks & Desserts</button>
+      </div>
+
+      <!-- Section Title -->
+      <div class="section-head">
+        <h2>Wrap Category</h2>
+        <button onclick="switchTab('menu')">See all <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+
+      <!-- Big Visual Food Cards List (Screen 2 Mockup) -->
+      <div class="cards-vertical-list" id="luxuryFeaturedCardsContainer">
+        <!-- Dynamically rendered by renderDishes() -->
+      </div>
+
+      <!-- Restaurant Info Card -->
+      <div style="margin: 10px 18px 20px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; font-size: 16px;">🏪</div>
+          <div>
+            <h3 style="font-size: 13px; font-weight: 800;">La Maison des Wraps</h3>
+            <p style="font-size: 10px; color: #E5A93C;">100% Halal • Drummondville, QC</p>
+          </div>
+        </div>
+        <p style="font-size: 11px; color: var(--text-body); line-height: 1.5;">
+          📍 998 110e Avenue, Drummondville, QC J2B 6X2<br>
+          📞 (819) 850-3972 • Mar - Sam : 11h - 21h | Dim : 12h - 21h
+        </p>
+      </div>
     </div>
 
-    <!-- Reference Category Filter Pills (Horizontal Scroll) -->
-    <div class="cat-filter-scroll">
-      <button class="cat-pill-btn active" onclick="filterLuxuryCategory('all', this)">Tous les Plats</button>
-      <button class="cat-pill-btn" onclick="filterLuxuryCategory('wraps', this)">🌯 Wraps Naan</button>
-      <button class="cat-pill-btn" onclick="filterLuxuryCategory('assiettes', this)">🍲 Assiettes & Riz</button>
-      <button class="cat-pill-btn" onclick="filterLuxuryCategory('trios', this)">🍟 Trios Combos</button>
-      <button class="cat-pill-btn" onclick="filterLuxuryCategory('kebabs', this)">🍔 Kebabs & Burgers</button>
-      <button class="cat-pill-btn" onclick="filterLuxuryCategory('desserts', this)">🥤 Lassis & Desserts</button>
+    <!-- VIEW 2: MENU CATALOGUE -->
+    <div class="app-view" id="view-menu">
+      <div class="greeting-container">
+        <h1 class="greeting-title">Full Menu</h1>
+        <p class="greeting-subtitle">Explore our complete tandoori wraps and meals</p>
+      </div>
+      <div class="cards-vertical-list" id="menuFullListContainer">
+        <!-- Dynamically populated -->
+      </div>
     </div>
 
-    <!-- Section Title -->
-    <div class="section-header-row">
-      <h2>Nos Spécialités Chaudes</h2>
-      <button onclick="switchTab('menu')">Voir Tout <i class="fa-solid fa-arrow-right"></i></button>
-    </div>
+    <!-- VIEW 3: SCAN & REWARDS -->
+    <div class="app-view" id="view-scan">
+      <div class="greeting-container" style="text-align: center;">
+        <h1 class="greeting-title">Loyalty Card</h1>
+        <p class="greeting-subtitle">Scan in-store to earn & redeem points</p>
+      </div>
 
-    <!-- Reference Food Cards Container -->
-    <div class="food-cards-list" id="luxuryFeaturedCardsContainer">
-      <!-- Populated dynamically by renderLuxuryCards() -->
-    </div>
+      <div style="margin: 14px 18px; background: #14141A; border: 1px solid rgba(229, 169, 60, 0.3); border-radius: 26px; padding: 24px; text-align: center;">
+        <div style="font-size: 12px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">Points Balance</div>
+        <div style="font-size: 38px; font-weight: 900; color: #FFFFFF; margin: 4px 0;" id="lblScanPointsVal">50 Pts</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">200 Points = 1 Free Wrap Naan 🎁</div>
 
-    <!-- Restaurant Info Footer Box -->
-    <div style="margin: 10px 18px 24px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; font-size: 16px;">🏪</div>
-        <div>
-          <h3 style="font-size: 14px; font-weight: 800;">La Maison des Wraps</h3>
-          <p style="font-size: 11px; color: #E5A93C;">100% Halal • Drummondville, QC</p>
+        <div style="background: #FFFFFF; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
+          <canvas id="hubQrCanvas"></canvas>
+        </div>
+
+        <div style="margin-top: 16px; font-size: 13px; font-weight: 800; color: #E2E2E8;">
+          Member ID : <strong style="color: #FF5500;">LMDW-WALKSE-50</strong>
         </div>
       </div>
-      <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-        📍 <strong>Adresse :</strong> 998 110e Avenue, Drummondville, QC J2B 6X2<br>
-        📞 <strong>Téléphone :</strong> (819) 850-3972<br>
-        🕒 <strong>Heures :</strong> Mar - Sam : 11h00 - 21h00 | Dim : 12h00 - 21h00
-      </p>
-    </div>
-  </div>
-
-  <!-- ==================== VIEW 2: MENU CATALOGUE ==================== -->
-  <div class="app-view" id="view-menu">
-    <div class="greeting-box">
-      <h1>Notre Carte Complète</h1>
-      <p>Sélectionnez vos wraps, assiettes tandoori et combos préférés</p>
-    </div>
-    <div class="food-cards-list" id="menuFullListContainer">
-      <!-- Populated dynamically -->
-    </div>
-  </div>
-
-  <!-- ==================== VIEW 3: SCAN & REWARDS HUB ==================== -->
-  <div class="app-view" id="view-scan">
-    <div class="greeting-box" style="text-align: center;">
-      <h1>Carte Fidélité & Récompenses</h1>
-      <p>Scannez votre code en restaurant ou échangez vos points</p>
     </div>
 
-    <div style="margin: 14px 18px; background: #14141A; border: 1px solid rgba(229, 169, 60, 0.3); border-radius: 26px; padding: 24px; text-align: center;">
-      <div style="font-size: 12px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">Solde de Points</div>
-      <div style="font-size: 38px; font-weight: 800; color: #FFFFFF; margin: 4px 0;" id="lblScanPointsVal">50 Pts</div>
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">200 Points = 1 Wrap Naan Offert 🎁</div>
-
-      <div style="background: #FFFFFF; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
-        <canvas id="hubQrCanvas"></canvas>
+    <!-- VIEW 4: LIVE TRACKING -->
+    <div class="app-view" id="view-chat">
+      <div class="greeting-container">
+        <h1 class="greeting-title">Order Status</h1>
+        <p class="greeting-subtitle">Live GPS dispatch and kitchen tracking</p>
       </div>
 
-      <div style="margin-top: 16px; font-size: 13px; font-weight: 800; color: #E2E2E8;">
-        Code PIN de secours : <strong style="color: #FF5500;">2325</strong>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== VIEW 4: TRACKING & CHAT ==================== -->
-  <div class="app-view" id="view-chat">
-    <div class="greeting-box">
-      <h1>Suivi de Commande & Chat</h1>
-      <p>Suivez votre livreur en direct et communiquez avec le restaurant</p>
-    </div>
-
-    <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;" id="liveTrackingCard">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Commande #1042</span>
-        <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;" id="lblTrackStatus">En Préparation</span>
-      </div>
-      <p style="font-size: 12px; color: var(--text-body); line-height: 1.4;">
-        🛵 <strong>Livreur :</strong> Marc Livreur (In-House)<br>
-        ⏱️ <strong>Délai estimé :</strong> 15-25 minutes
-      </p>
-    </div>
-  </div>
-
-  <!-- ==================== VIEW 5: PROFILE & ACCOUNT ==================== -->
-  <div class="app-view" id="view-profile">
-    <div class="greeting-box">
-      <h1>Mon Compte</h1>
-      <p>Gérez vos coordonnées et vos préférences</p>
-    </div>
-
-    <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
-      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
-        <div class="nav-avatar-circle" style="width: 52px; height: 52px; font-size: 20px;">W</div>
-        <div>
-          <h2 style="font-size: 16px; font-weight: 800;" id="profileCardName">Walkse</h2>
-          <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">walksenon@gmail.com</p>
+      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Order #1042</span>
+          <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;">In Kitchen</span>
         </div>
+        <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
+          🛵 <strong>Driver :</strong> Marc Livreur (In-House)<br>
+          ⏱️ <strong>Estimated Arrival :</strong> 15-25 minutes
+        </p>
+      </div>
+    </div>
+
+    <!-- VIEW 5: PROFILE -->
+    <div class="app-view" id="view-profile">
+      <div class="greeting-container">
+        <h1 class="greeting-title">My Account</h1>
+        <p class="greeting-subtitle">Manage delivery address & preferences</p>
       </div>
 
-      <button type="button" onclick="promptChangeAddress()" style="width: 100%; margin-bottom: 10px; background: #1C1C24; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-location-dot" style="color: #FF5500;"></i>
-        <span>Modifier mon Adresse de Livraison</span>
-      </button>
+      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+          <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;">W</div>
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800;">Walkse</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">walksenon@gmail.com</p>
+          </div>
+        </div>
 
-      <button type="button" onclick="openOwnerSecurityModal()" style="width: 100%; margin-bottom: 10px; background: #1C1C24; border: 1px solid rgba(255, 85, 0, 0.3); color: #FF5500; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <i class="fa-solid fa-lock"></i>
-        <span>Accès Gestion Propriétaire</span>
-      </button>
-    </div>
-  </div>
+        <button type="button" onclick="promptChangeAddress()" style="width: 100%; margin-bottom: 10px; background: #181822; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-location-dot" style="color: #FF5500;"></i>
+          <span>Change Delivery Address</span>
+        </button>
 
-  <!-- 5-Tab Bottom Navigation Bar -->
-  <nav class="bottom-tab-bar">
-    <button class="tab-item-btn active" id="tab-home" onclick="switchTab('home')">
-      <i class="fa-solid fa-house"></i>
-      <span>Accueil</span>
-    </button>
-    <button class="tab-item-btn" id="tab-menu" onclick="switchTab('menu')">
-      <i class="fa-solid fa-utensils"></i>
-      <span>Menu</span>
-    </button>
-    <button class="tab-item-btn tab-center-elevated" id="tab-scan" onclick="switchTab('scan')">
-      <i class="fa-solid fa-qrcode"></i>
-    </button>
-    <button class="tab-item-btn" id="tab-chat" onclick="switchTab('chat')">
-      <i class="fa-solid fa-comment-dots"></i>
-      <span>Suivi</span>
-    </button>
-    <button class="tab-item-btn" id="tab-profile" onclick="switchTab('profile')">
-      <i class="fa-solid fa-user"></i>
-      <span>Compte</span>
-    </button>
-  </nav>
-
-</div> <!-- /.app-container -->
-
-<!-- Reference Screen 3: Details & Customizer Bottom Sheet Modal -->
-<div class="modal-sheet-overlay" id="refDetailsModal">
-  <div class="details-bottom-sheet">
-    <div class="sheet-nav-top">
-      <div class="sheet-circle-btn" onclick="closeRefDetailsModal()"><i class="fa-solid fa-chevron-left"></i></div>
-      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Détails du Plat</div>
-      <div class="sheet-circle-btn" onclick="closeRefDetailsModal(); openCartModal();"><i class="fa-solid fa-bag-shopping"></i></div>
+        <button type="button" onclick="openOwnerSecurityModal()" style="width: 100%; background: #181822; border: 1px solid rgba(255, 85, 0, 0.3); color: #FF5500; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-lock"></i>
+          <span>Owner Admin Portal Access</span>
+        </button>
+      </div>
     </div>
 
-    <div class="sheet-hero-img-box">
+    <!-- 5-Tab Bottom Bar -->
+    <nav class="bottom-tab-bar">
+      <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="tab-btn" id="tab-menu" onclick="switchTab('menu')">
+        <i class="fa-solid fa-utensils"></i>
+        <span>Menu</span>
+      </button>
+      <button class="tab-btn tab-center-icon" id="tab-scan" onclick="switchTab('scan')">
+        <i class="fa-solid fa-qrcode"></i>
+      </button>
+      <button class="tab-btn" id="tab-chat" onclick="switchTab('chat')">
+        <i class="fa-solid fa-comment-dots"></i>
+        <span>Track</span>
+      </button>
+      <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+      </button>
+    </nav>
+
+  </div> <!-- /.main-app-content -->
+
+</div> <!-- /.phone-frame -->
+
+<!-- ==========================================================================
+     SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET (MATCHING REFERENCE MOCKUP SCREEN 3)
+     ========================================================================== -->
+<div class="sheet-modal-backdrop" id="refDetailsModal">
+  <div class="sheet-modal-container">
+    <div class="sheet-top-nav-bar">
+      <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal()"><i class="fa-solid fa-chevron-left"></i></div>
+      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Details</div>
+      <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal(); openCartModal();"><i class="fa-solid fa-bag-shopping"></i></div>
+    </div>
+
+    <div class="sheet-hero-banner">
       <img id="refModalHeroImg" src="/assets/food/wrap_naan_poulet_tikka.png" alt="Dish">
-      <div class="card-mist-gradient"></div>
+      <div class="card-dark-gradient"></div>
     </div>
 
-    <div class="sheet-content-scroll">
-      <div class="sheet-dish-header-row">
-        <img id="refModalThumbImg" src="/assets/food/wrap_naan_poulet_tikka.png" alt="Thumb" class="sheet-dish-thumb-round">
+    <div class="sheet-scroll-body">
+      <!-- Dish Header Card with Round Thumb -->
+      <div class="sheet-dish-badge-card">
+        <img id="refModalThumbImg" src="/assets/food/wrap_naan_poulet_tikka.png" alt="Thumb" class="sheet-dish-thumb">
         <div style="flex: 1;">
           <h2 id="refModalTitle" style="font-size: 16px; font-weight: 800;">Wrap Naan Poulet Tikka</h2>
-          <div style="font-size: 18px; font-weight: 800; color: #FF5500; margin-top: 2px;">
+          <div style="font-size: 18px; font-weight: 900; color: #FF5500; margin-top: 2px;">
             <span id="refModalPrice">$13.99 CAD</span>
-            <span style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-left: 8px;">★ 4.9/5 (500+ avis)</span>
+            <span style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-left: 8px;">★ 4.9/5 (500+ Reviews)</span>
           </div>
         </div>
       </div>
 
-      <div class="meta-badges-flex">
-        <div class="meta-pill-item"><i class="fa-solid fa-location-dot" style="color: #FF5500;"></i> Drummondville</div>
-        <div class="meta-pill-item"><i class="fa-solid fa-fire" style="color: #FF5500;"></i> 580 Kcal</div>
-        <div class="meta-pill-item"><i class="fa-solid fa-clock" style="color: #22C55E;"></i> 15-20 min</div>
+      <!-- Meta Badges -->
+      <div class="meta-pills-row">
+        <div class="meta-pill"><i class="fa-solid fa-location-dot" style="color: #FF5500;"></i> Drummondville</div>
+        <div class="meta-pill"><i class="fa-solid fa-fire" style="color: #FF5500;"></i> 580 Kcal</div>
+        <div class="meta-pill"><i class="fa-solid fa-clock" style="color: #22C55E;"></i> 15-20 min</div>
       </div>
 
+      <!-- Description -->
       <div>
         <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Description</h3>
         <p id="refModalDesc" style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-          Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges croustillants et sauce maison.
+          Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges croustillants et sauce menthe fraîche maison.
         </p>
       </div>
 
+      <!-- Format Selection -->
       <div>
-        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">Choisissez votre Format</h3>
+        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">Choose Option</h3>
         <div style="display: flex; gap: 10px;">
-          <label style="flex: 1; background: #181820; border: 1.5px solid #FF5500; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+          <label style="flex: 1; background: #181822; border: 1.5px solid #FF5500; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
             <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Sandwich Seul</div>
+              <div style="font-size: 12px; font-weight: 800; color: #fff;">Solo Dish</div>
               <div style="font-size: 11px; color: var(--text-body);" id="lblPriceSeul">$13.99</div>
             </div>
             <input type="radio" name="refDishFormat" value="solo" checked onchange="calcRefModalPrice()">
           </label>
 
-          <label style="flex: 1; background: #181820; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+          <label style="flex: 1; background: #181822; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
             <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Formule Trio 🍟🥤</div>
+              <div style="font-size: 12px; font-weight: 800; color: #fff;">Combo Trio 🍟🥤</div>
               <div style="font-size: 11px; color: #FF5500; font-weight: 700;">+ $5.30</div>
             </div>
             <input type="radio" name="refDishFormat" value="trio" onchange="calcRefModalPrice()">
@@ -928,137 +1081,196 @@
       </div>
     </div>
 
-    <div class="sheet-bottom-action-bar">
-      <button class="btn-sheet-cart" onclick="addCurrentDishToCart(false)">
-        <i class="fa-solid fa-cart-plus"></i> <span>Ajouter au Panier</span>
+    <!-- Sticky Bottom Bar -->
+    <div class="sheet-bottom-bar">
+      <button class="btn-charcoal-cart" onclick="addCurrentDishToCart(false)">
+        <i class="fa-solid fa-cart-plus"></i>
+        <span>Add to Cart</span>
       </button>
-      <button class="btn-sheet-order" onclick="addCurrentDishToCart(true)">
-        <span>Commander</span> <i class="fa-solid fa-arrow-right"></i>
+      <button class="btn-orange-order" onclick="addCurrentDishToCart(true)">
+        <span>Order</span>
+        <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
   </div>
 </div>
 
 <!-- Shopping Cart Modal -->
-<div class="modal-sheet-overlay" id="cartModal">
-  <div class="details-bottom-sheet">
-    <div class="sheet-nav-top" style="position: relative; top: 0; left: 0; right: 0; padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);">
-      <div style="font-weight: 800; font-size: 16px; color: #FFFFFF;">Mon Panier</div>
-      <div class="sheet-circle-btn" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></div>
+<div class="sheet-modal-backdrop" id="cartModal">
+  <div class="sheet-modal-container">
+    <div class="sheet-top-nav-bar" style="position: relative; top: 0; left: 0; right: 0; padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);">
+      <div style="font-weight: 800; font-size: 16px; color: #FFFFFF;">My Cart</div>
+      <div class="sheet-nav-circle-btn" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></div>
     </div>
 
-    <div class="sheet-content-scroll" id="cartItemsListContainer">
+    <div class="sheet-scroll-body" id="cartItemsListContainer">
       <!-- Populated dynamically -->
     </div>
 
     <div style="padding: 16px 20px; border-top: 1px solid var(--border-subtle); background: #111116;">
       <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-        <span style="color: var(--text-body);">Sous-Total :</span>
+        <span style="color: var(--text-body);">Subtotal :</span>
         <strong id="lblCartSubtotal">$0.00 CAD</strong>
       </div>
       <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
-        <span>Taxes Québec (TPS 5% + TVQ 9.975%) :</span>
+        <span>Quebec Taxes (TPS 5% + TVQ 9.975%) :</span>
         <span id="lblCartTaxes">$0.00 CAD</span>
       </div>
-      <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; margin-top: 8px; border-top: 1px solid var(--border-subtle); padding-top: 8px;">
-        <span>Total TTC :</span>
+      <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; margin-top: 8px; border-top: 1px solid var(--border-subtle); padding-top: 8px;">
+        <span>Total :</span>
         <span style="color: #FF5500;" id="lblCartTotal">$0.00 CAD</span>
       </div>
 
-      <button type="button" class="btn-sheet-order" style="width: 100%; margin-top: 14px;" onclick="checkoutOrder()">
-        <span>Confirmer & Payer la Commande</span>
+      <button type="button" class="btn-orange-order" style="width: 100%; margin-top: 14px;" onclick="checkoutOrder()">
+        <span>Confirm & Pay Order</span>
       </button>
     </div>
   </div>
 </div>
 
-<!-- Owner Security PIN Modal -->
-<div class="modal-sheet-overlay" id="ownerSecurityModal">
-  <div class="details-bottom-sheet" style="padding: 24px; text-align: center;">
+<!-- Owner Admin PIN Modal -->
+<div class="sheet-modal-backdrop" id="ownerSecurityModal">
+  <div class="sheet-modal-container" style="padding: 24px; text-align: center;">
     <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255,85,0,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">🔒</div>
-    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Espace Propriétaire</h2>
-    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px;">Veuillez saisir votre code PIN de gestion :</p>
-    <input type="password" id="txtOwnerPin" placeholder="Code PIN (2325)" maxlength="6" style="width: 100%; background: #181820; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px;">
+    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Owner Admin Access</h2>
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px;">Enter your 4-digit PIN code (2325) :</p>
+    <input type="password" id="txtOwnerPin" placeholder="PIN (2325)" maxlength="6" style="width: 100%; background: #181822; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px;">
     <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn-sheet-cart" onclick="closeModal('ownerSecurityModal')">Fermer</button>
-      <button type="button" class="btn-sheet-order" onclick="verifyOwnerPin()">Déverrouiller</button>
+      <button type="button" class="btn-charcoal-cart" onclick="closeModal('ownerSecurityModal')">Cancel</button>
+      <button type="button" class="btn-orange-order" onclick="verifyOwnerPin()">Unlock</button>
     </div>
   </div>
 </div>
 
 <script>
-// Application State
+// State
 let cart = [];
-let currentFulfillment = 'delivery';
 let currentCategory = 'all';
 let currentRefDish = null;
 
-let clientProfile = {
-  name: "Walkse",
-  email: "walksenon@gmail.com",
-  phone: "(819) 850-3972",
-  address: "Drummondville, QC",
-  points: 50,
-  role: "customer"
-};
-
-const menuItems = [
-  { id: "wrap-naan-poulet-tikka", name: "Wrap Naan Poulet Tikka", cat: "wraps", price: 13.99, rating: "4.9/5", reviews: "500+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges et sauce menthe." },
-  { id: "assiette-mix-2-viandes", name: "Assiette Mix Royale (2 Viandes)", cat: "assiettes", price: 16.99, rating: "4.9/5", reviews: "380+ avis", img: "/assets/food/assiette_mix_2_viandes.png", desc: "Généreuse assiette dégustation combinant Poulet Tikka et Kebab épicé, servie avec riz basmati parfumé et salade fraîche." },
-  { id: "trio-naan-poulet-tikka", name: "Trio Festin Naan & Frites", cat: "trios", price: 19.29, rating: "4.8/5", reviews: "420+ avis", img: "/assets/food/trio_naan_poulet_tikka.png", desc: "Le combo signature le plus populaire : 1 Wrap Naan garni + Grande portion de frites dorées + 1 Boisson fraîche au choix." },
-  { id: "wrap-kebab-poulet", name: "Wrap Kebab Épicé", cat: "kebabs", price: 12.99, rating: "4.8/5", reviews: "290+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Brochettes de kebab assaisonnées aux herbes fraîches et piments doux, roulées dans un pain naan avec sauce blanche à l'ail." },
-  { id: "lassi-mangue", name: "Lassi Mangue Royale", cat: "desserts", price: 5.99, rating: "5.0/5", reviews: "640+ avis", img: "/assets/food/lassi_mangue.png", desc: "Boisson traditionnelle au yaourt crémeux et pulpe de mangue Alphonso mûrie au soleil. Très rafraîchissant." },
-  { id: "assiette-biryani", name: "Assiette Biryani Poulet", cat: "assiettes", price: 15.49, rating: "4.9/5", reviews: "310+ avis", img: "/assets/food/assiette_biryani.png", desc: "Riz basmati mijoté aux épices royales avec morceaux de poulet tendre, safran et sauce raïta onctueuse." }
+const dishes = [
+  {
+    id: "wrap-naan-poulet-tikka",
+    name: "Masterful Tikka Wrap",
+    cat: "wraps",
+    price: 14.99,
+    rating: "4.9/5",
+    reviews: "500+ Reviews",
+    img: "/assets/food/wrap_naan_poulet_tikka.png",
+    desc: "Tandoor baked naan rolled with spiced chicken tikka supreme, crisp red onions, and refreshing mint chutney."
+  },
+  {
+    id: "assiette-mix-2-viandes",
+    name: "Seafood & Grill Platter",
+    cat: "assiettes",
+    price: 25.00,
+    rating: "4.9/5",
+    reviews: "380+ Reviews",
+    img: "/assets/food/assiette_mix_2_viandes.png",
+    desc: "Royal combo plate with tandoori grilled chicken, tender kebab brochettes, saffron basmati rice, and fresh salad."
+  },
+  {
+    id: "trio-naan-poulet-tikka",
+    name: "Supreme Combo Trio",
+    cat: "trios",
+    price: 20.29,
+    rating: "4.8/5",
+    reviews: "420+ Reviews",
+    img: "/assets/food/trio_naan_poulet_tikka.png",
+    desc: "Signature combo : 1 Loaded Naan Wrap + Golden Crispy Fries + 1 Chilled Soda of your choice."
+  },
+  {
+    id: "wrap-kebab-poulet",
+    name: "Spiced Kebab Wrap",
+    cat: "kebabs",
+    price: 13.99,
+    rating: "4.8/5",
+    reviews: "290+ Reviews",
+    img: "/assets/food/wrap_kebab_poulet.png",
+    desc: "Seasoned kebab skewers infused with aromatic herbs, rolled in fresh naan with creamy garlic sauce."
+  },
+  {
+    id: "lassi-mangue",
+    name: "Royal Mango Lassi",
+    cat: "desserts",
+    price: 5.99,
+    rating: "5.0/5",
+    reviews: "640+ Reviews",
+    img: "/assets/food/lassi_mangue.png",
+    desc: "Traditional rich yogurt smoothie blended with ripe sweet Alphonso mango pulp. Ultra refreshing."
+  },
+  {
+    id: "assiette-biryani",
+    name: "Chicken Biryani Royale",
+    cat: "assiettes",
+    price: 16.49,
+    rating: "4.9/5",
+    reviews: "310+ Reviews",
+    img: "/assets/food/assiette_biryani.png",
+    desc: "Fragrant basmati rice slow-cooked in traditional clay pots with tender spiced chicken, saffron and raita."
+  }
 ];
 
-function renderLuxuryCards() {
+function enterAppFromSplash() {
+  const thumb = document.getElementById('sliderThumb');
+  if (thumb) thumb.style.transform = 'translateX(260px)';
+  setTimeout(() => {
+    const splash = document.getElementById('onboardingSplash');
+    if (splash) splash.classList.add('hidden');
+    renderDishes();
+  }, 250);
+}
+
+function renderDishes() {
   const container = document.getElementById('luxuryFeaturedCardsContainer');
   if (!container) return;
 
-  const filtered = currentCategory === 'all' ? menuItems : menuItems.filter(d => d.cat === currentCategory);
+  const filtered = currentCategory === 'all' ? dishes : dishes.filter(d => d.cat === currentCategory);
 
   container.innerHTML = filtered.map(dish => {
-    return '<div class="food-card-wrap" onclick="openRefDetailsModal(\'' + dish.id + '\')">' +
-      '<div class="food-card-img-container">' +
-        '<img src="' + dish.img + '" alt="' + dish.name + '" onerror="this.src=\'/logo.png\'">' +
-        '<div class="card-mist-gradient"></div>' +
-      '</div>' +
-      '<div class="card-top-badges-row">' +
-        '<div class="card-price-block">' +
-          '<div class="price-text-large">$' + dish.price.toFixed(2) + ' CAD</div>' +
-          '<div class="rating-badge-gold">★ ' + dish.rating + ' <span style="color: rgba(255,255,255,0.6);">(' + dish.reviews + ')</span></div>' +
-        '</div>' +
-        '<div class="star-fav-btn" onclick="event.stopPropagation(); this.classList.toggle(\'active\'); showToast(\'Ajouté aux favoris !\', \'⭐\');">' +
-          '<i class="fa-solid fa-star"></i>' +
-        '</div>' +
-      '</div>' +
-      '<div class="card-glass-bottom-bar">' +
-        '<div class="card-title-text">' +
-          '<h3>' + dish.name + '</h3>' +
-          '<p>' + dish.desc + '</p>' +
-        '</div>' +
-        '<button class="card-arrow-circle-btn" onclick="event.stopPropagation(); openRefDetailsModal(\'' + dish.id + '\')">' +
-          '<i class="fa-solid fa-arrow-up-right-from-square"></i>' +
-        '</button>' +
-      '</div>' +
-    '</div>';
+    return `
+      <div class="food-card" onclick="openRefDetailsModal('${dish.id}')">
+        <div class="food-card-img-wrap">
+          <img src="${dish.img}" alt="${dish.name}" onerror="this.src='/logo.png'">
+          <div class="card-dark-gradient"></div>
+        </div>
+
+        <div class="card-top-row">
+          <div class="card-price-stack">
+            <div class="card-price-val">$${dish.price.toFixed(2)}</div>
+            <div class="card-rating-val">★ ${dish.rating} <span style="color: rgba(255,255,255,0.6);">(${dish.reviews})</span></div>
+          </div>
+          <div class="card-fav-circle" onclick="event.stopPropagation(); this.classList.toggle('active'); showToast('Added to Favorites!', '⭐');">
+            <i class="fa-solid fa-star"></i>
+          </div>
+        </div>
+
+        <div class="card-glass-pill">
+          <div class="card-dish-info">
+            <h3>${dish.name}</h3>
+            <p>${dish.desc}</p>
+          </div>
+          <button class="card-arrow-btn" onclick="event.stopPropagation(); openRefDetailsModal('${dish.id}')">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </button>
+        </div>
+      </div>
+    `;
   }).join('');
 
   const menuContainer = document.getElementById('menuFullListContainer');
-  if (menuContainer) {
-    menuContainer.innerHTML = container.innerHTML;
-  }
+  if (menuContainer) menuContainer.innerHTML = container.innerHTML;
 }
 
-function filterLuxuryCategory(cat, btn) {
+function filterCategory(cat, btn) {
   currentCategory = cat;
-  document.querySelectorAll('.cat-pill-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  renderLuxuryCards();
+  renderDishes();
 }
 
 function openRefDetailsModal(dishId) {
-  const found = menuItems.find(d => d.id === dishId) || menuItems[0];
+  const found = dishes.find(d => d.id === dishId) || dishes[0];
   currentRefDish = found;
 
   document.getElementById('refModalHeroImg').src = found.img;
@@ -1085,7 +1297,7 @@ function calcRefModalPrice() {
   document.getElementById('refModalPrice').innerText = '$' + finalPrice.toFixed(2) + ' CAD';
 }
 
-function addCurrentDishToCart(andCheckout) {
+function addCurrentDishToCart(andCheckout = false) {
   if (!currentRefDish) return;
   const isTrio = document.querySelector('input[name="refDishFormat"][value="trio"]')?.checked;
   const price = isTrio ? (currentRefDish.price + 5.30) : currentRefDish.price;
@@ -1098,7 +1310,7 @@ function addCurrentDishToCart(andCheckout) {
   if (andCheckout) {
     openCartModal();
   } else {
-    showToast("Ajouté au panier !", "🛒");
+    showToast("Added to Cart!", "🛒");
   }
 }
 
@@ -1116,24 +1328,24 @@ function updateCartUI() {
   const container = document.getElementById('cartItemsListContainer');
   if (container) {
     if (cart.length === 0) {
-      container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Votre panier est vide.</div>';
+      container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Your cart is empty.</div>';
     } else {
-      container.innerHTML = cart.map(function(item, idx) {
-        return '<div style="display: flex; align-items: center; justify-content: space-between; background: #181820; padding: 12px; border-radius: 14px; margin-bottom: 8px;">' +
-          '<div style="display: flex; align-items: center; gap: 10px;">' +
-            '<img src="' + item.img + '" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">' +
-            '<div>' +
-              '<div style="font-size: 13px; font-weight: 800;">' + item.name + '</div>' +
-              '<div style="font-size: 12px; color: #FF5500;">$' + item.price.toFixed(2) + ' CAD</div>' +
-            '</div>' +
-          '</div>' +
-          '<button onclick="removeFromCart(' + idx + ')" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>' +
-        '</div>';
-      }).join('');
+      container.innerHTML = cart.map((item, idx) => `
+        <div style="display: flex; align-items: center; justify-content: space-between; background: #181822; padding: 12px; border-radius: 14px; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="${item.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800;">${item.name}</div>
+              <div style="font-size: 12px; color: #FF5500;">$${item.price.toFixed(2)} CAD</div>
+            </div>
+          </div>
+          <button onclick="removeFromCart(${idx})" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
     }
   }
 
-  const subtotal = cart.reduce(function(sum, item) { return sum + item.price; }, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
   const taxes = subtotal * 0.14975;
   const total = subtotal + taxes;
 
@@ -1162,27 +1374,26 @@ function closeCartModal() {
 
 function checkoutOrder() {
   if (cart.length === 0) {
-    showToast("Votre panier est vide.", "⚠️");
+    showToast("Cart is empty.", "⚠️");
     return;
   }
 
   const orderId = Math.floor(1000 + Math.random() * 9000);
-  const total = cart.reduce(function(sum, item) { return sum + item.price; }, 0) * 1.14975;
+  const total = cart.reduce((sum, item) => sum + item.price, 0) * 1.14975;
 
   const newOrder = {
     id: orderId,
-    customerName: clientProfile.name || "Client",
+    customerName: "Walkse",
     total: total,
     status: 'new',
-    fulfillment: currentFulfillment,
-    items: cart.slice(),
+    items: [...cart],
     pin: '2325',
-    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+    createdAt: new Date().toLocaleTimeString()
   };
 
-  var allOrders = [];
+  let allOrders = [];
   try {
-    var raw = localStorage.getItem('lmdw_all_orders');
+    const raw = localStorage.getItem('lmdw_all_orders');
     if (raw) allOrders = JSON.parse(raw);
   } catch(e){}
   allOrders.unshift(newOrder);
@@ -1193,12 +1404,12 @@ function checkoutOrder() {
   closeCartModal();
 
   switchTab('chat');
-  showToast("🎉 Commande #" + orderId + " transmise à la cuisine !", "✅");
+  showToast("🎉 Order #" + orderId + " sent to Kitchen!", "✅");
 }
 
 function switchTab(tabId) {
-  document.querySelectorAll('.app-view').forEach(function(v) { v.classList.remove('active'); });
-  document.querySelectorAll('.tab-item-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
   const view = document.getElementById('view-' + tabId);
   const tab = document.getElementById('tab-' + tabId);
@@ -1208,30 +1419,24 @@ function switchTab(tabId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   if (tabId === 'scan') {
-    renderQrCode();
+    const canvas = document.getElementById('hubQrCanvas');
+    if (canvas && typeof QRCode !== 'undefined') {
+      QRCode.toCanvas(canvas, 'LMDW-MEMBER-WALKSE-50', { width: 180, margin: 1 });
+    }
   }
 }
 
-function renderQrCode() {
-  const canvas = document.getElementById('hubQrCanvas');
-  if (canvas && typeof QRCode !== 'undefined') {
-    QRCode.toCanvas(canvas, 'LMDW-MEMBER-WALKSE-PIN2325', { width: 180, margin: 1 });
-  }
-}
-
-function selectTimsMode(mode) {
-  currentFulfillment = mode;
+function selectFulfillment(mode) {
   document.getElementById('btnModeDelivery').classList.toggle('active', mode === 'delivery');
   document.getElementById('btnModePickup').classList.toggle('active', mode === 'pickup');
-  showToast(mode === 'delivery' ? "Mode : Livraison à Domicile" : "Mode : Cueillette au Comptoir", "🛵");
+  showToast(mode === 'delivery' ? "Delivery Selected" : "Store Pickup Selected", "🛵");
 }
 
 function promptChangeAddress() {
-  const newAddr = prompt("Entrez votre adresse de livraison à Drummondville :", clientProfile.address);
+  const newAddr = prompt("Enter your delivery address in Drummondville :", "Drummondville, QC");
   if (newAddr) {
-    clientProfile.address = newAddr;
     document.getElementById('lblTopAddress').innerText = newAddr;
-    showToast("Adresse mise à jour !", "📍");
+    showToast("Address Updated!", "📍");
   }
 }
 
@@ -1247,33 +1452,31 @@ function closeModal(id) {
 function verifyOwnerPin() {
   const pin = document.getElementById('txtOwnerPin').value;
   if (pin === '2325' || pin.toLowerCase() === 'admin') {
-    sessionStorage.setItem('lmdw_owner_authenticated', 'true');
     closeModal('ownerSecurityModal');
     window.location.href = '/admin.html';
   } else {
-    alert("Code PIN incorrect.");
+    alert("Incorrect PIN code.");
   }
 }
 
-function showToast(msg, icon) {
-  var iconChar = icon || '✅';
-  var toast = document.getElementById('customToast');
+function showToast(msg, icon = '✅') {
+  let toast = document.getElementById('customToast');
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'customToast';
     document.body.appendChild(toast);
   }
-  toast.innerHTML = '<span style="font-size: 16px;">' + iconChar + '</span><span>' + msg + '</span>';
+  toast.innerHTML = '<span style="font-size: 16px;">' + icon + '</span><span>' + msg + '</span>';
   toast.style.opacity = '1';
   toast.style.transform = 'translateX(-50%) translateY(0)';
-  setTimeout(function() {
+  setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transform = 'translateX(-50%) translateY(-30px)';
   }, 2500);
 }
 
 window.onload = function() {
-  renderLuxuryCards();
+  renderDishes();
 };
 </script>
 
