@@ -18,18 +18,19 @@ export default {
     // API Distance calculation
     if (url.pathname === '/api/calculate-distance' && request.method === 'POST') {
       try {
-        const body = await request.json();
+        const body = await request.json().catch(() => ({}));
         const { destinationAddress } = body || {};
         const apiKey = env.GOOGLE_MAPS_API_KEY || 'AIzaSyBZ2IVRkU5tGuZFnKqDdIpQmom18AT3AC4';
         const origins = "998 110e Avenue, Drummondville, QC J2B 6X2";
         const mapUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + encodeURIComponent(origins) + "&destinations=" + encodeURIComponent(destinationAddress || '') + "&key=" + apiKey;
+        
         const googleRes = await fetch(mapUrl);
         const data = await googleRes.json();
         if (data.status === 'OK' && data.rows?.[0]?.elements?.[0]?.status === 'OK') {
           const element = data.rows[0].elements[0];
           const distanceKm = element.distance.value / 1000;
           const durationMin = Math.round(element.duration.value / 60);
-          let deliveryFee = 3.99;
+          let deliveryFee = 3.50;
           if (distanceKm > 5) deliveryFee += (distanceKm - 5) * 0.75;
           return new Response(JSON.stringify({
             success: true,
@@ -39,7 +40,7 @@ export default {
             isDeliverable: distanceKm <= 25
           }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
         }
-        return new Response(JSON.stringify({ success: true, distanceKm: 4.5, durationMin: 15, deliveryFee: 3.99, isDeliverable: true, fallback: true }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        return new Response(JSON.stringify({ success: true, distanceKm: 4.5, durationMin: 15, deliveryFee: 3.50, isDeliverable: true, fallback: true }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
       } catch (e) {
         return new Response(JSON.stringify({ success: false, error: e.message }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
       }
@@ -58,27 +59,20 @@ export default {
       });
     }
 
-    // Serve static assets directly from env.ASSETS
+    // Serve static assets directly from Cloudflare ASSETS binding
     if (env.ASSETS) {
-      if (url.pathname === '/' || url.pathname === '') {
-        return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+      let response = await env.ASSETS.fetch(request);
+      if (response.status === 404) {
+        // SPA Fallback to index.html
+        const fallbackUrl = new URL('/index.html', request.url);
+        response = await env.ASSETS.fetch(new Request(fallbackUrl.toString(), {
+          method: 'GET',
+          headers: request.headers,
+        }));
       }
-      if (url.pathname === '/kitchen' || url.pathname === '/kitchen.html') {
-        return env.ASSETS.fetch(new Request(new URL('/kitchen.html', request.url), request));
-      }
-      if (url.pathname === '/driver' || url.pathname === '/driver.html' || url.pathname === '/delivery') {
-        return env.ASSETS.fetch(new Request(new URL('/driver.html', request.url), request));
-      }
-      if (url.pathname === '/admin' || url.pathname === '/admin.html') {
-        return env.ASSETS.fetch(new Request(new URL('/admin.html', request.url), request));
-      }
-      const assetRes = await env.ASSETS.fetch(request);
-      if (assetRes.status === 404) {
-        return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
-      }
-      return assetRes;
+      return response;
     }
 
-    return new Response("La Maison des Wraps Cloudflare Edge Server", { status: 200 });
+    return new Response("La Maison des Wraps Edge Server", { status: 200 });
   }
 };
