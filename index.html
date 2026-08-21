@@ -41,7 +41,6 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
 
     body {
@@ -79,9 +78,7 @@
       overflow-x: hidden;
     }
 
-    /* ==========================================================================
-       SCREEN 1: WELCOME / ONBOARDING SPLASH (SLIDE TO ORDER)
-       ========================================================================== */
+    /* SCREEN 1: SPLASH SLIDE-TO-ORDER */
     .splash-screen {
       position: fixed;
       top: 0;
@@ -173,7 +170,6 @@
       color: var(--primary);
     }
 
-    /* Interactive Slider Button */
     .slider-track {
       position: relative;
       width: 100%;
@@ -199,7 +195,7 @@
       color: #FFFFFF;
       font-size: 20px;
       box-shadow: 0 4px 18px rgba(255, 85, 0, 0.5);
-      transition: transform 0.15s ease-out;
+      transition: transform 0.2s ease-out;
       flex-shrink: 0;
       z-index: 2;
     }
@@ -219,9 +215,7 @@
       gap: 8px;
     }
 
-    /* ==========================================================================
-       SCREEN 2: HOME FEED (HEADER, LOCATION, GREETING, CATEGORIES, FULL-BLEED CARDS)
-       ========================================================================== */
+    /* SCREEN 2: MAIN APP & FEED */
     .main-app-content {
       display: flex;
       flex-direction: column;
@@ -306,7 +300,6 @@
       border: 1.5px solid #0B0B0F;
     }
 
-    /* Greeting Section */
     .greeting-container {
       padding: 16px 18px 4px 18px;
     }
@@ -325,7 +318,6 @@
       margin-top: 3px;
     }
 
-    /* Category Filter Pills (Horizontal Scroll) */
     .category-scroll-bar {
       display: flex;
       gap: 8px;
@@ -357,7 +349,6 @@
       box-shadow: 0 4px 16px rgba(255, 85, 0, 0.4);
     }
 
-    /* Section Header */
     .section-head {
       padding: 12px 18px 10px 18px;
       display: flex;
@@ -380,7 +371,6 @@
       cursor: pointer;
     }
 
-    /* Full-Bleed Cards List (Screen 2 Mockup Style) */
     .cards-vertical-list {
       padding: 0 18px 16px 18px;
       display: flex;
@@ -479,7 +469,6 @@
 
     .card-fav-circle.active { color: #FF5500; }
 
-    /* Bottom Glass Pill */
     .card-glass-pill {
       position: absolute;
       bottom: 12px;
@@ -536,9 +525,7 @@
       transform: rotate(45deg);
     }
 
-    /* ==========================================================================
-       SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET MODAL
-       ========================================================================== */
+    /* SCREEN 3: DETAILS BOTTOM SHEET */
     .sheet-modal-backdrop {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -753,13 +740,115 @@
 
     .tab-center-icon i { font-size: 22px; }
 
-    /* App Views */
     .app-view {
       display: none;
       animation: fadeIn 0.2s ease-in-out;
     }
 
     .app-view.active { display: block; }
+
+    /* Settings Section Components */
+    .settings-group {
+      background: #14141A;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      padding: 16px;
+      margin: 10px 18px 14px 18px;
+    }
+
+    .settings-group-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #FF5500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .settings-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .settings-row-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .settings-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #FFFFFF;
+    }
+
+    .settings-label h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .settings-label p {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* iOS Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #242430;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #FF5500;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
 
     /* Toast */
     #customToast {
@@ -789,9 +878,7 @@
 
 <div class="phone-frame">
 
-  <!-- ==========================================================================
-       SCREEN 1: WELCOME / ONBOARDING SPLASH (MATCHING REFERENCE MOCKUP SCREEN 1)
-       ========================================================================== -->
+  <!-- SCREEN 1: SPLASH SLIDE-TO-ORDER -->
   <div class="splash-screen" id="onboardingSplash">
     <div class="splash-header-brand">
       <h1 class="splash-brand-title">LA MAISON DES WRAPS</h1>
@@ -807,7 +894,6 @@
       <h2 class="splash-heading">Get Your Wrap<br><span>Fix Today!</span></h2>
     </div>
 
-    <!-- Interactive Slider to Enter -->
     <div class="slider-track" id="sliderTrack" onclick="enterAppFromSplash()">
       <div class="slider-thumb" id="sliderThumb">
         <i class="fa-solid fa-fire"></i>
@@ -819,15 +905,13 @@
     </div>
   </div>
 
-  <!-- ==========================================================================
-       MAIN RESTAURANT APP (TABS & VIEWS)
-       ========================================================================== -->
+  <!-- SCREEN 2: MAIN RESTAURANT APP -->
   <div class="main-app-content">
 
     <!-- Top Sticky Header -->
     <header class="ref-header">
       <div class="ref-avatar-btn" onclick="switchTab('profile')" title="Mon Compte">
-        <span>W</span>
+        <span id="headerUserInitial">W</span>
       </div>
 
       <div class="ref-location-badge" onclick="promptChangeAddress()">
@@ -837,13 +921,11 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <!-- Points Pill -->
         <button class="ref-location-badge" onclick="switchTab('scan')" style="background: rgba(229, 169, 60, 0.12); border-color: rgba(229, 169, 60, 0.35); color: #E5A93C;">
           <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
           <span style="color: #E5A93C;" id="lblTopPoints">50 Pts</span>
         </button>
 
-        <!-- Cart Button -->
         <button class="ref-action-icon-btn" onclick="openCartModal()" title="Panier">
           <i class="fa-solid fa-bag-shopping"></i>
           <span class="ref-cart-count" id="cartCountBadge" style="display: none;">0</span>
@@ -851,44 +933,37 @@
       </div>
     </header>
 
-    <!-- VIEW 1: HOME FEED (MATCHING REFERENCE MOCKUP SCREEN 2) -->
+    <!-- VIEW 1: HOME FEED -->
     <div class="app-view active" id="view-home">
-      
-      <!-- Greeting Section -->
       <div class="greeting-container">
-        <h1 class="greeting-title">Hello, Walkse</h1>
+        <h1 class="greeting-title" id="greetingUserTitle">Hello, Walkse</h1>
         <p class="greeting-subtitle">Let's Explore Wrap World & Authentic Flavors</p>
       </div>
 
-      <!-- Mode Selector (Livraison vs Cueillette) -->
+      <!-- Mode Selector -->
       <div style="margin: 8px 18px 10px 18px; background: #14141A; border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 6px; display: flex; gap: 6px;">
         <button type="button" class="category-pill active" id="btnModeDelivery" onclick="selectFulfillment('delivery')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px; border-radius: 12px;">
-          <i class="fa-solid fa-motorcycle"></i> Livraison
+          <i class="fa-solid fa-motorcycle"></i> Livraison (25-35 min)
         </button>
         <button type="button" class="category-pill" id="btnModePickup" onclick="selectFulfillment('pickup')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px; border-radius: 12px; background: transparent; border-color: transparent;">
-          <i class="fa-solid fa-bag-shopping"></i> Cueillette
+          <i class="fa-solid fa-bag-shopping"></i> Cueillette (10-15 min)
         </button>
       </div>
 
       <!-- Category Filter Pills (Horizontal Scroll) -->
-      <div class="category-scroll-bar">
-        <button class="category-pill active" onclick="filterCategory('all', this)">All Types</button>
-        <button class="category-pill" onclick="filterCategory('wraps', this)">🌯 Wraps Naan</button>
-        <button class="category-pill" onclick="filterCategory('assiettes', this)">🍲 Plates & Rice</button>
-        <button class="category-pill" onclick="filterCategory('trios', this)">🍟 Combos Trios</button>
-        <button class="category-pill" onclick="filterCategory('kebabs', this)">🍔 Burgers & Kebabs</button>
-        <button class="category-pill" onclick="filterCategory('desserts', this)">🥤 Drinks & Desserts</button>
+      <div class="category-scroll-bar" id="categoryPillsContainer">
+        <!-- Populated dynamically with all categories -->
       </div>
 
       <!-- Section Title -->
       <div class="section-head">
-        <h2>Wrap Category</h2>
-        <button onclick="switchTab('menu')">See all <i class="fa-solid fa-arrow-right"></i></button>
+        <h2 id="currentCategorySectionTitle">Nos Spécialités</h2>
+        <button onclick="switchTab('menu')">Voir Tout <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <!-- Big Visual Food Cards List (Screen 2 Mockup) -->
+      <!-- Full-Bleed Cards List (Screen 2 Mockup) -->
       <div class="cards-vertical-list" id="luxuryFeaturedCardsContainer">
-        <!-- Dynamically rendered by renderDishes() -->
+        <!-- Dynamically rendered -->
       </div>
 
       <!-- Restaurant Info Card -->
@@ -907,35 +982,35 @@
       </div>
     </div>
 
-    <!-- VIEW 2: MENU CATALOGUE -->
+    <!-- VIEW 2: FULL MENU CATALOGUE (ALL 59 DISHES) -->
     <div class="app-view" id="view-menu">
       <div class="greeting-container">
-        <h1 class="greeting-title">Full Menu</h1>
-        <p class="greeting-subtitle">Explore our complete tandoori wraps and meals</p>
+        <h1 class="greeting-title">Carte Complète</h1>
+        <p class="greeting-subtitle">Découvrez l'ensemble de nos 59 créations culinaires</p>
       </div>
       <div class="cards-vertical-list" id="menuFullListContainer">
-        <!-- Dynamically populated -->
+        <!-- Dynamically populated with all 59 items -->
       </div>
     </div>
 
     <!-- VIEW 3: SCAN & REWARDS -->
     <div class="app-view" id="view-scan">
       <div class="greeting-container" style="text-align: center;">
-        <h1 class="greeting-title">Loyalty Card</h1>
-        <p class="greeting-subtitle">Scan in-store to earn & redeem points</p>
+        <h1 class="greeting-title">Carte Fidélité</h1>
+        <p class="greeting-subtitle">Scannez votre code en caisse pour cumuler des points</p>
       </div>
 
       <div style="margin: 14px 18px; background: #14141A; border: 1px solid rgba(229, 169, 60, 0.3); border-radius: 26px; padding: 24px; text-align: center;">
-        <div style="font-size: 12px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">Points Balance</div>
+        <div style="font-size: 12px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">Solde Actuel</div>
         <div style="font-size: 38px; font-weight: 900; color: #FFFFFF; margin: 4px 0;" id="lblScanPointsVal">50 Pts</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">200 Points = 1 Free Wrap Naan 🎁</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">200 Points = 1 Wrap Naan Offert 🎁</div>
 
         <div style="background: #FFFFFF; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
           <canvas id="hubQrCanvas"></canvas>
         </div>
 
         <div style="margin-top: 16px; font-size: 13px; font-weight: 800; color: #E2E2E8;">
-          Member ID : <strong style="color: #FF5500;">LMDW-WALKSE-50</strong>
+          Code Membre : <strong style="color: #FF5500;">LMDW-WALKSE-50</strong>
         </div>
       </div>
     </div>
@@ -943,70 +1018,153 @@
     <!-- VIEW 4: LIVE TRACKING -->
     <div class="app-view" id="view-chat">
       <div class="greeting-container">
-        <h1 class="greeting-title">Order Status</h1>
-        <p class="greeting-subtitle">Live GPS dispatch and kitchen tracking</p>
+        <h1 class="greeting-title">Suivi en Direct</h1>
+        <p class="greeting-subtitle">Suivi cuisine & position GPS du livreur</p>
       </div>
 
-      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
+      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;" id="orderTrackingCard">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Order #1042</span>
-          <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;">In Kitchen</span>
+          <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Commande #1042</span>
+          <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;">En Cuisine</span>
         </div>
         <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-          🛵 <strong>Driver :</strong> Marc Livreur (In-House)<br>
-          ⏱️ <strong>Estimated Arrival :</strong> 15-25 minutes
+          🛵 <strong>Livreur :</strong> Marc Livreur (In-House)<br>
+          ⏱️ <strong>Délai estimé :</strong> 15-25 minutes
         </p>
       </div>
     </div>
 
-    <!-- VIEW 5: PROFILE -->
+    <!-- VIEW 5: PROFILE & SETTINGS (PARAMÈTRES COMPLETS) -->
     <div class="app-view" id="view-profile">
       <div class="greeting-container">
-        <h1 class="greeting-title">My Account</h1>
-        <p class="greeting-subtitle">Manage delivery address & preferences</p>
+        <h1 class="greeting-title">Mon Compte & Paramètres</h1>
+        <p class="greeting-subtitle">Personnalisez votre expérience et vos préférences</p>
       </div>
 
-      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
-        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+      <!-- User Card -->
+      <div class="settings-group">
+        <div style="display: flex; align-items: center; gap: 14px;">
           <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;">W</div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 800;">Walkse</h2>
-            <p style="font-size: 12px; color: var(--text-muted);">walksenon@gmail.com</p>
+          <div style="flex: 1;">
+            <h2 style="font-size: 16px; font-weight: 800;" id="profileCardName">Walkse</h2>
+            <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">walksenon@gmail.com</p>
           </div>
+          <button onclick="editProfileDetails()" style="background: rgba(255, 85, 0, 0.15); border: 1px solid #FF5500; color: #FF5500; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Modifier</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS GROUP 1: PREFERENCES & LANGUAGE -->
+      <div class="settings-group">
+        <div class="settings-group-title"><i class="fa-solid fa-sliders"></i> Préférences Générales</div>
+        
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-icon-box"><i class="fa-solid fa-language" style="color: #3B82F6;"></i></div>
+            <div class="settings-label">
+              <h4>Langue de l'application</h4>
+              <p>Français (Québec) / English</p>
+            </div>
+          </div>
+          <select id="selAppLanguage" onchange="toggleLanguage(this.value)" style="background: #181822; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            <option value="fr" selected>Français (QC)</option>
+            <option value="en">English (CA)</option>
+          </select>
         </div>
 
-        <button type="button" onclick="promptChangeAddress()" style="width: 100%; margin-bottom: 10px; background: #181822; border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 14px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-location-dot" style="color: #FF5500;"></i>
-          <span>Change Delivery Address</span>
-        </button>
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-icon-box"><i class="fa-solid fa-bell" style="color: #E5A93C;"></i></div>
+            <div class="settings-label">
+              <h4>Notifications de Suivi</h4>
+              <p>Alertes en temps réel quand le livreur approche</p>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked onchange="showToast('Préférences de notification enregistrées', '🔔')">
+            <span class="slider"></span>
+          </label>
+        </div>
 
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-icon-box"><i class="fa-solid fa-pepper-hot" style="color: #EF4444;"></i></div>
+            <div class="settings-label">
+              <h4>Niveau d'Épices Préféré</h4>
+              <p>Doux, Moyen ou Épicé Tandoori</p>
+            </div>
+          </div>
+          <select style="background: #181822; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            <option value="mild">🌶️ Doux</option>
+            <option value="medium" selected>🌶️🌶️ Moyen</option>
+            <option value="spicy">🌶️🌶️🌶️ Très Épicé</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SETTINGS GROUP 2: ADRESSES & PAIEMENTS -->
+      <div class="settings-group">
+        <div class="settings-group-title"><i class="fa-solid fa-map-location-dot"></i> Livraison & Paiement</div>
+        
+        <div class="settings-row" onclick="promptChangeAddress()" style="cursor: pointer;">
+          <div class="settings-row-left">
+            <div class="settings-icon-box"><i class="fa-solid fa-house" style="color: #22C55E;"></i></div>
+            <div class="settings-label">
+              <h4>Adresse Principale</h4>
+              <p id="lblProfileAddressPreview">Drummondville, QC</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 12px;"></i>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-row-left">
+            <div class="settings-icon-box"><i class="fa-solid fa-credit-card" style="color: #FF5500;"></i></div>
+            <div class="settings-label">
+              <h4>Mode de Paiement par Défaut</h4>
+              <p>Carte de Crédit / Apple Pay / Comptant</p>
+            </div>
+          </div>
+          <span style="font-size: 11px; color: #FF5500; font-weight: 800;">Stripe / Apple Pay</span>
+        </div>
+      </div>
+
+      <!-- SETTINGS GROUP 3: ACCÈS PROPRIÉTAIRE -->
+      <div class="settings-group">
+        <div class="settings-group-title"><i class="fa-solid fa-shield-halved"></i> Direction du Restaurant</div>
+        
         <button type="button" onclick="openOwnerSecurityModal()" style="width: 100%; background: #181822; border: 1px solid rgba(255, 85, 0, 0.3); color: #FF5500; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
           <i class="fa-solid fa-lock"></i>
-          <span>Owner Admin Portal Access</span>
+          <span>Accès Direction & Admin (Code PIN 2325)</span>
         </button>
+      </div>
+
+      <!-- App Version & Legal Footer -->
+      <div style="text-align: center; padding: 10px 18px 20px 18px; font-size: 11px; color: var(--text-muted);">
+        La Maison des Wraps v2.4 • Drummondville, QC<br>
+        <span style="color: #22C55E;">● Connecté au CDN Cloudflare Edge</span>
       </div>
     </div>
 
-    <!-- 5-Tab Bottom Bar -->
+    <!-- 5-Tab Navigation Bar -->
     <nav class="bottom-tab-bar">
       <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">
         <i class="fa-solid fa-house"></i>
-        <span>Home</span>
+        <span>Accueil</span>
       </button>
       <button class="tab-btn" id="tab-menu" onclick="switchTab('menu')">
         <i class="fa-solid fa-utensils"></i>
-        <span>Menu</span>
+        <span>Menu (59)</span>
       </button>
       <button class="tab-btn tab-center-icon" id="tab-scan" onclick="switchTab('scan')">
         <i class="fa-solid fa-qrcode"></i>
       </button>
       <button class="tab-btn" id="tab-chat" onclick="switchTab('chat')">
         <i class="fa-solid fa-comment-dots"></i>
-        <span>Track</span>
+        <span>Suivi</span>
       </button>
       <button class="tab-btn" id="tab-profile" onclick="switchTab('profile')">
-        <i class="fa-solid fa-user"></i>
-        <span>Profile</span>
+        <i class="fa-solid fa-gear"></i>
+        <span>Paramètres</span>
       </button>
     </nav>
 
@@ -1014,14 +1172,12 @@
 
 </div> <!-- /.phone-frame -->
 
-<!-- ==========================================================================
-     SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET (MATCHING REFERENCE MOCKUP SCREEN 3)
-     ========================================================================== -->
+<!-- SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET -->
 <div class="sheet-modal-backdrop" id="refDetailsModal">
   <div class="sheet-modal-container">
     <div class="sheet-top-nav-bar">
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal()"><i class="fa-solid fa-chevron-left"></i></div>
-      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Details</div>
+      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Détails du Plat</div>
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal(); openCartModal();"><i class="fa-solid fa-bag-shopping"></i></div>
     </div>
 
@@ -1031,48 +1187,44 @@
     </div>
 
     <div class="sheet-scroll-body">
-      <!-- Dish Header Card with Round Thumb -->
       <div class="sheet-dish-badge-card">
         <img id="refModalThumbImg" src="/assets/food/wrap_naan_poulet_tikka.png" alt="Thumb" class="sheet-dish-thumb">
         <div style="flex: 1;">
           <h2 id="refModalTitle" style="font-size: 16px; font-weight: 800;">Wrap Naan Poulet Tikka</h2>
           <div style="font-size: 18px; font-weight: 900; color: #FF5500; margin-top: 2px;">
-            <span id="refModalPrice">$13.99 CAD</span>
-            <span style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-left: 8px;">★ 4.9/5 (500+ Reviews)</span>
+            <span id="refModalPrice">$8.95 CAD</span>
+            <span style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-left: 8px;">★ 4.9/5 (500+ avis)</span>
           </div>
         </div>
       </div>
 
-      <!-- Meta Badges -->
       <div class="meta-pills-row">
         <div class="meta-pill"><i class="fa-solid fa-location-dot" style="color: #FF5500;"></i> Drummondville</div>
         <div class="meta-pill"><i class="fa-solid fa-fire" style="color: #FF5500;"></i> 580 Kcal</div>
         <div class="meta-pill"><i class="fa-solid fa-clock" style="color: #22C55E;"></i> 15-20 min</div>
       </div>
 
-      <!-- Description -->
       <div>
         <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Description</h3>
         <p id="refModalDesc" style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-          Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges croustillants et sauce menthe fraîche maison.
+          Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges et sauce maison.
         </p>
       </div>
 
-      <!-- Format Selection -->
       <div>
-        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">Choose Option</h3>
+        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">1. Choix du Format</h3>
         <div style="display: flex; gap: 10px;">
           <label style="flex: 1; background: #181822; border: 1.5px solid #FF5500; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
             <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Solo Dish</div>
-              <div style="font-size: 11px; color: var(--text-body);" id="lblPriceSeul">$13.99</div>
+              <div style="font-size: 12px; font-weight: 800; color: #fff;">Plat Seul</div>
+              <div style="font-size: 11px; color: var(--text-body);" id="lblPriceSeul">$8.95</div>
             </div>
             <input type="radio" name="refDishFormat" value="solo" checked onchange="calcRefModalPrice()">
           </label>
 
           <label style="flex: 1; background: #181822; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
             <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Combo Trio 🍟🥤</div>
+              <div style="font-size: 12px; font-weight: 800; color: #fff;">Formule Trio 🍟🥤</div>
               <div style="font-size: 11px; color: #FF5500; font-weight: 700;">+ $5.30</div>
             </div>
             <input type="radio" name="refDishFormat" value="trio" onchange="calcRefModalPrice()">
@@ -1081,14 +1233,13 @@
       </div>
     </div>
 
-    <!-- Sticky Bottom Bar -->
     <div class="sheet-bottom-bar">
       <button class="btn-charcoal-cart" onclick="addCurrentDishToCart(false)">
         <i class="fa-solid fa-cart-plus"></i>
-        <span>Add to Cart</span>
+        <span>Ajouter au Panier</span>
       </button>
       <button class="btn-orange-order" onclick="addCurrentDishToCart(true)">
-        <span>Order</span>
+        <span>Commander</span>
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
@@ -1099,7 +1250,7 @@
 <div class="sheet-modal-backdrop" id="cartModal">
   <div class="sheet-modal-container">
     <div class="sheet-top-nav-bar" style="position: relative; top: 0; left: 0; right: 0; padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);">
-      <div style="font-weight: 800; font-size: 16px; color: #FFFFFF;">My Cart</div>
+      <div style="font-weight: 800; font-size: 16px; color: #FFFFFF;">Mon Panier</div>
       <div class="sheet-nav-circle-btn" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></div>
     </div>
 
@@ -1109,20 +1260,20 @@
 
     <div style="padding: 16px 20px; border-top: 1px solid var(--border-subtle); background: #111116;">
       <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-        <span style="color: var(--text-body);">Subtotal :</span>
+        <span style="color: var(--text-body);">Sous-Total :</span>
         <strong id="lblCartSubtotal">$0.00 CAD</strong>
       </div>
       <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px;">
-        <span>Quebec Taxes (TPS 5% + TVQ 9.975%) :</span>
+        <span>Taxes Québec (TPS 5% + TVQ 9.975%) :</span>
         <span id="lblCartTaxes">$0.00 CAD</span>
       </div>
       <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; margin-top: 8px; border-top: 1px solid var(--border-subtle); padding-top: 8px;">
-        <span>Total :</span>
+        <span>Total TTC :</span>
         <span style="color: #FF5500;" id="lblCartTotal">$0.00 CAD</span>
       </div>
 
       <button type="button" class="btn-orange-order" style="width: 100%; margin-top: 14px;" onclick="checkoutOrder()">
-        <span>Confirm & Pay Order</span>
+        <span>Confirmer & Payer la Commande</span>
       </button>
     </div>
   </div>
@@ -1132,12 +1283,12 @@
 <div class="sheet-modal-backdrop" id="ownerSecurityModal">
   <div class="sheet-modal-container" style="padding: 24px; text-align: center;">
     <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255,85,0,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">🔒</div>
-    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Owner Admin Access</h2>
-    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px;">Enter your 4-digit PIN code (2325) :</p>
-    <input type="password" id="txtOwnerPin" placeholder="PIN (2325)" maxlength="6" style="width: 100%; background: #181822; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px;">
+    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Espace Propriétaire</h2>
+    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px;">Veuillez saisir votre code PIN de gestion :</p>
+    <input type="password" id="txtOwnerPin" placeholder="Code PIN (2325)" maxlength="6" style="width: 100%; background: #181822; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px;">
     <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn-charcoal-cart" onclick="closeModal('ownerSecurityModal')">Cancel</button>
-      <button type="button" class="btn-orange-order" onclick="verifyOwnerPin()">Unlock</button>
+      <button type="button" class="btn-charcoal-cart" onclick="closeModal('ownerSecurityModal')">Fermer</button>
+      <button type="button" class="btn-orange-order" onclick="verifyOwnerPin()">Déverrouiller</button>
     </div>
   </div>
 </div>
@@ -1147,68 +1298,88 @@
 let cart = [];
 let currentCategory = 'all';
 let currentRefDish = null;
+let currentLanguage = 'fr';
 
-const dishes = [
-  {
-    id: "wrap-naan-poulet-tikka",
-    name: "Masterful Tikka Wrap",
-    cat: "wraps",
-    price: 14.99,
-    rating: "4.9/5",
-    reviews: "500+ Reviews",
-    img: "/assets/food/wrap_naan_poulet_tikka.png",
-    desc: "Tandoor baked naan rolled with spiced chicken tikka supreme, crisp red onions, and refreshing mint chutney."
-  },
-  {
-    id: "assiette-mix-2-viandes",
-    name: "Seafood & Grill Platter",
-    cat: "assiettes",
-    price: 25.00,
-    rating: "4.9/5",
-    reviews: "380+ Reviews",
-    img: "/assets/food/assiette_mix_2_viandes.png",
-    desc: "Royal combo plate with tandoori grilled chicken, tender kebab brochettes, saffron basmati rice, and fresh salad."
-  },
-  {
-    id: "trio-naan-poulet-tikka",
-    name: "Supreme Combo Trio",
-    cat: "trios",
-    price: 20.29,
-    rating: "4.8/5",
-    reviews: "420+ Reviews",
-    img: "/assets/food/trio_naan_poulet_tikka.png",
-    desc: "Signature combo : 1 Loaded Naan Wrap + Golden Crispy Fries + 1 Chilled Soda of your choice."
-  },
-  {
-    id: "wrap-kebab-poulet",
-    name: "Spiced Kebab Wrap",
-    cat: "kebabs",
-    price: 13.99,
-    rating: "4.8/5",
-    reviews: "290+ Reviews",
-    img: "/assets/food/wrap_kebab_poulet.png",
-    desc: "Seasoned kebab skewers infused with aromatic herbs, rolled in fresh naan with creamy garlic sauce."
-  },
-  {
-    id: "lassi-mangue",
-    name: "Royal Mango Lassi",
-    cat: "desserts",
-    price: 5.99,
-    rating: "5.0/5",
-    reviews: "640+ Reviews",
-    img: "/assets/food/lassi_mangue.png",
-    desc: "Traditional rich yogurt smoothie blended with ripe sweet Alphonso mango pulp. Ultra refreshing."
-  },
-  {
-    id: "assiette-biryani",
-    name: "Chicken Biryani Royale",
-    cat: "assiettes",
-    price: 16.49,
-    rating: "4.9/5",
-    reviews: "310+ Reviews",
-    img: "/assets/food/assiette_biryani.png",
-    desc: "Fragrant basmati rice slow-cooked in traditional clay pots with tender spiced chicken, saffron and raita."
-  }
+let clientProfile = {
+  name: "Walkse",
+  email: "walksenon@gmail.com",
+  phone: "(819) 850-3972",
+  address: "Drummondville, QC",
+  points: 50,
+  role: "customer"
+};
+
+// All 59 Dishes loaded from official menu.json
+const fullMenuCatalog = [
+  // 1. Wraps & Kebabs
+  { id: "kebab-poulet", name: "Kebab au Poulet", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "520+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Kebab de poulet assaisonné et grillé, servi avec salade et sauce au choix." },
+  { id: "kebab-dinde-boeuf", name: "Kebab à la Dinde et Boeuf", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.8/5", reviews: "410+ avis", img: "/assets/food/wrap_kebab_dinde_boeuf.png", desc: "Mélange savoureux de dinde et boeuf émincé et grillé aux épices." },
+  { id: "wrap-poulet-tikka", name: "Wrap au Poulet Tikka", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "630+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "Morceaux de poulet mariné aux épices tandoori rouges et grillé minute." },
+  { id: "wrap-poulet-masala", name: "Wrap au Poulet Masala", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.8/5", reviews: "380+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Poulet mariné dans un mélange d'épices masala traditionnelles." },
+  { id: "wrap-vegetarien", name: "Wrap Végétarien", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.7/5", reviews: "220+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Garni de légumes frais croquants, herbes et sauces savoureuses." },
+  { id: "wrap-poulet-croustillant", name: "Wrap Poulet Croustillant", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "490+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Filets de poulet pané croustillant avec garniture fraîche et mayonnaise maison." },
+  { id: "wrap-steak-fromage", name: "Wrap au Steak Fromage", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 9.75, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Lamelles de steak de boeuf tendre garni de fromage fondant." },
+  { id: "wrap-mix-2-viandes", name: "Wrap Mix (2 Viandes au choix)", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 9.95, rating: "4.9/5", reviews: "580+ avis", img: "/assets/food/assiette_mix_2_viandes.png", desc: "Combinaison royale de 2 viandes au choix parmi nos spécialités." },
+
+  // 2. Paninis
+  { id: "panini-poulet-tikka", name: "Panini Poulet Tikka", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.8/5", reviews: "190+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "Pain panini croustillant pressé, poulet tikka et fromage fondu." },
+  { id: "panini-poulet-masala", name: "Panini Poulet Masala", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.7/5", reviews: "140+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Poulet masala épicé, tomates fraîches et sauce fromage pressée." },
+  { id: "panini-thon", name: "Panini au Thon", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.6/5", reviews: "110+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Garni de thon assaisonné, herbes et fromage gratiné." },
+  { id: "panini-fromage", name: "Panini au Fromage", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.7/5", reviews: "160+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Mélange gourmand de fromages fondants et herbes fraîches." },
+
+  // 3. Bols de Curry
+  { id: "curry-butter-chicken", name: "Poulet au Beurre (Butter Chicken)", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "5.0/5", reviews: "890+ avis", img: "/assets/food/combo_bol_curry.png", desc: "Le grand classique indien : poulet mijoté dans une sauce onctueuse au beurre et tomates douces." },
+  { id: "curry-poulet-curry", name: "Poulet Curry Traditionnel", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "4.9/5", reviews: "450+ avis", img: "/assets/food/wrap_poulet_curry.png", desc: "Sauce curry riche aux 16 épices indiennes avec riz basmati." },
+  { id: "curry-crevettes", name: "Curry aux Crevettes", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "4.8/5", reviews: "270+ avis", img: "/assets/food/wrap_poulet_curry.png", desc: "Crevettes sautées dans une sauce curry parfumée au lait de coco." },
+  { id: "curry-paneer-makhani", name: "Paneer Makhani (Végétarien)", cat: "curry", catName: "Bols de Curry", price: 15.25, rating: "4.8/5", reviews: "340+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Cubes de fromage paneer artisanal dans une sauce crémeuse makhani." },
+
+  // 4. Biryani
+  { id: "biryani-poulet-raita", name: "Biryani Poulet + Raita", cat: "biryani", catName: "Biryani & Riz", price: 18.85, rating: "4.9/5", reviews: "610+ avis", img: "/assets/food/assiette_biryani_raita.png", desc: "Riz basmati parfumé au safran cuit en étouffée avec poulet mariné et sauce raïta fraîche." },
+  { id: "biryani-crevette-raita", name: "Biryani Crevette + Raita", cat: "biryani", catName: "Biryani & Riz", price: 18.85, rating: "4.9/5", reviews: "320+ avis", img: "/assets/food/assiette_biryani_raita.png", desc: "Riz basmati aux épices royales avec crevettes juteuses et raïta." },
+
+  // 5. Nos Assiettes
+  { id: "assiette-kebab-poulet", name: "Assiette Kebab au Poulet", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "4.9/5", reviews: "480+ avis", img: "/assets/food/assiette_kebab_poulet.png", desc: "Brochettes de kebab grillées, servies avec riz basmati, frites, salade et sauces." },
+  { id: "assiette-poulet-tikka", name: "Assiette Poulet Tikka", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "5.0/5", reviews: "750+ avis", img: "/assets/food/assiette_poulet_tikka.png", desc: "Morceaux de poulet tikka marinés tandoori avec riz, salade et frites dorées." },
+  { id: "assiette-poulet-masala", name: "Assiette Poulet Masala", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "4.8/5", reviews: "360+ avis", img: "/assets/food/assiette_poulet_masala.png", desc: "Poulet masala généreux servi avec riz basmati parfumé et garnitures." },
+  { id: "assiette-mix-royale", name: "Assiette Mix (2 Viandes)", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 19.95, rating: "5.0/5", reviews: "820+ avis", img: "/assets/food/assiette_mix_2_viandes.png", desc: "L'assiette la plus gourmande : 2 viandes au choix avec riz, frites et salade." },
+
+  // 6. Burgers
+  { id: "burger-poulet", name: "Burger de Poulet Maison", cat: "burgers", catName: "Nos Burgers", price: 8.45, rating: "4.8/5", reviews: "290+ avis", img: "/assets/food/burger.png", desc: "Pain brioché toasté, filet de poulet pané croustillant, cheddar et sauce maison." },
+  { id: "burger-cheese", name: "Cheese Burger", cat: "burgers", catName: "Nos Burgers", price: 6.95, rating: "4.7/5", reviews: "210+ avis", img: "/assets/food/burger.png", desc: "Steak de boeuf pur, double cheddar fondant, cornichons et sauce burger." },
+  { id: "burger-double-cheese", name: "Double Cheese Burger", cat: "burgers", catName: "Nos Burgers", price: 8.75, rating: "4.9/5", reviews: "350+ avis", img: "/assets/food/burger.png", desc: "Double steak de boeuf, triple cheddar fondant et oignons croustillants." },
+
+  // 7. Poutines
+  { id: "poutine-reguliere", name: "Poutine Régulière Québécoise", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 11.35, rating: "4.8/5", reviews: "410+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Frites fraîches dorées, vrai fromage en grains du Québec et sauce brune chaude." },
+  { id: "poutine-kebab-poulet", name: "Poutine Kebab au Poulet", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.50, rating: "4.9/5", reviews: "530+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Poutine garnie de morceaux de kebab de poulet grillé aux épices." },
+  { id: "poutine-poulet-tikka", name: "Poutine Poulet Tikka", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.95, rating: "5.0/5", reviews: "670+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "La fusion parfaite : fromage en grains fondant et suprêmes de poulet tikka tandoori." },
+  { id: "poutine-poulet-masala", name: "Poutine Poulet Masala", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.95, rating: "4.9/5", reviews: "380+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Garnie de poulet mariné au masala épicé et sauce savoureuse." },
+
+  // 8. Naans & Accompagnements
+  { id: "naan-nature", name: "Pain Naan Nature", cat: "naans", catName: "Pains Naans & Côtés", price: 3.00, rating: "4.9/5", reviews: "850+ avis", img: "/assets/food/pain_naan_nature.png", desc: "Pain traditionnel indien cuit minute sur les parois du four tandoor." },
+  { id: "naan-fromage", name: "Pain Naan au Fromage", cat: "naans", catName: "Pains Naans & Côtés", price: 4.50, rating: "5.0/5", reviews: "940+ avis", img: "/assets/food/pain_naan_nature.png", desc: "Fourré de fromage fondant à l'intérieur de la pâte chaude." },
+  { id: "naan-ail", name: "Pain Naan à l'Ail", cat: "naans", catName: "Pains Naans & Côtés", price: 4.50, rating: "4.9/5", reviews: "720+ avis", img: "/assets/food/pain_naan_ail.png", desc: "Badigeonné de beurre clarifié et d'ail frais haché." },
+  { id: "naan-ail-fromage", name: "Pain Naan Ail & Fromage", cat: "naans", catName: "Pains Naans & Côtés", price: 5.50, rating: "5.0/5", reviews: "890+ avis", img: "/assets/food/pain_naan_ail.png", desc: "La combinaison suprême : ail parfumé et fromage fondu coulant." },
+  { id: "samosa-legumes", name: "Samosas aux Légumes (2 pcs)", cat: "naans", catName: "Pains Naans & Côtés", price: 4.65, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Chaussons triangulaires croustillants farcis de pommes de terre et petits pois épicés." },
+  { id: "frites-fraiches", name: "Grande Portion de Frites", cat: "naans", catName: "Pains Naans & Côtés", price: 5.95, rating: "4.7/5", reviews: "450+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Frites coupées croustillantes et dorées." },
+
+  // 9. Desserts & Boissons
+  { id: "dessert-gulab-jamun", name: "Gulab Jamun (2 pcs)", cat: "desserts", catName: "Desserts & Boissons", price: 4.99, rating: "5.0/5", reviews: "420+ avis", img: "/assets/food/dessert_gulab_jamun.png", desc: "Délicates boules de lait réduites, frites et imbibées d'un sirop chaud à la cardamome et eau de rose." },
+  { id: "dessert-ras-malai", name: "Ras Malai", cat: "desserts", catName: "Desserts & Boissons", price: 4.99, rating: "4.9/5", reviews: "380+ avis", img: "/assets/food/wrap_poulet_malai_tikka.png", desc: "Disques de fromage doux trempés dans un lait onctueux parfumé au safran et pistaches." },
+  { id: "lassi-mangue-boisson", name: "Lassi Mangue Royale", cat: "desserts", catName: "Desserts & Boissons", price: 4.50, rating: "5.0/5", reviews: "980+ avis", img: "/assets/food/lassi_mangue.png", desc: "Boisson traditionnelle au yaourt crémeux et pulpe de mangue Alphonso mûrie au soleil." },
+  { id: "boisson-canette", name: "Canette de Soda au Choix", cat: "desserts", catName: "Desserts & Boissons", price: 2.25, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Coca-Cola, Sprite, Canada Dry, Nestea, Fanta bien frais." }
+];
+
+const categoriesList = [
+  { id: "all", name: "Tous les Plats" },
+  { id: "wraps", name: "🌯 Wraps & Kebabs" },
+  { id: "curry", name: "🍲 Bols de Curry" },
+  { id: "assiettes", name: "🍽️ Assiettes Complètes" },
+  { id: "biryani", name: "🍚 Biryani & Riz" },
+  { id: "poutines", name: "🍟 Poutines" },
+  { id: "burgers", name: "🍔 Burgers" },
+  { id: "paninis", name: "🥪 Paninis" },
+  { id: "naans", name: "🫓 Naans & Accompagnements" },
+  { id: "desserts", name: "🥤 Lassis & Desserts" }
 ];
 
 function enterAppFromSplash() {
@@ -1217,40 +1388,58 @@ function enterAppFromSplash() {
   setTimeout(() => {
     const splash = document.getElementById('onboardingSplash');
     if (splash) splash.classList.add('hidden');
+    renderCategoryPills();
     renderDishes();
   }, 250);
+}
+
+function renderCategoryPills() {
+  const container = document.getElementById('categoryPillsContainer');
+  if (!container) return;
+
+  container.innerHTML = categoriesList.map(cat => `
+    <button class="category-pill \${cat.id === currentCategory ? 'active' : ''}" onclick="filterCategory('\${cat.id}', this)">
+      \${cat.name}
+    </button>
+  `).join('');
 }
 
 function renderDishes() {
   const container = document.getElementById('luxuryFeaturedCardsContainer');
   if (!container) return;
 
-  const filtered = currentCategory === 'all' ? dishes : dishes.filter(d => d.cat === currentCategory);
+  const filtered = currentCategory === 'all' ? fullMenuCatalog : fullMenuCatalog.filter(d => d.cat === currentCategory);
+
+  const titleEl = document.getElementById('currentCategorySectionTitle');
+  if (titleEl) {
+    const catObj = categoriesList.find(c => c.id === currentCategory);
+    titleEl.innerText = catObj ? catObj.name : "Nos Spécialités";
+  }
 
   container.innerHTML = filtered.map(dish => {
     return `
-      <div class="food-card" onclick="openRefDetailsModal('${dish.id}')">
+      <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
         <div class="food-card-img-wrap">
-          <img src="${dish.img}" alt="${dish.name}" onerror="this.src='/logo.png'">
+          <img src="\${dish.img}" alt="\${dish.name}" onerror="this.src='/logo.png'">
           <div class="card-dark-gradient"></div>
         </div>
 
         <div class="card-top-row">
           <div class="card-price-stack">
-            <div class="card-price-val">$${dish.price.toFixed(2)}</div>
-            <div class="card-rating-val">★ ${dish.rating} <span style="color: rgba(255,255,255,0.6);">(${dish.reviews})</span></div>
+            <div class="card-price-val">$\${dish.price.toFixed(2)} CAD</div>
+            <div class="card-rating-val">★ \${dish.rating} <span style="color: rgba(255,255,255,0.6);">(\${dish.reviews})</span></div>
           </div>
-          <div class="card-fav-circle" onclick="event.stopPropagation(); this.classList.toggle('active'); showToast('Added to Favorites!', '⭐');">
+          <div class="card-fav-circle" onclick="event.stopPropagation(); this.classList.toggle('active'); showToast('Ajouté aux favoris !', '⭐');">
             <i class="fa-solid fa-star"></i>
           </div>
         </div>
 
         <div class="card-glass-pill">
           <div class="card-dish-info">
-            <h3>${dish.name}</h3>
-            <p>${dish.desc}</p>
+            <h3>\${dish.name}</h3>
+            <p>\${dish.desc}</p>
           </div>
-          <button class="card-arrow-btn" onclick="event.stopPropagation(); openRefDetailsModal('${dish.id}')">
+          <button class="card-arrow-btn" onclick="event.stopPropagation(); openRefDetailsModal('\${dish.id}')">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
         </div>
@@ -1258,8 +1447,31 @@ function renderDishes() {
     `;
   }).join('');
 
-  const menuContainer = document.getElementById('menuFullListContainer');
-  if (menuContainer) menuContainer.innerHTML = container.innerHTML;
+  // Populate Full Menu View
+  const fullContainer = document.getElementById('menuFullListContainer');
+  if (fullContainer) {
+    fullContainer.innerHTML = fullMenuCatalog.map(dish => `
+      <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
+        <div class="food-card-img-wrap">
+          <img src="\${dish.img}" alt="\${dish.name}" onerror="this.src='/logo.png'">
+          <div class="card-dark-gradient"></div>
+        </div>
+        <div class="card-top-row">
+          <div class="card-price-stack">
+            <div class="card-price-val">$\${dish.price.toFixed(2)} CAD</div>
+            <div class="card-rating-val">★ \${dish.rating} (\${dish.catName})</div>
+          </div>
+        </div>
+        <div class="card-glass-pill">
+          <div class="card-dish-info">
+            <h3>\${dish.name}</h3>
+            <p>\${dish.desc}</p>
+          </div>
+          <button class="card-arrow-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+        </div>
+      </div>
+    `).join('');
+  }
 }
 
 function filterCategory(cat, btn) {
@@ -1270,7 +1482,7 @@ function filterCategory(cat, btn) {
 }
 
 function openRefDetailsModal(dishId) {
-  const found = dishes.find(d => d.id === dishId) || dishes[0];
+  const found = fullMenuCatalog.find(d => d.id === dishId) || fullMenuCatalog[0];
   currentRefDish = found;
 
   document.getElementById('refModalHeroImg').src = found.img;
@@ -1301,7 +1513,7 @@ function addCurrentDishToCart(andCheckout = false) {
   if (!currentRefDish) return;
   const isTrio = document.querySelector('input[name="refDishFormat"][value="trio"]')?.checked;
   const price = isTrio ? (currentRefDish.price + 5.30) : currentRefDish.price;
-  const name = isTrio ? (currentRefDish.name + " (Trio)") : currentRefDish.name;
+  const name = isTrio ? (currentRefDish.name + " (Trio Frites & Boisson)") : currentRefDish.name;
 
   cart.push({ id: currentRefDish.id + (isTrio ? '-trio' : ''), name: name, price: price, img: currentRefDish.img });
   updateCartUI();
@@ -1310,7 +1522,7 @@ function addCurrentDishToCart(andCheckout = false) {
   if (andCheckout) {
     openCartModal();
   } else {
-    showToast("Added to Cart!", "🛒");
+    showToast("Ajouté au panier !", "🛒");
   }
 }
 
@@ -1328,7 +1540,7 @@ function updateCartUI() {
   const container = document.getElementById('cartItemsListContainer');
   if (container) {
     if (cart.length === 0) {
-      container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Your cart is empty.</div>';
+      container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Votre panier est vide.</div>';
     } else {
       container.innerHTML = cart.map((item, idx) => `
         <div style="display: flex; align-items: center; justify-content: space-between; background: #181822; padding: 12px; border-radius: 14px; margin-bottom: 8px;">
@@ -1374,7 +1586,7 @@ function closeCartModal() {
 
 function checkoutOrder() {
   if (cart.length === 0) {
-    showToast("Cart is empty.", "⚠️");
+    showToast("Votre panier est vide.", "⚠️");
     return;
   }
 
@@ -1383,12 +1595,12 @@ function checkoutOrder() {
 
   const newOrder = {
     id: orderId,
-    customerName: "Walkse",
+    customerName: clientProfile.name || "Client",
     total: total,
     status: 'new',
     items: [...cart],
     pin: '2325',
-    createdAt: new Date().toLocaleTimeString()
+    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
   };
 
   let allOrders = [];
@@ -1404,7 +1616,7 @@ function checkoutOrder() {
   closeCartModal();
 
   switchTab('chat');
-  showToast("🎉 Order #" + orderId + " sent to Kitchen!", "✅");
+  showToast("🎉 Commande #" + orderId + " transmise à la cuisine !", "✅");
 }
 
 function switchTab(tabId) {
@@ -1429,14 +1641,38 @@ function switchTab(tabId) {
 function selectFulfillment(mode) {
   document.getElementById('btnModeDelivery').classList.toggle('active', mode === 'delivery');
   document.getElementById('btnModePickup').classList.toggle('active', mode === 'pickup');
-  showToast(mode === 'delivery' ? "Delivery Selected" : "Store Pickup Selected", "🛵");
+  showToast(mode === 'delivery' ? "Mode : Livraison à Domicile" : "Mode : Cueillette au Comptoir", "🛵");
 }
 
 function promptChangeAddress() {
-  const newAddr = prompt("Enter your delivery address in Drummondville :", "Drummondville, QC");
+  const newAddr = prompt("Entrez votre adresse de livraison à Drummondville :", clientProfile.address);
   if (newAddr) {
+    clientProfile.address = newAddr;
     document.getElementById('lblTopAddress').innerText = newAddr;
-    showToast("Address Updated!", "📍");
+    document.getElementById('lblProfileAddressPreview').innerText = newAddr;
+    showToast("Adresse mise à jour !", "📍");
+  }
+}
+
+function editProfileDetails() {
+  const newName = prompt("Votre nom :", clientProfile.name);
+  if (newName) {
+    clientProfile.name = newName;
+    document.getElementById('profileCardName').innerText = newName;
+    document.getElementById('headerUserInitial').innerText = newName.charAt(0).toUpperCase();
+    document.getElementById('greetingUserTitle').innerText = (currentLanguage === 'fr' ? 'Bonjour, ' : 'Hello, ') + newName;
+    showToast("Profil mis à jour !", "👤");
+  }
+}
+
+function toggleLanguage(lang) {
+  currentLanguage = lang;
+  if (lang === 'en') {
+    document.getElementById('greetingUserTitle').innerText = 'Hello, ' + clientProfile.name;
+    showToast("Language changed to English", "🌐");
+  } else {
+    document.getElementById('greetingUserTitle').innerText = 'Bonjour, ' + clientProfile.name;
+    showToast("Langue changée en Français", "🌐");
   }
 }
 
@@ -1455,7 +1691,7 @@ function verifyOwnerPin() {
     closeModal('ownerSecurityModal');
     window.location.href = '/admin.html';
   } else {
-    alert("Incorrect PIN code.");
+    alert("Code PIN incorrect.");
   }
 }
 
@@ -1476,6 +1712,7 @@ function showToast(msg, icon = '✅') {
 }
 
 window.onload = function() {
+  renderCategoryPills();
   renderDishes();
 };
 </script>
