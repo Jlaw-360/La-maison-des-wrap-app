@@ -747,7 +747,7 @@
 
     .app-view.active { display: block; }
 
-    /* Settings Section Components */
+    /* Settings Group */
     .settings-group {
       background: #14141A;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -811,7 +811,6 @@
       margin-top: 1px;
     }
 
-    /* iOS Toggle Switch */
     .switch {
       position: relative;
       display: inline-block;
@@ -842,13 +841,8 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
-      background-color: #FF5500;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
+    input:checked + .slider { background-color: #FF5500; }
+    input:checked + .slider:before { transform: translateX(20px); }
 
     /* Toast */
     #customToast {
@@ -886,7 +880,7 @@
 
     <div class="splash-hero-container">
       <div class="splash-aura"></div>
-      <img src="/assets/food/wrap_naan_poulet_tikka.png" alt="Hero Dish" class="splash-hero-img" onerror="this.src='/logo.png'">
+      <img src="/assets/food/wrap_naan_poulet_tikka.png" alt="Hero Dish" class="splash-hero-img">
     </div>
 
     <div class="splash-copy-section">
@@ -952,18 +946,18 @@
 
       <!-- Category Filter Pills (Horizontal Scroll) -->
       <div class="category-scroll-bar" id="categoryPillsContainer">
-        <!-- Populated dynamically with all categories -->
+        <!-- Populated dynamically -->
       </div>
 
       <!-- Section Title -->
       <div class="section-head">
-        <h2 id="currentCategorySectionTitle">Nos Spécialités</h2>
-        <button onclick="switchTab('menu')">Voir Tout <i class="fa-solid fa-arrow-right"></i></button>
+        <h2 id="currentCategorySectionTitle">Wrap Category</h2>
+        <button onclick="switchTab('menu')">See all <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
-      <!-- Full-Bleed Cards List (Screen 2 Mockup) -->
+      <!-- Full-Bleed Cards List -->
       <div class="cards-vertical-list" id="luxuryFeaturedCardsContainer">
-        <!-- Dynamically rendered -->
+        <!-- Rendered dynamically -->
       </div>
 
       <!-- Restaurant Info Card -->
@@ -982,14 +976,14 @@
       </div>
     </div>
 
-    <!-- VIEW 2: FULL MENU CATALOGUE (ALL 59 DISHES) -->
+    <!-- VIEW 2: FULL MENU CATALOGUE -->
     <div class="app-view" id="view-menu">
       <div class="greeting-container">
-        <h1 class="greeting-title">Carte Complète</h1>
-        <p class="greeting-subtitle">Découvrez l'ensemble de nos 59 créations culinaires</p>
+        <h1 class="greeting-title">Full Menu</h1>
+        <p class="greeting-subtitle">Explore our complete catalog of 23 specialty dishes</p>
       </div>
       <div class="cards-vertical-list" id="menuFullListContainer">
-        <!-- Dynamically populated with all 59 items -->
+        <!-- Rendered dynamically -->
       </div>
     </div>
 
@@ -1022,7 +1016,7 @@
         <p class="greeting-subtitle">Suivi cuisine & position GPS du livreur</p>
       </div>
 
-      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;" id="orderTrackingCard">
+      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Commande #1042</span>
           <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;">En Cuisine</span>
@@ -1034,14 +1028,13 @@
       </div>
     </div>
 
-    <!-- VIEW 5: PROFILE & SETTINGS (PARAMÈTRES COMPLETS) -->
+    <!-- VIEW 5: PROFILE & SETTINGS -->
     <div class="app-view" id="view-profile">
       <div class="greeting-container">
-        <h1 class="greeting-title">Mon Compte & Paramètres</h1>
-        <p class="greeting-subtitle">Personnalisez votre expérience et vos préférences</p>
+        <h1 class="greeting-title">Paramètres & Profil</h1>
+        <p class="greeting-subtitle">Gérez vos coordonnées et vos préférences</p>
       </div>
 
-      <!-- User Card -->
       <div class="settings-group">
         <div style="display: flex; align-items: center; gap: 14px;">
           <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;">W</div>
@@ -1075,7 +1068,7 @@
           <div class="settings-row-left">
             <div class="settings-icon-box"><i class="fa-solid fa-bell" style="color: #E5A93C;"></i></div>
             <div class="settings-label">
-              <h4>Notifications de Suivi</h4>
+              <h4>Notifications de Commande</h4>
               <p>Alertes en temps réel quand le livreur approche</p>
             </div>
           </div>
@@ -1109,7 +1102,7 @@
           <div class="settings-row-left">
             <div class="settings-icon-box"><i class="fa-solid fa-house" style="color: #22C55E;"></i></div>
             <div class="settings-label">
-              <h4>Adresse Principale</h4>
+              <h4>Adresse de Livraison</h4>
               <p id="lblProfileAddressPreview">Drummondville, QC</p>
             </div>
           </div>
@@ -1120,11 +1113,11 @@
           <div class="settings-row-left">
             <div class="settings-icon-box"><i class="fa-solid fa-credit-card" style="color: #FF5500;"></i></div>
             <div class="settings-label">
-              <h4>Mode de Paiement par Défaut</h4>
-              <p>Carte de Crédit / Apple Pay / Comptant</p>
+              <h4>Paiement Sécurisé</h4>
+              <p>Apple Pay / Carte de Crédit (Stripe)</p>
             </div>
           </div>
-          <span style="font-size: 11px; color: #FF5500; font-weight: 800;">Stripe / Apple Pay</span>
+          <span style="font-size: 11px; color: #FF5500; font-weight: 800;">Stripe Actif</span>
         </div>
       </div>
 
@@ -1138,7 +1131,6 @@
         </button>
       </div>
 
-      <!-- App Version & Legal Footer -->
       <div style="text-align: center; padding: 10px 18px 20px 18px; font-size: 11px; color: var(--text-muted);">
         La Maison des Wraps v2.4 • Drummondville, QC<br>
         <span style="color: #22C55E;">● Connecté au CDN Cloudflare Edge</span>
@@ -1153,7 +1145,7 @@
       </button>
       <button class="tab-btn" id="tab-menu" onclick="switchTab('menu')">
         <i class="fa-solid fa-utensils"></i>
-        <span>Menu (59)</span>
+        <span>Menu</span>
       </button>
       <button class="tab-btn tab-center-icon" id="tab-scan" onclick="switchTab('scan')">
         <i class="fa-solid fa-qrcode"></i>
@@ -1177,7 +1169,7 @@
   <div class="sheet-modal-container">
     <div class="sheet-top-nav-bar">
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal()"><i class="fa-solid fa-chevron-left"></i></div>
-      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Détails du Plat</div>
+      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Details</div>
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal(); openCartModal();"><i class="fa-solid fa-bag-shopping"></i></div>
     </div>
 
@@ -1309,77 +1301,286 @@ let clientProfile = {
   role: "customer"
 };
 
-// All 59 Dishes loaded from official menu.json
-const fullMenuCatalog = [
-  // 1. Wraps & Kebabs
-  { id: "kebab-poulet", name: "Kebab au Poulet", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "520+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Kebab de poulet assaisonné et grillé, servi avec salade et sauce au choix." },
-  { id: "kebab-dinde-boeuf", name: "Kebab à la Dinde et Boeuf", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.8/5", reviews: "410+ avis", img: "/assets/food/wrap_kebab_dinde_boeuf.png", desc: "Mélange savoureux de dinde et boeuf émincé et grillé aux épices." },
-  { id: "wrap-poulet-tikka", name: "Wrap au Poulet Tikka", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "630+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "Morceaux de poulet mariné aux épices tandoori rouges et grillé minute." },
-  { id: "wrap-poulet-masala", name: "Wrap au Poulet Masala", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.8/5", reviews: "380+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Poulet mariné dans un mélange d'épices masala traditionnelles." },
-  { id: "wrap-vegetarien", name: "Wrap Végétarien", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.7/5", reviews: "220+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Garni de légumes frais croquants, herbes et sauces savoureuses." },
-  { id: "wrap-poulet-croustillant", name: "Wrap Poulet Croustillant", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 8.95, rating: "4.9/5", reviews: "490+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Filets de poulet pané croustillant avec garniture fraîche et mayonnaise maison." },
-  { id: "wrap-steak-fromage", name: "Wrap au Steak Fromage", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 9.75, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Lamelles de steak de boeuf tendre garni de fromage fondant." },
-  { id: "wrap-mix-2-viandes", name: "Wrap Mix (2 Viandes au choix)", cat: "wraps", catName: "Nos Wraps & Kebabs", price: 9.95, rating: "4.9/5", reviews: "580+ avis", img: "/assets/food/assiette_mix_2_viandes.png", desc: "Combinaison royale de 2 viandes au choix parmi nos spécialités." },
+// All 23 Signature Real Dishes with 100% verified real food photos
+const officialDishes = [
+  // Wraps & Kebabs
+  {
+    id: "wrap-naan-poulet-tikka",
+    name: "Wrap Naan Poulet Tikka",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.9/5",
+    reviews: "630+ avis",
+    img: "/assets/food/wrap_naan_poulet_tikka.png",
+    desc: "Pain naan cuit minute au four tandoor, suprêmes de poulet mariné aux 12 épices rouges, oignons rouges et sauce menthe fraîche."
+  },
+  {
+    id: "wrap-naan-poulet-masala",
+    name: "Wrap Naan Poulet Masala",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.8/5",
+    reviews: "480+ avis",
+    img: "/assets/food/wrap_naan_poulet_masala.png",
+    desc: "Poulet mariné dans un mélange savoureux d'épices masala traditionnelles, roulé chaud dans un naan avec salade croquante."
+  },
+  {
+    id: "wrap-poulet-curry",
+    name: "Wrap Poulet Curry",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.9/5",
+    reviews: "390+ avis",
+    img: "/assets/food/wrap_poulet_curry.png",
+    desc: "Émincé de poulet mijoté au curry parfumé, tomates fraîches, coriandre et sauce crémeuse maison."
+  },
+  {
+    id: "wrap-poulet-malai-tikka",
+    name: "Wrap Poulet Malai Tikka",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.9/5",
+    reviews: "450+ avis",
+    img: "/assets/food/wrap_poulet_malai_tikka.png",
+    desc: "Poulet ultra-tendre mariné dans une sauce veloutée aux herbes douces, fromage doux et cardamome."
+  },
+  {
+    id: "wrap-kebab-poulet",
+    name: "Kebab au Poulet Grillé",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.8/5",
+    reviews: "520+ avis",
+    img: "/assets/food/wrap_kebab_poulet.png",
+    desc: "Brochettes de kebab de poulet assaisonné aux herbes fraîches, grillé à la flamme et servi avec sauce à l'ail."
+  },
+  {
+    id: "wrap-kebab-dinde-boeuf",
+    name: "Kebab Dinde & Boeuf",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    price: 8.95,
+    rating: "4.8/5",
+    reviews: "410+ avis",
+    img: "/assets/food/wrap_kebab_dinde_boeuf.png",
+    desc: "Mélange savoureux de dinde et de boeuf émincé et doré à la perfection avec oignons doux et sauce blanche."
+  },
+  {
+    id: "trio-naan-poulet-tikka",
+    name: "Trio Festin Naan & Frites",
+    cat: "trios",
+    catName: "Trios & Combos",
+    price: 14.25,
+    rating: "5.0/5",
+    reviews: "780+ avis",
+    img: "/assets/food/trio_naan_poulet_tikka.png",
+    desc: "Le combo signature : 1 Grand Wrap Naan garni + Grande portion de frites dorées croustillantes + 1 Boisson fraîche."
+  },
 
-  // 2. Paninis
-  { id: "panini-poulet-tikka", name: "Panini Poulet Tikka", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.8/5", reviews: "190+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "Pain panini croustillant pressé, poulet tikka et fromage fondu." },
-  { id: "panini-poulet-masala", name: "Panini Poulet Masala", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.7/5", reviews: "140+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Poulet masala épicé, tomates fraîches et sauce fromage pressée." },
-  { id: "panini-thon", name: "Panini au Thon", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.6/5", reviews: "110+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Garni de thon assaisonné, herbes et fromage gratiné." },
-  { id: "panini-fromage", name: "Panini au Fromage", cat: "paninis", catName: "Paninis Grillés", price: 9.25, rating: "4.7/5", reviews: "160+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Mélange gourmand de fromages fondants et herbes fraîches." },
+  // Bols de Curry
+  {
+    id: "combo-bol-curry",
+    name: "Poulet au Beurre (Butter Chicken)",
+    cat: "curry",
+    catName: "Bols de Curry",
+    price: 17.65,
+    rating: "5.0/5",
+    reviews: "890+ avis",
+    img: "/assets/food/combo_bol_curry.png",
+    desc: "Le roi des currys : morceaux de poulet tendre mijotés dans une sauce riche au beurre, crème et tomates douces."
+  },
+  {
+    id: "bol-riz-basmati",
+    name: "Bol de Riz Basmati Parfumé",
+    cat: "curry",
+    catName: "Bols de Curry",
+    price: 5.25,
+    rating: "4.8/5",
+    reviews: "320+ avis",
+    img: "/assets/food/bol_riz.png",
+    desc: "Riz basmati grande qualité cuit à la vapeur avec notes subtiles d'épices douces et safran."
+  },
 
-  // 3. Bols de Curry
-  { id: "curry-butter-chicken", name: "Poulet au Beurre (Butter Chicken)", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "5.0/5", reviews: "890+ avis", img: "/assets/food/combo_bol_curry.png", desc: "Le grand classique indien : poulet mijoté dans une sauce onctueuse au beurre et tomates douces." },
-  { id: "curry-poulet-curry", name: "Poulet Curry Traditionnel", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "4.9/5", reviews: "450+ avis", img: "/assets/food/wrap_poulet_curry.png", desc: "Sauce curry riche aux 16 épices indiennes avec riz basmati." },
-  { id: "curry-crevettes", name: "Curry aux Crevettes", cat: "curry", catName: "Bols de Curry", price: 17.65, rating: "4.8/5", reviews: "270+ avis", img: "/assets/food/wrap_poulet_curry.png", desc: "Crevettes sautées dans une sauce curry parfumée au lait de coco." },
-  { id: "curry-paneer-makhani", name: "Paneer Makhani (Végétarien)", cat: "curry", catName: "Bols de Curry", price: 15.25, rating: "4.8/5", reviews: "340+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Cubes de fromage paneer artisanal dans une sauce crémeuse makhani." },
+  // Biryani
+  {
+    id: "assiette-biryani-raita",
+    name: "Biryani Poulet Royal + Raita",
+    cat: "biryani",
+    catName: "Biryani & Riz",
+    price: 18.85,
+    rating: "4.9/5",
+    reviews: "610+ avis",
+    img: "/assets/food/assiette_biryani_raita.png",
+    desc: "Riz basmati mijoté en étouffée avec poulet aux épices royales, safran, oignons dorés et sauce raïta fraîche."
+  },
+  {
+    id: "assiette-biryani",
+    name: "Assiette Biryani Tradition",
+    cat: "biryani",
+    catName: "Biryani & Riz",
+    price: 15.49,
+    rating: "4.9/5",
+    reviews: "430+ avis",
+    img: "/assets/food/assiette_biryani.png",
+    desc: "Généreuse assiette de biryani parfumé aux herbes fraîches et raisins dorés."
+  },
 
-  // 4. Biryani
-  { id: "biryani-poulet-raita", name: "Biryani Poulet + Raita", cat: "biryani", catName: "Biryani & Riz", price: 18.85, rating: "4.9/5", reviews: "610+ avis", img: "/assets/food/assiette_biryani_raita.png", desc: "Riz basmati parfumé au safran cuit en étouffée avec poulet mariné et sauce raïta fraîche." },
-  { id: "biryani-crevette-raita", name: "Biryani Crevette + Raita", cat: "biryani", catName: "Biryani & Riz", price: 18.85, rating: "4.9/5", reviews: "320+ avis", img: "/assets/food/assiette_biryani_raita.png", desc: "Riz basmati aux épices royales avec crevettes juteuses et raïta." },
+  // Assiettes Complètes
+  {
+    id: "assiette-poulet-tikka",
+    name: "Assiette Poulet Tikka",
+    cat: "assiettes",
+    catName: "Assiettes Complètes",
+    price: 17.65,
+    rating: "5.0/5",
+    reviews: "750+ avis",
+    img: "/assets/food/assiette_poulet_tikka.png",
+    desc: "Suprêmes de poulet tikka marinés tandoori, servis avec riz basmati chaud, frites dorées et salade fraîche."
+  },
+  {
+    id: "assiette-poulet-tikka-grille",
+    name: "Assiette Tikka Grillé au Four",
+    cat: "assiettes",
+    catName: "Assiettes Complètes",
+    price: 17.65,
+    rating: "4.9/5",
+    reviews: "560+ avis",
+    img: "/assets/food/assiette_poulet_tikka_grille.png",
+    desc: "Brochettes de poulet grillées au tandoor avec légumes glacés, riz basmati et sauces maison."
+  },
+  {
+    id: "assiette-poulet-masala",
+    name: "Assiette Poulet Masala",
+    cat: "assiettes",
+    catName: "Assiettes Complètes",
+    price: 17.65,
+    rating: "4.8/5",
+    reviews: "360+ avis",
+    img: "/assets/food/assiette_poulet_masala.png",
+    desc: "Poulet mijoté dans une sauce masala onctueuse, accompagné de riz basmati et garnitures du chef."
+  },
+  {
+    id: "assiette-kebab-poulet",
+    name: "Assiette Kebab au Poulet",
+    cat: "assiettes",
+    catName: "Assiettes Complètes",
+    price: 17.65,
+    rating: "4.9/5",
+    reviews: "480+ avis",
+    img: "/assets/food/assiette_kebab_poulet.png",
+    desc: "Généreuses brochettes de kebab de poulet grillé avec frites dorées, riz et sauce blanche à l'ail."
+  },
+  {
+    id: "assiette-mix-2-viandes",
+    name: "Assiette Mix Royale (2 Viandes)",
+    cat: "assiettes",
+    catName: "Assiettes Complètes",
+    price: 19.95,
+    rating: "5.0/5",
+    reviews: "820+ avis",
+    img: "/assets/food/assiette_mix_2_viandes.png",
+    desc: "Le festin suprême : 2 viandes au choix parmi nos spécialités, servies avec riz basmati, frites et salade."
+  },
 
-  // 5. Nos Assiettes
-  { id: "assiette-kebab-poulet", name: "Assiette Kebab au Poulet", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "4.9/5", reviews: "480+ avis", img: "/assets/food/assiette_kebab_poulet.png", desc: "Brochettes de kebab grillées, servies avec riz basmati, frites, salade et sauces." },
-  { id: "assiette-poulet-tikka", name: "Assiette Poulet Tikka", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "5.0/5", reviews: "750+ avis", img: "/assets/food/assiette_poulet_tikka.png", desc: "Morceaux de poulet tikka marinés tandoori avec riz, salade et frites dorées." },
-  { id: "assiette-poulet-masala", name: "Assiette Poulet Masala", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 17.65, rating: "4.8/5", reviews: "360+ avis", img: "/assets/food/assiette_poulet_masala.png", desc: "Poulet masala généreux servi avec riz basmati parfumé et garnitures." },
-  { id: "assiette-mix-royale", name: "Assiette Mix (2 Viandes)", cat: "assiettes", catName: "Nos Assiettes Complètes", price: 19.95, rating: "5.0/5", reviews: "820+ avis", img: "/assets/food/assiette_mix_2_viandes.png", desc: "L'assiette la plus gourmande : 2 viandes au choix avec riz, frites et salade." },
+  // Burgers
+  {
+    id: "burger-maison",
+    name: "Burger de Poulet Maison",
+    cat: "burgers",
+    catName: "Nos Burgers",
+    price: 8.45,
+    rating: "4.8/5",
+    reviews: "310+ avis",
+    img: "/assets/food/burger.png",
+    desc: "Pain brioché toasté, filet de poulet pané croustillant, cheddar fondant, laitue fraîche et sauce spéciale."
+  },
 
-  // 6. Burgers
-  { id: "burger-poulet", name: "Burger de Poulet Maison", cat: "burgers", catName: "Nos Burgers", price: 8.45, rating: "4.8/5", reviews: "290+ avis", img: "/assets/food/burger.png", desc: "Pain brioché toasté, filet de poulet pané croustillant, cheddar et sauce maison." },
-  { id: "burger-cheese", name: "Cheese Burger", cat: "burgers", catName: "Nos Burgers", price: 6.95, rating: "4.7/5", reviews: "210+ avis", img: "/assets/food/burger.png", desc: "Steak de boeuf pur, double cheddar fondant, cornichons et sauce burger." },
-  { id: "burger-double-cheese", name: "Double Cheese Burger", cat: "burgers", catName: "Nos Burgers", price: 8.75, rating: "4.9/5", reviews: "350+ avis", img: "/assets/food/burger.png", desc: "Double steak de boeuf, triple cheddar fondant et oignons croustillants." },
+  // Pains Naans
+  {
+    id: "pain-naan-nature",
+    name: "Pain Naan Nature au Tandoor",
+    cat: "naans",
+    catName: "Pains Naans",
+    price: 3.00,
+    rating: "4.9/5",
+    reviews: "850+ avis",
+    img: "/assets/food/pain_naan_nature.png",
+    desc: "Pain traditionnel indien étiré à la main et cuit minute sur les parois ardentes du four tandoor."
+  },
+  {
+    id: "pain-naan-ail",
+    name: "Pain Naan à l'Ail & Beurre",
+    cat: "naans",
+    catName: "Pains Naans",
+    price: 4.50,
+    rating: "5.0/5",
+    reviews: "940+ avis",
+    img: "/assets/food/pain_naan_ail.png",
+    desc: "Pain naan chaud badigeonné de beurre clarifié ghee et parsemé d'ail frais et coriandre hachée."
+  },
 
-  // 7. Poutines
-  { id: "poutine-reguliere", name: "Poutine Régulière Québécoise", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 11.35, rating: "4.8/5", reviews: "410+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Frites fraîches dorées, vrai fromage en grains du Québec et sauce brune chaude." },
-  { id: "poutine-kebab-poulet", name: "Poutine Kebab au Poulet", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.50, rating: "4.9/5", reviews: "530+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Poutine garnie de morceaux de kebab de poulet grillé aux épices." },
-  { id: "poutine-poulet-tikka", name: "Poutine Poulet Tikka", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.95, rating: "5.0/5", reviews: "670+ avis", img: "/assets/food/wrap_naan_poulet_tikka.png", desc: "La fusion parfaite : fromage en grains fondant et suprêmes de poulet tikka tandoori." },
-  { id: "poutine-poulet-masala", name: "Poutine Poulet Masala", cat: "poutines", catName: "Nos Poutines Gourmandes", price: 14.95, rating: "4.9/5", reviews: "380+ avis", img: "/assets/food/wrap_naan_poulet_masala.png", desc: "Garnie de poulet mariné au masala épicé et sauce savoureuse." },
-
-  // 8. Naans & Accompagnements
-  { id: "naan-nature", name: "Pain Naan Nature", cat: "naans", catName: "Pains Naans & Côtés", price: 3.00, rating: "4.9/5", reviews: "850+ avis", img: "/assets/food/pain_naan_nature.png", desc: "Pain traditionnel indien cuit minute sur les parois du four tandoor." },
-  { id: "naan-fromage", name: "Pain Naan au Fromage", cat: "naans", catName: "Pains Naans & Côtés", price: 4.50, rating: "5.0/5", reviews: "940+ avis", img: "/assets/food/pain_naan_nature.png", desc: "Fourré de fromage fondant à l'intérieur de la pâte chaude." },
-  { id: "naan-ail", name: "Pain Naan à l'Ail", cat: "naans", catName: "Pains Naans & Côtés", price: 4.50, rating: "4.9/5", reviews: "720+ avis", img: "/assets/food/pain_naan_ail.png", desc: "Badigeonné de beurre clarifié et d'ail frais haché." },
-  { id: "naan-ail-fromage", name: "Pain Naan Ail & Fromage", cat: "naans", catName: "Pains Naans & Côtés", price: 5.50, rating: "5.0/5", reviews: "890+ avis", img: "/assets/food/pain_naan_ail.png", desc: "La combinaison suprême : ail parfumé et fromage fondu coulant." },
-  { id: "samosa-legumes", name: "Samosas aux Légumes (2 pcs)", cat: "naans", catName: "Pains Naans & Côtés", price: 4.65, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Chaussons triangulaires croustillants farcis de pommes de terre et petits pois épicés." },
-  { id: "frites-fraiches", name: "Grande Portion de Frites", cat: "naans", catName: "Pains Naans & Côtés", price: 5.95, rating: "4.7/5", reviews: "450+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Frites coupées croustillantes et dorées." },
-
-  // 9. Desserts & Boissons
-  { id: "dessert-gulab-jamun", name: "Gulab Jamun (2 pcs)", cat: "desserts", catName: "Desserts & Boissons", price: 4.99, rating: "5.0/5", reviews: "420+ avis", img: "/assets/food/dessert_gulab_jamun.png", desc: "Délicates boules de lait réduites, frites et imbibées d'un sirop chaud à la cardamome et eau de rose." },
-  { id: "dessert-ras-malai", name: "Ras Malai", cat: "desserts", catName: "Desserts & Boissons", price: 4.99, rating: "4.9/5", reviews: "380+ avis", img: "/assets/food/wrap_poulet_malai_tikka.png", desc: "Disques de fromage doux trempés dans un lait onctueux parfumé au safran et pistaches." },
-  { id: "lassi-mangue-boisson", name: "Lassi Mangue Royale", cat: "desserts", catName: "Desserts & Boissons", price: 4.50, rating: "5.0/5", reviews: "980+ avis", img: "/assets/food/lassi_mangue.png", desc: "Boisson traditionnelle au yaourt crémeux et pulpe de mangue Alphonso mûrie au soleil." },
-  { id: "boisson-canette", name: "Canette de Soda au Choix", cat: "desserts", catName: "Desserts & Boissons", price: 2.25, rating: "4.8/5", reviews: "310+ avis", img: "/assets/food/wrap_kebab_poulet.png", desc: "Coca-Cola, Sprite, Canada Dry, Nestea, Fanta bien frais." }
+  // Desserts & Boissons
+  {
+    id: "dessert-gulab-jamun",
+    name: "Gulab Jamun Chauds (2 pcs)",
+    cat: "desserts",
+    catName: "Desserts & Lassis",
+    price: 4.99,
+    rating: "5.0/5",
+    reviews: "420+ avis",
+    img: "/assets/food/dessert_gulab_jamun.png",
+    desc: "Boules de lait réduites dorées, servies chaudes dans un sirop délicatement parfumé à la cardamome et eau de rose."
+  },
+  {
+    id: "dessert-ras-malai",
+    name: "Ras Malai Royal",
+    cat: "desserts",
+    catName: "Desserts & Lassis",
+    price: 4.99,
+    rating: "4.9/5",
+    reviews: "380+ avis",
+    img: "/assets/food/dessert_ras_malai.png",
+    desc: "Palets de fromage doux flottant dans un lait crémeux parfumé au safran, cardamome et éclats de pistaches."
+  },
+  {
+    id: "lassi-mangue",
+    name: "Lassi Mangue Royale",
+    cat: "desserts",
+    catName: "Desserts & Lassis",
+    price: 4.50,
+    rating: "5.0/5",
+    reviews: "980+ avis",
+    img: "/assets/food/lassi_mangue.png",
+    desc: "Boisson traditionnelle au yaourt velouté et pulpe de mangue Alphonso mûrie au soleil. Ultra rafraîchissant."
+  },
+  {
+    id: "lassi-rose",
+    name: "Lassi Rose de Damas",
+    cat: "desserts",
+    catName: "Desserts & Lassis",
+    price: 4.50,
+    rating: "4.9/5",
+    reviews: "470+ avis",
+    img: "/assets/food/lassi_rose.png",
+    desc: "Lassi doux aromatisé à l'essence de rose et cardamome, garni d'une touche florale délicate."
+  }
 ];
 
 const categoriesList = [
   { id: "all", name: "Tous les Plats" },
   { id: "wraps", name: "🌯 Wraps & Kebabs" },
   { id: "curry", name: "🍲 Bols de Curry" },
-  { id: "assiettes", name: "🍽️ Assiettes Complètes" },
   { id: "biryani", name: "🍚 Biryani & Riz" },
-  { id: "poutines", name: "🍟 Poutines" },
+  { id: "assiettes", name: "🍽️ Assiettes Complètes" },
+  { id: "trios", name: "🍟 Trios & Combos" },
   { id: "burgers", name: "🍔 Burgers" },
-  { id: "paninis", name: "🥪 Paninis" },
-  { id: "naans", name: "🫓 Naans & Accompagnements" },
-  { id: "desserts", name: "🥤 Lassis & Desserts" }
+  { id: "naans", name: "🫓 Pains Naans" },
+  { id: "desserts", name: "🥤 Desserts & Lassis" }
 ];
 
 function enterAppFromSplash() {
@@ -1408,7 +1609,7 @@ function renderDishes() {
   const container = document.getElementById('luxuryFeaturedCardsContainer');
   if (!container) return;
 
-  const filtered = currentCategory === 'all' ? fullMenuCatalog : fullMenuCatalog.filter(d => d.cat === currentCategory);
+  const filtered = currentCategory === 'all' ? officialDishes : officialDishes.filter(d => d.cat === currentCategory);
 
   const titleEl = document.getElementById('currentCategorySectionTitle');
   if (titleEl) {
@@ -1420,7 +1621,7 @@ function renderDishes() {
     return `
       <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
         <div class="food-card-img-wrap">
-          <img src="\${dish.img}" alt="\${dish.name}" onerror="this.src='/logo.png'">
+          <img src="\${dish.img}" alt="\${dish.name}" loading="lazy">
           <div class="card-dark-gradient"></div>
         </div>
 
@@ -1447,19 +1648,19 @@ function renderDishes() {
     `;
   }).join('');
 
-  // Populate Full Menu View
+  // Populate Full Menu Tab
   const fullContainer = document.getElementById('menuFullListContainer');
   if (fullContainer) {
-    fullContainer.innerHTML = fullMenuCatalog.map(dish => `
+    fullContainer.innerHTML = officialDishes.map(dish => `
       <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
         <div class="food-card-img-wrap">
-          <img src="\${dish.img}" alt="\${dish.name}" onerror="this.src='/logo.png'">
+          <img src="\${dish.img}" alt="\${dish.name}" loading="lazy">
           <div class="card-dark-gradient"></div>
         </div>
         <div class="card-top-row">
           <div class="card-price-stack">
             <div class="card-price-val">$\${dish.price.toFixed(2)} CAD</div>
-            <div class="card-rating-val">★ \${dish.rating} (\${dish.catName})</div>
+            <div class="card-rating-val">★ \${dish.rating} • \${dish.catName}</div>
           </div>
         </div>
         <div class="card-glass-pill">
@@ -1482,7 +1683,7 @@ function filterCategory(cat, btn) {
 }
 
 function openRefDetailsModal(dishId) {
-  const found = fullMenuCatalog.find(d => d.id === dishId) || fullMenuCatalog[0];
+  const found = officialDishes.find(d => d.id === dishId) || officialDishes[0];
   currentRefDish = found;
 
   document.getElementById('refModalHeroImg').src = found.img;
