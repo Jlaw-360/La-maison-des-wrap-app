@@ -2,6 +2,7 @@
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const hostname = url.hostname.toLowerCase();
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
@@ -61,6 +62,30 @@ export default {
 
     // Serve static assets directly from Cloudflare ASSETS binding
     if (env.ASSETS) {
+      // Subdomain-based Smart Routing (e.g. kitchen.maisondeswraps.ca, driver.maisondeswraps.ca, admin.maisondeswraps.ca)
+      if (url.pathname === '/' || url.pathname === '') {
+        if (hostname.startsWith('kitchen.')) {
+          return env.ASSETS.fetch(new Request(new URL('/kitchen.html', request.url), { method: 'GET', headers: request.headers }));
+        }
+        if (hostname.startsWith('driver.') || hostname.startsWith('livraison.')) {
+          return env.ASSETS.fetch(new Request(new URL('/driver.html', request.url), { method: 'GET', headers: request.headers }));
+        }
+        if (hostname.startsWith('admin.') || hostname.startsWith('kpi.')) {
+          return env.ASSETS.fetch(new Request(new URL('/admin.html', request.url), { method: 'GET', headers: request.headers }));
+        }
+      }
+
+      // Path-based routing fallback (e.g. /kitchen, /driver, /admin)
+      if (url.pathname === '/kitchen') {
+        return env.ASSETS.fetch(new Request(new URL('/kitchen.html', request.url), { method: 'GET', headers: request.headers }));
+      }
+      if (url.pathname === '/driver' || url.pathname === '/delivery') {
+        return env.ASSETS.fetch(new Request(new URL('/driver.html', request.url), { method: 'GET', headers: request.headers }));
+      }
+      if (url.pathname === '/admin') {
+        return env.ASSETS.fetch(new Request(new URL('/admin.html', request.url), { method: 'GET', headers: request.headers }));
+      }
+
       let response = await env.ASSETS.fetch(request);
       if (response.status === 404) {
         // SPA Fallback to index.html
