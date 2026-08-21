@@ -1,0 +1,10 @@
+﻿node_modules
+.git
+.agents
+.gemini
+mobile
+prisma
+scratch
+scripts
+.wrangler
+*.log
