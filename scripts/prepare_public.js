@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 console.log("Preparing clean public/ directory for instant Cloudflare deployment...");
@@ -30,7 +30,6 @@ const filesToCopy = [
   'logo.png',
   'manifest.json',
   'menu.json',
-  '_redirects',
   '_headers'
 ];
 
@@ -53,6 +52,12 @@ foldersToCopy.forEach(d => {
     console.log('✓ Copied folder ' + d);
   }
 });
+
+// Remove any conflicting _redirects in public if present
+if (fs.existsSync(path.join(publicDir, '_redirects'))) {
+  fs.unlinkSync(path.join(publicDir, '_redirects'));
+  console.log('✓ Removed conflicting public/_redirects');
+}
 
 // Update wrangler.toml to use directory = "./public"
 let wranglerToml = fs.readFileSync('wrangler.toml', 'utf8');

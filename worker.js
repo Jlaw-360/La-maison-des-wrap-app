@@ -58,8 +58,20 @@ export default {
       });
     }
 
-    // Serve static assets (HTML, images, JS, CSS)
+    // Explicit Route Handling for All 4 Portals (both clean URL and .html)
     if (env.ASSETS) {
+      if (url.pathname === '/kitchen' || url.pathname === '/kitchen.html' || url.pathname === '/kitchen/') {
+        return env.ASSETS.fetch(new Request(new URL('/kitchen.html', request.url), request));
+      }
+      if (url.pathname === '/driver' || url.pathname === '/driver.html' || url.pathname === '/driver/' || url.pathname === '/delivery') {
+        return env.ASSETS.fetch(new Request(new URL('/driver.html', request.url), request));
+      }
+      if (url.pathname === '/admin' || url.pathname === '/admin.html' || url.pathname === '/admin/') {
+        return env.ASSETS.fetch(new Request(new URL('/admin.html', request.url), request));
+      }
+      if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/order' || url.pathname === '/menu') {
+        return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+      }
       return env.ASSETS.fetch(request);
     }
 
