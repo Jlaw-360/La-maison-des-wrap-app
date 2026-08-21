@@ -5,582 +5,362 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Portail Livreur - La Maison des Wraps</title>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#FF5500">
+  <meta name="theme-color" content="#0B0B0F">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
+      --bg-body: #060608;
+      --bg-main: #0B0B0F;
+      --bg-surface: #14141A;
+      --bg-card: #181822;
       --primary: #FF5500;
-      --bg-dark: #121212;
-      --surface-card: #1E1E22;
-      --surface-elevated: #26262C;
-      --border: #32323A;
-      --text-main: #FFFFFF;
-      --text-muted: #A0A0A5;
-      --badge-ready: #10B981;
+      --accent-green: #22C55E;
+      --accent-blue: #3B82F6;
+      --accent-gold: #E5A93C;
+      --border: rgba(255, 255, 255, 0.08);
+      --text-white: #FFFFFF;
+      --text-body: #A2A2B4;
+      --text-muted: #6E6E80;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-white);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      max-width: 480px;
-      margin: 0 auto;
-      border-left: 1px solid var(--border);
-      border-right: 1px solid var(--border);
+      justify-content: center;
+      padding: 0;
+      margin: 0;
     }
+
+    .phone-frame {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
     header {
-      background: var(--surface-card);
+      background: var(--bg-surface);
       border-bottom: 1px solid var(--border);
-      padding: 16px;
+      padding: 14px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .driver-badge {
+
+    .driver-status-pill {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
     }
-    .driver-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-    .main-content {
-      padding: 16px;
+
+    .status-online { background: rgba(34, 197, 94, 0.15); border: 1px solid #22C55E; color: #22C55E; }
+    .status-offline { background: rgba(239, 68, 68, 0.15); border: 1px solid #EF4444; color: #EF4444; }
+
+    .driver-content {
+      padding: 16px 18px 30px 18px;
       flex: 1;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
-    .card {
-      background: var(--surface-card);
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .kpi-val { font-size: 22px; font-weight: 900; color: #FF5500; margin-top: 4px; }
+    .kpi-lbl { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+
+    .delivery-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
     }
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+
+    .delivery-card.active-delivery {
+      border-color: #FF5500;
+      background: rgba(255, 85, 0, 0.04);
     }
-    .btn-outline {
-      background: transparent;
-      color: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+
+    .btn-action-driver {
       padding: 12px;
-      font-weight: 600;
+      border-radius: 12px;
+      border: none;
       font-size: 13px;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      text-decoration: none;
     }
-    .pin-input-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .pin-input {
-      flex: 1;
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      text-align: center;
-      padding: 10px;
-      outline: none;
-    }
-    .pin-input:focus { border-color: var(--primary); }
-    .status-pill {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10B981;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
+
+    .btn-nav-map { background: #3B82F6; color: #fff; text-decoration: none; }
+    .btn-take-order { background: #FF5500; color: #fff; }
+    .btn-verify-pin { background: #22C55E; color: #000; }
+
+    /* Toast */
+    #driverToast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      background: #1C1C24;
+      color: #FFFFFF;
+      border: 1.5px solid #FF5500;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 13px;
       font-weight: 700;
-      display: inline-block;
+      z-index: 999999;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="driver-badge">
-    <div class="driver-avatar">🛵</div>
-    <div>
-      <div style="font-weight: 800; font-size: 15px;">Marc Livreur (In-House)</div>
-      <div style="font-size: 11px; color: var(--primary);">Honda Civic Noir • En service</div>
+<div class="phone-frame">
+  <header>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 20px;">🛵</span>
+      <div>
+        <h2 style="font-size: 15px; font-weight: 900;">Portail Livreur</h2>
+        <p style="font-size: 10px; color: var(--text-muted);">Drummondville Dispatch</p>
+      </div>
+    </div>
+
+    <div class="driver-status-pill status-online" id="pillStatus" onclick="toggleDriverDuty()">
+      <span style="font-size: 8px;">●</span>
+      <span id="lblStatusText">En Service</span>
+    </div>
+  </header>
+
+  <div class="driver-content">
+    <!-- Telemetry -->
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-lbl">Courses Aujourd'hui</div>
+        <div class="kpi-val" id="lblDriverRunsCount">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-lbl">Gains Estimés</div>
+        <div class="kpi-val" style="color: #22C55E;" id="lblDriverEarnings">$0.00 CAD</div>
+      </div>
+    </div>
+
+    <!-- Section Title -->
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="font-size: 15px; font-weight: 800;">Courses Disponibles</h3>
+      <button onclick="refreshDriverDeliveries()" style="background: transparent; border: none; color: #FF5500; font-size: 12px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-arrows-rotate"></i> Actualiser</button>
+    </div>
+
+    <!-- Active Deliveries List -->
+    <div id="driverOrdersContainer" style="display: flex; flex-direction: column; gap: 14px;">
+      <!-- Populated dynamically -->
     </div>
   </div>
-  <div style="display: flex; gap: 6px; align-items: center;">
-    <span style="font-size: 11px; background: rgba(16, 185, 129, 0.15); color: #10B981; padding: 4px 10px; border-radius: 12px; font-weight: 700;">
-      <i class="fa-solid fa-motorcycle"></i> Livreur En Service
-    </span>
-    <button onclick="logoutDriver()" style="color: #fff; font-size: 11px; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); cursor: pointer;"><i class="fa-solid fa-right-from-bracket"></i> Quitter</button>
-  </div>
-</header>
-
-<div class="main-content" id="driverMainContent">
-  <!-- Dynamic live delivery cards will render here -->
 </div>
 
 <script>
-let currentDriverOrder = null;
+let isOnline = true;
 
-function loadDriverDeliveries() {
-  const container = document.getElementById('driverMainContent');
-  if (!container) return;
+function toggleDriverDuty() {
+  isOnline = !isOnline;
+  const pill = document.getElementById('pillStatus');
+  const lbl = document.getElementById('lblStatusText');
+  if (isOnline) {
+    pill.className = 'driver-status-pill status-online';
+    lbl.innerText = 'En Service';
+    showToast('Vous êtes désormais en ligne.', '🟢');
+  } else {
+    pill.className = 'driver-status-pill status-offline';
+    lbl.innerText = 'Hors Service';
+    showToast('Vous êtes hors service.', '🔴');
+  }
+  renderDeliveries();
+}
 
-  let allOrders = [];
+function getOrdersFromStorage() {
   try {
     const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) allOrders = JSON.parse(raw);
+    if (raw) return JSON.parse(raw);
   } catch(e){}
+  return [];
+}
 
-  const readyDeliveries = allOrders.filter(o => o.fulfillment === 'delivery' && (o.status === 'ready' || o.status === 'in_transit'));
+function saveOrdersToStorage(orders) {
+  localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
+}
 
-  if (readyDeliveries.length === 0) {
+function renderDeliveries() {
+  const container = document.getElementById('driverOrdersContainer');
+  if (!container) return;
+
+  if (!isOnline) {
+    container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 30px;">Passez en service pour recevoir les courses de livraison.</div>';
+    return;
+  }
+
+  const allOrders = getOrdersFromStorage();
+  const deliveryOrders = allOrders.filter(o => o.fulfillment === 'delivery' && o.status !== 'completed');
+
+  if (deliveryOrders.length === 0) {
     container.innerHTML = `
-      <div class="card" style="text-align: center; padding: 36px 20px;">
-        <i class="fa-solid fa-motorcycle" style="font-size: 40px; color: rgba(255, 85, 0, 0.4); margin-bottom: 12px; display: block;"></i>
-        <h3 style="font-size: 16px; font-weight: 800; color: #FFFFFF;">Aucune livraison prête pour le moment</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">
-          Dès que la cuisine marque une commande comme <strong style="color: #10B981;">PRÊTE</strong>, elle apparaîtra ici instantanément.
-        </p>
-        <button class="btn-outline" style="margin-top: 18px;" onclick="loadDriverDeliveries()">
-          <i class="fa-solid fa-rotate"></i> Actualiser les Livraisons
-        </button>
+      <div style="text-align: center; color: var(--text-muted); padding: 30px; background: #14141A; border-radius: 18px;">
+        <i class="fa-solid fa-box-open" style="font-size: 28px; margin-bottom: 8px; color: #FF5500;"></i>
+        <p style="font-size: 13px; font-weight: 700; color: #fff;">Aucune livraison en attente</p>
+        <p style="font-size: 11px; margin-top: 4px;">Les nouvelles commandes de livraison apparaîtront dès que la cuisine les prépare.</p>
       </div>
     `;
     return;
   }
 
-  currentDriverOrder = readyDeliveries[0];
+  container.innerHTML = deliveryOrders.map(order => {
+    const isDelivering = order.status === 'delivering';
+    const address = order.deliveryAddress || 'Drummondville, QC';
+    const mapUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
 
-  if (currentDriverOrder.status === 'ready') {
-    // Step 1: Ready at Kitchen - Driver Pickup Card
-    container.innerHTML = `
-      <div class="card" id="pickupStepCard" style="border-color: #10B981;">
+    return `
+      <div class="delivery-card ` + (isDelivering ? 'active-delivery' : '') + `">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="status-pill">PRÊT AU RESTAURANT</span>
-          <span style="font-weight: 800; color: var(--primary);">#${currentDriverOrder.id}</span>
-        </div>
-        
-        <div style="font-size: 13px;">
-          📍 <strong>Prise en charge :</strong> 998 110e Avenue, Drummondville<br>
-          🏁 <strong>Destination :</strong> ${currentDriverOrder.address || 'Drummondville, QC'}
+          <span style="font-size: 15px; font-weight: 900; color: #FF5500;">Commande #${order.id}</span>
+          <span style="font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 8px; background: ` + (isDelivering ? 'rgba(59,130,246,0.15)' : 'rgba(245,158,11,0.15)') + `; color: ` + (isDelivering ? '#3B82F6' : '#F59E0B') + `;">
+            ` + (isDelivering ? 'En Route' : 'Prêt pour Départ') + `
+          </span>
         </div>
 
-        <div style="background: var(--surface-elevated); padding: 10px; border-radius: 10px; font-size: 12px;">
-          👤 Client : <strong>${currentDriverOrder.customerName || 'Client'}</strong> (${currentDriverOrder.customerPhone || ''})<br>
-          🛍️ ${(currentDriverOrder.items || []).map(i => i.name).join(', ')}
+        <div style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
+          <strong>Client :</strong> ${order.customerName || 'Client'} (${order.customerPhone || '819-850-3972'})<br>
+          <strong>Destination :</strong> 📍 ${address}<br>
+          <strong>Articles :</strong> ${(order.items || []).length} plats
         </div>
 
-        <!-- Scanner Button -->
-        <button class="btn-primary" onclick="openDriverCameraScanner('${currentDriverOrder.id}', 'kitchen')">
-          <i class="fa-solid fa-camera"></i> 1. Scanner le QR Code en Cuisine
-        </button>
-
-        <!-- Manual PIN Backup Form -->
-        <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px; border: 1px dashed var(--border);">
-          <div style="font-size: 11px; color: var(--text-muted); font-weight: 600;">
-            ⚠️ Le scan ne fonctionne pas ? Entrez le code à 4 chiffres de la cuisine :
-          </div>
-          <div class="pin-input-group">
-            <input type="text" id="manualPinInput" class="pin-input" placeholder="${currentDriverOrder.pin || '2325'}" maxlength="5">
-            <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyManualPin('${currentDriverOrder.id}')">Valider</button>
-          </div>
-        </div>
-      </div>
-    `;
-  } else if (currentDriverOrder.status === 'in_transit') {
-    // Step 2: In Transit to Customer
-    container.innerHTML = `
-      <div class="card" id="deliveryTransitCard" style="border-color: var(--primary);">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 12px; font-weight: 800;">EN ROUTE VERS LE CLIENT</span>
-          <span style="font-weight: 800; color: var(--primary);">#${currentDriverOrder.id}</span>
-        </div>
-
-        <div style="background: var(--surface-elevated); padding: 12px; border-radius: 12px;">
-          <div style="font-size: 14px; font-weight: 700;">👤 Client: ${currentDriverOrder.customerName || 'Client'}</div>
-          <div style="font-size: 11px; color: var(--primary); margin-top: 2px;">✉️ ${currentDriverOrder.customerEmail || ''} • 📞 ${currentDriverOrder.customerPhone || ''}</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">📍 ${currentDriverOrder.address || 'Drummondville, QC'}</div>
-          <div style="font-size: 11px; color: #E0E0E0; margin-top: 6px; padding: 6px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 6px;">
-            🛍️ <strong>Contenu :</strong> ${(currentDriverOrder.items || []).map(i => i.name).join(', ')}
-          </div>
-          <div style="font-size: 11px; color: #FF9800; margin-top: 6px;">
-            📝 Instruction Client : <strong>${currentDriverOrder.dropoff === 'door' ? 'Laisser à la porte (Photo requise)' : 'Remise en main propre (Code PIN requis)'}</strong>
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
-          <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentDriverOrder.address || 'Drummondville, QC')}" target="_blank" class="btn-outline" style="border-color: #3B82F6; color: #3B82F6; font-size: 11px; padding: 10px 4px; text-align: center;">
-            <i class="fa-solid fa-map-location-dot"></i> Google Maps
+        <div style="display: flex; gap: 8px;">
+          <a href="${mapUrl}" target="_blank" class="btn-action-driver btn-nav-map" style="flex: 1;">
+            <i class="fa-solid fa-diamond-turn-right"></i> GPS Waze/Maps
           </a>
-          <a href="https://waze.com/ul?q=${encodeURIComponent(currentDriverOrder.address || 'Drummondville, QC')}&navigate=yes" target="_blank" class="btn-outline" style="border-color: #06B6D4; color: #06B6D4; font-size: 11px; padding: 10px 4px; text-align: center;">
-            <i class="fa-solid fa-diamond-turn-right"></i> Waze
-          </a>
-          <a href="tel:${currentDriverOrder.customerPhone || '8198503972'}" class="btn-outline" style="border-color: #10B981; color: #10B981; font-size: 11px; padding: 10px 4px; text-align: center;">
-            <i class="fa-solid fa-phone"></i> Appeler
-          </a>
-        </div>
-
-        <!-- Verification Options -->
-        <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
-          <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
-            🤝 Option 1 : Remise en main propre (Code PIN Client)
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <button class="btn-primary" style="background: #22C55E; width: 100%;" onclick="openDriverCameraScanner('${currentDriverOrder.id}', 'customer')">
-              <i class="fa-solid fa-camera"></i> A. Scanner le QR Code du Client
+          ${!isDelivering ? `
+            <button class="btn-action-driver btn-take-order" style="flex: 1.2;" onclick="startDelivery(${order.id})">
+              <i class="fa-solid fa-motorcycle"></i> Prendre en Charge
             </button>
-            <div style="font-size: 11px; color: var(--text-muted); text-align: center;">OU</div>
-            <div class="pin-input-group">
-              <input type="text" id="customerDeliveryPinInput" class="pin-input" placeholder="${currentDriverOrder.pin || '2325'}" maxlength="4" style="letter-spacing: 4px; font-size: 16px;">
-              <button class="btn-primary" style="padding: 10px 16px;" onclick="verifyCustomerDeliveryPin('${currentDriverOrder.id}')">B. Valider Code PIN</button>
-            </div>
-          </div>
+          ` : `
+            <button class="btn-action-driver btn-verify-pin" style="flex: 1.2;" onclick="promptVerifyPin(${order.id}, '${order.securityPin || '2325'}')">
+              <i class="fa-solid fa-key"></i> Valider PIN Client
+            </button>
+          `}
         </div>
 
-        <div style="background: var(--surface-elevated); border-radius: 12px; padding: 12px; margin-top: 6px;">
-          <div style="font-size: 12px; font-weight: 700; color: #3B82F6; margin-bottom: 6px;">
-            📷 Option 2 : Dépôt sans contact (Laisser à la porte)
+        <!-- Camera Proof of Delivery -->
+        ${isDelivering ? `
+          <div style="margin-top: 6px; background: #111116; padding: 10px; border-radius: 12px; border: 1px dashed var(--border);">
+            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">📸 Preuve de Dépôt Photo (Optionnelle) :</div>
+            <input type="file" accept="image/*" capture="environment" onchange="previewPodPhoto(this)" style="font-size: 11px; color: #fff;">
           </div>
-          <button class="btn-primary" style="background: #3B82F6; width: 100%;" onclick="completeDeliveryWithPhoto('${currentDriverOrder.id}')">
-            <i class="fa-solid fa-camera"></i> Prendre Photo & Terminer Livraison
-          </button>
-        </div>
+        ` : ''}
       </div>
     `;
-  }
-}
-
-// Live Camera QR Code Scanner Implementation
-let html5DriverQrScanner = null;
-let currentScannerTargetOrderId = null;
-let currentScannerMode = 'kitchen'; // 'kitchen' or 'customer'
-
-function openDriverCameraScanner(orderId, mode = 'kitchen') {
-  currentScannerTargetOrderId = orderId;
-  currentScannerMode = mode;
-  const modal = document.getElementById('driverCameraScannerModal');
-  const title = document.getElementById('lblDriverScannerTitle');
-  if (title) {
-    title.innerText = mode === 'kitchen' ? `Scanner Cuisine (#${orderId})` : `Scanner Client (#${orderId})`;
-  }
-  if (modal) modal.style.display = 'flex';
-
-  setTimeout(() => {
-    startDriverCamera();
-  }, 200);
-}
-
-function startDriverCamera() {
-  if (typeof Html5Qrcode === 'undefined') {
-    console.warn("Html5Qrcode library not loaded");
-    return;
-  }
-
-  const readerElement = document.getElementById('driver-qr-reader');
-  if (!readerElement) return;
-
-  if (html5DriverQrScanner) {
-    try { html5DriverQrScanner.stop().catch(()=>{}); } catch(e){}
-  }
-
-  html5DriverQrScanner = new Html5Qrcode("driver-qr-reader");
-  const config = { fps: 15, qrbox: { width: 220, height: 220 } };
-
-  html5DriverQrScanner.start(
-    { facingMode: "environment" },
-    config,
-    (decodedText) => {
-      handleDriverQrCodeDetected(decodedText);
-    },
-    (err) => {}
-  ).catch(err => {
-    console.warn("Driver camera access:", err);
-    readerElement.innerHTML = `
-      <div style="padding: 24px 16px; color: var(--text-muted); font-size: 12px; text-align: center;">
-        <i class="fa-solid fa-video-slash" style="font-size: 32px; color: #EF4444; margin-bottom: 10px; display: block;"></i>
-        Caméra non disponible ou accès non autorisé.<br>
-        <span style="color: #fff; font-size: 11px;">Vous pouvez utiliser le bouton "Simuler Scan" ou le code PIN.</span>
-      </div>
-    `;
-  });
-}
-
-function stopDriverCamera() {
-  if (html5DriverQrScanner) {
-    try {
-      html5DriverQrScanner.stop().then(() => {
-        html5DriverQrScanner.clear();
-      }).catch(e => {});
-    } catch(e){}
-  }
-}
-
-function closeDriverCameraScanner() {
-  stopDriverCamera();
-  const modal = document.getElementById('driverCameraScannerModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function handleDriverQrCodeDetected(decodedText) {
-  stopDriverCamera();
-  const modal = document.getElementById('driverCameraScannerModal');
-  if (modal) modal.style.display = 'none';
-
-  if (currentScannerMode === 'kitchen') {
-    alert(`📸 QR Code Cuisine Détecté avec succès !\n\nCommande #${currentScannerTargetOrderId} validée pour la livraison.`);
-    startDelivery(currentScannerTargetOrderId);
-  } else {
-    alert(`🎉 QR Code Client Détecté avec succès !\n\nCommande #${currentScannerTargetOrderId} livrée avec succès.`);
-    finalizeDelivery(currentScannerTargetOrderId);
-  }
-}
-
-function simulateDriverScanMatch() {
-  handleDriverQrCodeDetected(`LMDW-${currentScannerTargetOrderId}-PIN${currentDriverOrder?.pin || '2325'}`);
-}
-
-function completeDeliveryWithPhoto(orderId) {
-  currentScannerTargetOrderId = orderId;
-  const fileInput = document.getElementById('driverPhotoProofInput');
-  if (fileInput) {
-    fileInput.click();
-  } else {
-    finalizeDelivery(orderId);
-  }
-}
-
-function handleDriverPhotoCaptured(event) {
-  const file = event.target.files && event.target.files[0];
-  if (file) {
-    alert(`📸 Photo de preuve de livraison capturée (${file.name}) !\n\nCommande #${currentScannerTargetOrderId} marquée comme LIVRÉE.\nLe client a reçu la notification avec la photo.`);
-  }
-  finalizeDelivery(currentScannerTargetOrderId);
-}
-
-function verifyManualPin(orderId) {
-  const pin = (document.getElementById('manualPinInput') ? document.getElementById('manualPinInput').value : '').trim();
-  const targetPin = currentDriverOrder ? currentDriverOrder.pin : '2325';
-  if (pin === targetPin || pin === "2325" || pin.length >= 3) {
-    alert(`✅ Code #${pin} validé avec succès !\nCommande #${orderId} récupérée en cuisine par le livreur.`);
-    startDelivery(orderId);
-  } else {
-    alert(`❌ Code invalide. Veuillez entrer le code à 4 chiffres (ex: ${targetPin}).`);
-  }
+  }).join('');
 }
 
 function startDelivery(orderId) {
-  try {
-    const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) {
-      const orders = JSON.parse(raw);
-      const o = orders.find(x => x.id === orderId);
-      if (o) {
-        o.status = 'in_transit';
-        localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
-      }
-    }
-  } catch(e){}
-  loadDriverDeliveries();
+  let orders = getOrdersFromStorage();
+  const idx = orders.findIndex(o => o.id == orderId);
+  if (idx >= 0) {
+    orders[idx].status = 'delivering';
+    saveOrdersToStorage(orders);
+    renderDeliveries();
+    showToast('Course acceptée ! Bonne route.', '🛵');
+  }
 }
 
-function verifyCustomerDeliveryPin(orderId) {
-  const pin = (document.getElementById('customerDeliveryPinInput') ? document.getElementById('customerDeliveryPinInput').value : '').trim();
-  const targetPin = currentDriverOrder ? currentDriverOrder.pin : '2325';
-  if (pin === targetPin || pin === "2325" || pin.length >= 3) {
-    alert(`🎉 Code Client #${pin} validé avec succès !\n\nLivraison de la commande #${orderId} complétée.`);
-    finalizeDelivery(orderId);
+function promptVerifyPin(orderId, expectedPin) {
+  const enteredPin = prompt("Demandez le code PIN à 4 chiffres au client :");
+  if (!enteredPin) return;
+
+  if (enteredPin.trim() === expectedPin.trim() || enteredPin.trim() === '2325') {
+    let orders = getOrdersFromStorage();
+    const idx = orders.findIndex(o => o.id == orderId);
+    if (idx >= 0) {
+      orders[idx].status = 'completed';
+      orders[idx].deliveredAt = Date.now();
+      saveOrdersToStorage(orders);
+      renderDeliveries();
+      showToast('🎉 Livraison validée avec succès !', '✅');
+    }
   } else {
-    alert(`❌ Code client incorrect. Demandez au client son code à 4 chiffres (ex: ${targetPin}).`);
+    alert("❌ Code PIN invalide. Veuillez vérifier avec le client.");
   }
 }
 
-function finalizeDelivery(orderId) {
-  try {
-    const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) {
-      let orders = JSON.parse(raw);
-      const o = orders.find(x => x.id === orderId);
-      if (o) {
-        o.status = 'delivered';
-        o.deliveredAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-      }
-      localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
-      localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'delivered', time: Date.now() }));
-    }
-  } catch(e){}
-  const container = document.getElementById('driverMainContent');
-  if (container) {
-    container.innerHTML = '<div style="background: #22C55E; color: #fff; padding: 24px; border-radius: 18px; text-align: center; font-weight: 800; font-size: 16px;"><i class="fa-solid fa-circle-check" style="font-size: 36px; margin-bottom: 10px; display: block;"></i>🎉 COMMANDE LIVRÉE AVEC SUCCÈS !</div>';
-    setTimeout(loadDriverDeliveries, 2500);
+function previewPodPhoto(input) {
+  if (input.files && input.files[0]) {
+    showToast('Photo de livraison capturée !', '📸');
   }
 }
 
-// Storage listener
-window.addEventListener('storage', function(e) {
-  if (e.key === 'lmdw_all_orders' || e.key === 'lmdw_new_order') {
-    loadDriverDeliveries();
-  }
-});
+function refreshDriverDeliveries() {
+  renderDeliveries();
+}
 
-setInterval(loadDriverDeliveries, 3000);
+function showToast(msg, icon = '✅') {
+  let toast = document.getElementById('driverToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'driverToast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = '<span style="font-size: 16px;">' + icon + '</span><span>' + msg + '</span>';
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(-30px)';
+  }, 2500);
+}
 
 window.onload = function() {
-  loadDriverDeliveries();
+  renderDeliveries();
 };
-</script>
-
-<!-- Live Camera QR Scanner Modal -->
-<div id="driverCameraScannerModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; padding: 20px;">
-  <div style="background: #1C1C24; border: 1.5px solid var(--primary); border-radius: 20px; width: 100%; max-width: 440px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); text-align: center;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <div style="text-align: left;">
-        <span style="font-size: 11px; color: var(--primary); font-weight: 800; text-transform: uppercase;">Scanner Caméra en Direct</span>
-        <h3 style="font-size: 16px; font-weight: 800; color: #fff; margin-top: 2px;" id="lblDriverScannerTitle">Scanner QR Code</h3>
-      </div>
-      <button style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;" onclick="closeDriverCameraScanner()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <!-- Live Video Viewfinder Div -->
-    <div id="driver-qr-reader" style="width: 100%; min-height: 240px; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 14px; position: relative;"></div>
-
-    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
-      Pointez l'appareil photo vers le QR code sur l'écran ou le reçu.
-    </div>
-
-    <div style="display: flex; gap: 8px;">
-      <button type="button" class="btn-primary" style="flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border);" onclick="simulateDriverScanMatch()">
-        <i class="fa-solid fa-bolt"></i> Simuler Scan
-      </button>
-      <button type="button" class="btn-primary" style="flex: 1; background: #EF4444;" onclick="closeDriverCameraScanner()">
-        Fermer
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Hidden File Input for Photo Proof of Delivery -->
-<input type="file" id="driverPhotoProofInput" accept="image/*" capture="environment" style="display: none;" onchange="handleDriverPhotoCaptured(event)">
-
-
-<!-- Driver Role Guard & Security Lock -->
-<div id="driverSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
-  <div style="max-width: 420px; width: 100%; background: #1C1C24; border: 1.5px solid #10B981; border-radius: 24px; padding: 26px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.85);">
-    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 28px; border: 1.5px solid #10B981;">
-      🛵
-    </div>
-    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Portail Livreur (In-House)</h2>
-    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.5;">
-      Cette interface est exclusivement réservée aux <strong>Livreurs assignés par le restaurant</strong>.
-    </p>
-
-    <div id="driverRoleMsg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: #FCA5A5;">
-      Votre compte est actuellement défini comme <strong>Client</strong>. Seul l'Administrateur peut promouvoir votre compte en <em>Livreur</em> dans la console Direction.
-    </div>
-
-    <div style="margin-bottom: 16px;">
-      <input type="password" id="txtDriverGuardPin" placeholder="Entrez le Code PIN Livreur" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 16px; text-align: center; letter-spacing: 4px; margin-bottom: 8px;">
-      <div id="driverGuardError" style="display: none; color: #FF4444; font-size: 11px; font-weight: 700;">Code PIN incorrect.</div>
-    </div>
-
-    <div style="display: flex; gap: 10px;">
-      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #D1D1DB; font-weight: 700; font-size: 13px; cursor: pointer;">
-        <i class="fa-solid fa-arrow-left"></i> App Client
-      </button>
-      <button type="button" onclick="verifyDriverGuardPin()" style="flex: 1; padding: 12px; background: #10B981; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer;">
-        Déverrouiller
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-function checkDriverAccess() {
-  const overlay = document.getElementById('driverSecurityLockOverlay');
-  const roleMsg = document.getElementById('driverRoleMsg');
-  
-  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
-    if (overlay) overlay.style.display = 'none';
-    return;
-  }
-
-  try {
-    const savedUser = localStorage.getItem('lmdw_user');
-    if (savedUser) {
-      const u = JSON.parse(savedUser);
-      if (u && (u.role === 'driver' || u.role === 'admin')) {
-        if (overlay) overlay.style.display = 'none';
-        return;
-      }
-    }
-  } catch(e){}
-
-  if (overlay) overlay.style.display = 'flex';
-  if (roleMsg) roleMsg.style.display = 'block';
-}
-
-function verifyDriverGuardPin() {
-  const pinInput = document.getElementById('txtDriverGuardPin');
-  const pinVal = (pinInput ? pinInput.value : '').trim();
-  const errorEl = document.getElementById('driverGuardError');
-  const overlay = document.getElementById('driverSecurityLockOverlay');
-
-  if (pinVal === '2325' || pinVal.toLowerCase() === 'admin') {
-    sessionStorage.setItem('lmdw_owner_authenticated', 'true');
-    if (overlay) overlay.style.display = 'none';
-  } else {
-    if (errorEl) errorEl.style.display = 'block';
-  }
-}
-
-function logoutDriver() {
-  sessionStorage.removeItem('lmdw_owner_authenticated');
-  window.location.href = '/index.html';
-}
-
-document.addEventListener('DOMContentLoaded', checkDriverAccess);
-window.addEventListener('storage', function(e) {
-  if (e.key === 'lmdw_role_update_event' || e.key === 'lmdw_user') {
-    checkDriverAccess();
-  }
-});
 </script>
 
 </body>

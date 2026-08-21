@@ -118,7 +118,7 @@
     .splash-hero-container {
       position: relative;
       width: 100%;
-      height: 320px;
+      height: 300px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -135,7 +135,7 @@
 
     @keyframes floatHero {
       0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-10px) scale(1.03); }
+      100% { transform: translateY(-8px) scale(1.02); }
     }
 
     .splash-aura {
@@ -215,7 +215,7 @@
       gap: 8px;
     }
 
-    /* SCREEN 2: MAIN APP & FEED */
+    /* SCREEN 2: MAIN RESTAURANT APP & FEED */
     .main-app-content {
       display: flex;
       flex-direction: column;
@@ -525,6 +525,25 @@
       transform: rotate(45deg);
     }
 
+    /* 86 Stock Badge */
+    .badge-86 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(239, 68, 68, 0.9);
+      color: #fff;
+      font-weight: 900;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 12px;
+      border: 1px solid #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+      z-index: 5;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     /* SCREEN 3: DETAILS BOTTOM SHEET */
     .sheet-modal-backdrop {
       position: fixed;
@@ -689,6 +708,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s ease;
     }
 
     .chip-tag.selected {
@@ -959,7 +979,7 @@
     <!-- Top Sticky Header -->
     <header class="ref-header">
       <div class="ref-avatar-btn" onclick="switchTab('profile')" title="Mon Compte">
-        <span id="headerUserInitial">W</span>
+        <span id="headerUserInitial">G</span>
       </div>
 
       <div class="ref-location-badge" onclick="promptChangeAddress()">
@@ -971,7 +991,7 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <button class="ref-location-badge" onclick="switchTab('scan')" style="background: rgba(229, 169, 60, 0.12); border-color: rgba(229, 169, 60, 0.35); color: #E5A93C;">
           <i class="fa-solid fa-crown" style="font-size: 10px;"></i>
-          <span style="color: #E5A93C;" id="lblTopPoints">50 Pts</span>
+          <span style="color: #E5A93C;" id="lblTopPoints">0 Pts</span>
         </button>
 
         <button class="ref-action-icon-btn" onclick="openCartModal()" title="Panier">
@@ -984,8 +1004,8 @@
     <!-- VIEW 1: HOME FEED -->
     <div class="app-view active" id="view-home">
       <div class="greeting-container">
-        <h1 class="greeting-title" id="greetingUserTitle">Hello, Walkse</h1>
-        <p class="greeting-subtitle">Explorez les Saveurs Culinaires & Formules Trios</p>
+        <h1 class="greeting-title" id="greetingUserTitle">Bonjour, Invité</h1>
+        <p class="greeting-subtitle">Explorez nos wraps artisanaux & spécialités tandoori</p>
       </div>
 
       <!-- Mode Selector -->
@@ -998,7 +1018,7 @@
         </button>
       </div>
 
-      <!-- Category Filter Pills (Horizontal Scroll) -->
+      <!-- Category Filter Pills -->
       <div class="category-scroll-bar" id="categoryPillsContainer">
         <!-- Populated dynamically -->
       </div>
@@ -1011,7 +1031,7 @@
 
       <!-- Full-Bleed Cards List -->
       <div class="cards-vertical-list" id="luxuryFeaturedCardsContainer">
-        <!-- Rendered dynamically with real food photos -->
+        <!-- Rendered dynamically -->
       </div>
 
       <!-- Restaurant Info Card -->
@@ -1045,12 +1065,12 @@
     <div class="app-view" id="view-scan">
       <div class="greeting-container" style="text-align: center;">
         <h1 class="greeting-title">Carte Fidélité</h1>
-        <p class="greeting-subtitle">Scannez votre code en caisse pour cumuler des points</p>
+        <p class="greeting-subtitle">Présentez votre QR code en caisse pour cumuler des points</p>
       </div>
 
       <div style="margin: 14px 18px; background: #14141A; border: 1px solid rgba(229, 169, 60, 0.3); border-radius: 26px; padding: 24px; text-align: center;">
         <div style="font-size: 12px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">Solde Actuel</div>
-        <div style="font-size: 38px; font-weight: 900; color: #FFFFFF; margin: 4px 0;" id="lblScanPointsVal">50 Pts</div>
+        <div style="font-size: 38px; font-weight: 900; color: #FFFFFF; margin: 4px 0;" id="lblScanPointsVal">0 Pts</div>
         <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">200 Points = 1 Wrap Naan Offert 🎁</div>
 
         <div style="background: #FFFFFF; padding: 12px; border-radius: 16px; display: inline-block; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
@@ -1058,7 +1078,7 @@
         </div>
 
         <div style="margin-top: 16px; font-size: 13px; font-weight: 800; color: #E2E2E8;">
-          Code Membre : <strong style="color: #FF5500;">LMDW-WALKSE-50</strong>
+          Code Membre : <strong style="color: #FF5500;" id="lblMemberCode">LMDW-CLIENT-0</strong>
         </div>
       </div>
     </div>
@@ -1066,19 +1086,33 @@
     <!-- VIEW 4: LIVE TRACKING -->
     <div class="app-view" id="view-chat">
       <div class="greeting-container">
-        <h1 class="greeting-title">Suivi en Direct</h1>
-        <p class="greeting-subtitle">Suivi cuisine & position GPS du livreur</p>
+        <h1 class="greeting-title">Suivi de Commande</h1>
+        <p class="greeting-subtitle">Suivi en direct de votre préparation & livraison</p>
       </div>
 
-      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Commande #1042</span>
-          <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;">En Cuisine</span>
+      <div style="margin: 10px 18px; background: #14141A; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 22px; padding: 18px;" id="orderTrackingCard">
+        <div id="noActiveOrderMsg" style="text-align: center; color: var(--text-muted); padding: 20px;">
+          <i class="fa-solid fa-receipt" style="font-size: 32px; margin-bottom: 10px; color: #FF5500;"></i>
+          <p style="font-size: 13px; font-weight: 700; color: #fff;">Aucune commande en cours</p>
+          <p style="font-size: 11px; margin-top: 4px;">Passez votre première commande pour suivre son statut en direct !</p>
         </div>
-        <p style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-          🛵 <strong>Livreur :</strong> Marc Livreur (In-House)<br>
-          ⏱️ <strong>Délai estimé :</strong> 15-25 minutes
-        </p>
+
+        <div id="activeOrderDisplay" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 800; color: #FF5500;" id="lblTrackOrderId">Commande #0000</span>
+            <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 4px 8px; border-radius: 8px; font-weight: 700;" id="lblTrackStatus">En Cuisine</span>
+          </div>
+
+          <!-- 4-Digit Security PIN for Driver / Store Handover -->
+          <div style="background: #181822; border: 1.5px dashed #FF5500; border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 14px;">
+            <div style="font-size: 11px; font-weight: 700; color: #E5A93C; text-transform: uppercase;">Code PIN de Réception (à donner au livreur)</div>
+            <div style="font-size: 28px; font-weight: 900; color: #FFFFFF; letter-spacing: 6px; margin-top: 4px;" id="lblTrackSecurityPin">----</div>
+          </div>
+
+          <div style="font-size: 12px; color: var(--text-body); line-height: 1.6;" id="lblTrackDetails">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1091,10 +1125,10 @@
 
       <div class="settings-group">
         <div style="display: flex; align-items: center; gap: 14px;">
-          <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;">W</div>
+          <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;" id="profileAvatarBig">G</div>
           <div style="flex: 1;">
-            <h2 style="font-size: 16px; font-weight: 800;" id="profileCardName">Walkse</h2>
-            <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">walksenon@gmail.com</p>
+            <h2 style="font-size: 16px; font-weight: 800;" id="profileCardName">Invité</h2>
+            <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">client@lamaisondeswraps.ca</p>
           </div>
           <button onclick="editProfileDetails()" style="background: rgba(255, 85, 0, 0.15); border: 1px solid #FF5500; color: #FF5500; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Modifier</button>
         </div>
@@ -1175,19 +1209,9 @@
         </div>
       </div>
 
-      <!-- SETTINGS GROUP 3: ACCÈS PROPRIÉTAIRE -->
-      <div class="settings-group">
-        <div class="settings-group-title"><i class="fa-solid fa-shield-halved"></i> Direction du Restaurant</div>
-        
-        <button type="button" onclick="openOwnerSecurityModal()" style="width: 100%; background: #181822; border: 1px solid rgba(255, 85, 0, 0.3); color: #FF5500; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i class="fa-solid fa-lock"></i>
-          <span>Accès Direction & Admin (Code PIN 2325)</span>
-        </button>
-      </div>
-
       <div style="text-align: center; padding: 10px 18px 20px 18px; font-size: 11px; color: var(--text-muted);">
         La Maison des Wraps v2.4 • Drummondville, QC<br>
-        <span style="color: #22C55E;">● Connecté au CDN Cloudflare Edge</span>
+        <span style="color: #22C55E;">● Service Sécurisé & 100% Halal</span>
       </div>
     </div>
 
@@ -1254,9 +1278,8 @@
 
       <!-- DYNAMIC CUSTOMIZATION SECTIONS -->
       <div id="dynamicCustomizerContainer" style="display: flex; flex-direction: column; gap: 14px;">
-        <!-- Injected dynamically based on dish category -->
+        <!-- Injected dynamically -->
       </div>
-
     </div>
 
     <div class="sheet-bottom-bar">
@@ -1305,20 +1328,6 @@
   </div>
 </div>
 
-<!-- Owner Admin PIN Modal -->
-<div class="sheet-modal-backdrop" id="ownerSecurityModal">
-  <div class="sheet-modal-container" style="padding: 24px; text-align: center;">
-    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255,85,0,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">🔒</div>
-    <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Espace Propriétaire</h2>
-    <p style="font-size: 12px; color: var(--text-body); margin-bottom: 16px;">Veuillez saisir votre code PIN de gestion :</p>
-    <input type="password" id="txtOwnerPin" placeholder="Code PIN (2325)" maxlength="6" style="width: 100%; background: #181822; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 14px;">
-    <div style="display: flex; gap: 10px;">
-      <button type="button" class="btn-charcoal-cart" onclick="closeModal('ownerSecurityModal')">Fermer</button>
-      <button type="button" class="btn-orange-order" onclick="verifyOwnerPin()">Déverrouiller</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // State
 let cart = [];
@@ -1328,26 +1337,27 @@ let currentLanguage = 'fr';
 
 // Selection State inside modal
 let modalState = {
-  bread: "kebab",      // kebab ($8.95), tortilla ($9.95), naan ($10.95)
-  format: "solo",      // solo vs trio
-  curryCombo: "base",  // base ($17.65), combo1 ($21.35), combo2 ($24.35), combo3 ($25.35)
-  trioSide: "frites",  // frites vs patates
-  trioDrink: "pepsi",  // pepsi, 7up, diet, crush, nestea, eau
-  poutineBase: "frites", // frites vs patates
-  poutineSize: "petit",  // petit vs grand
-  poutineSauce: "brune", // brune vs butter_chicken
-  plateDrink: false,     // false ($17.65) vs true ($19.15)
-  plateSalad: "maison",  // maison, chou, macaroni, nouilles
+  bread: "kebab",
+  format: "solo",
+  curryCombo: "base",
+  trioSide: "frites",
+  trioDrink: "pepsi",
+  poutineBase: "frites",
+  poutineSize: "petit",
+  poutineSauce: "brune",
+  plateDrink: false,
+  plateSalad: "maison",
   selectedSauces: ["maison"],
-  extras: []           // oeuf (+0.99), cheddar (+0.99)
+  extras: []
 };
 
+// Clean Zero-State Client Profile (No hardcoded points or mock user)
 let clientProfile = {
-  name: "Walkse",
-  email: "walksenon@gmail.com",
-  phone: "(819) 850-3972",
+  name: "Invité",
+  email: "client@lamaisondeswraps.ca",
+  phone: "",
   address: "Drummondville, QC",
-  points: 50,
+  points: 0,
   role: "customer"
 };
 
@@ -1474,9 +1484,9 @@ const officialDishes = [
     cat: "curry",
     catName: "Bols de Curry",
     basePrice: 17.65,
-    combo1Price: 21.35, // + Riz
-    combo2Price: 24.35, // + Riz + Naan Fromage
-    combo3Price: 25.35, // + Riz + Naan Fromage + Boisson
+    combo1Price: 21.35,
+    combo2Price: 24.35,
+    combo3Price: 25.35,
     rating: "5.0/5",
     reviews: "890+ avis",
     img: "/assets/food/combo_bol_curry.png",
@@ -1625,7 +1635,7 @@ const officialDishes = [
     desc: "Le festin royal : 2 viandes au choix avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
   },
 
-  // 5. BURGERS & POUTINES (Board 2)
+  // 5. BURGERS & PANINIS (Board 2 & 3)
   {
     id: "burger-de-poulet",
     name: "Burger de Poulet Maison",
@@ -1795,8 +1805,8 @@ function renderCategoryPills() {
   if (!container) return;
 
   container.innerHTML = categoriesList.map(cat => `
-    <button class="category-pill \${cat.id === currentCategory ? 'active' : ''}" onclick="filterCategory('\${cat.id}', this)">
-      \${cat.name}
+    <button class="category-pill ` + (cat.id === currentCategory ? 'active' : '') + `" onclick="filterCategory('` + cat.id + `', this)">
+      ` + cat.name + `
     </button>
   `).join('');
 }
@@ -1805,6 +1815,17 @@ function getDisplayPrice(dish) {
   if (dish.cat === 'wraps') return '$' + dish.basePriceKebab.toFixed(2) + ' CAD';
   if (dish.basePrice) return '$' + dish.basePrice.toFixed(2) + ' CAD';
   return '$8.95 CAD';
+}
+
+function isItem86ed(dishId) {
+  try {
+    const raw = localStorage.getItem('lmdw_86_items');
+    if (raw) {
+      const list = JSON.parse(raw);
+      return Array.isArray(list) && list.includes(dishId);
+    }
+  } catch(e){}
+  return false;
 }
 
 function renderDishes() {
@@ -1820,17 +1841,19 @@ function renderDishes() {
   }
 
   container.innerHTML = filtered.map(dish => {
+    const outOfStock = isItem86ed(dish.id);
     return `
-      <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
+      <div class="food-card" style="` + (outOfStock ? 'opacity: 0.6; filter: grayscale(0.5);' : '') + `" onclick="` + (outOfStock ? `showToast('Désolé, ce plat est épuisé en cuisine (86).', '⚠️')` : `openRefDetailsModal('` + dish.id + `')`) + `">
         <div class="food-card-img-wrap">
-          <img src="\${dish.img}" alt="\${dish.name}" loading="lazy">
+          <img src="` + dish.img + `" alt="` + dish.name + `" loading="lazy" onerror="this.src='/logo.png'">
           <div class="card-dark-gradient"></div>
+          ` + (outOfStock ? '<div class="badge-86">Épuisé (86)</div>' : '') + `
         </div>
 
         <div class="card-top-row">
           <div class="card-price-stack">
-            <div class="card-price-val">\${getDisplayPrice(dish)}</div>
-            <div class="card-rating-val">★ \${dish.rating} <span style="color: rgba(255,255,255,0.6);">(\${dish.reviews})</span></div>
+            <div class="card-price-val">` + getDisplayPrice(dish) + `</div>
+            <div class="card-rating-val">★ ` + dish.rating + ` <span style="color: rgba(255,255,255,0.6);">(` + dish.reviews + `)</span></div>
           </div>
           <div class="card-fav-circle" onclick="event.stopPropagation(); this.classList.toggle('active'); showToast('Ajouté aux favoris !', '⭐');">
             <i class="fa-solid fa-star"></i>
@@ -1839,10 +1862,10 @@ function renderDishes() {
 
         <div class="card-glass-pill">
           <div class="card-dish-info">
-            <h3>\${dish.name}</h3>
-            <p>\${dish.desc}</p>
+            <h3>` + dish.name + `</h3>
+            <p>` + dish.desc + `</p>
           </div>
-          <button class="card-arrow-btn" onclick="event.stopPropagation(); openRefDetailsModal('\${dish.id}')">
+          <button class="card-arrow-btn" onclick="event.stopPropagation(); ` + (outOfStock ? `showToast('Désolé, plat épuisé.', '⚠️')` : `openRefDetailsModal('` + dish.id + `')`) + `">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
           </button>
         </div>
@@ -1853,27 +1876,31 @@ function renderDishes() {
   // Populate Full Menu Tab
   const fullContainer = document.getElementById('menuFullListContainer');
   if (fullContainer) {
-    fullContainer.innerHTML = officialDishes.map(dish => `
-      <div class="food-card" onclick="openRefDetailsModal('\${dish.id}')">
-        <div class="food-card-img-wrap">
-          <img src="\${dish.img}" alt="\${dish.name}" loading="lazy">
-          <div class="card-dark-gradient"></div>
-        </div>
-        <div class="card-top-row">
-          <div class="card-price-stack">
-            <div class="card-price-val">\${getDisplayPrice(dish)}</div>
-            <div class="card-rating-val">★ \${dish.rating} • \${dish.catName}</div>
+    fullContainer.innerHTML = officialDishes.map(dish => {
+      const outOfStock = isItem86ed(dish.id);
+      return `
+        <div class="food-card" style="` + (outOfStock ? 'opacity: 0.6; filter: grayscale(0.5);' : '') + `" onclick="` + (outOfStock ? `showToast('Désolé, ce plat est épuisé.', '⚠️')` : `openRefDetailsModal('` + dish.id + `')`) + `">
+          <div class="food-card-img-wrap">
+            <img src="` + dish.img + `" alt="` + dish.name + `" loading="lazy" onerror="this.src='/logo.png'">
+            <div class="card-dark-gradient"></div>
+            ` + (outOfStock ? '<div class="badge-86">Épuisé (86)</div>' : '') + `
+          </div>
+          <div class="card-top-row">
+            <div class="card-price-stack">
+              <div class="card-price-val">` + getDisplayPrice(dish) + `</div>
+              <div class="card-rating-val">★ ` + dish.rating + ` • ` + dish.catName + `</div>
+            </div>
+          </div>
+          <div class="card-glass-pill">
+            <div class="card-dish-info">
+              <h3>` + dish.name + `</h3>
+              <p>` + dish.desc + `</p>
+            </div>
+            <button class="card-arrow-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
           </div>
         </div>
-        <div class="card-glass-pill">
-          <div class="card-dish-info">
-            <h3>\${dish.name}</h3>
-            <p>\${dish.desc}</p>
-          </div>
-          <button class="card-arrow-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 }
 
@@ -1932,15 +1959,15 @@ function buildDynamicCustomizer(dish) {
           <small style="color: var(--text-muted);">Obligatoire</small>
         </div>
         <div class="option-pill-grid">
-          <div class="option-card-label \${modalState.bread === 'kebab' ? 'selected' : ''}" onclick="selectBread('kebab', this)">
+          <div class="option-card-label ` + (modalState.bread === 'kebab' ? 'selected' : '') + `" onclick="selectBread('kebab', this)">
             <div class="option-name">Pain Kebab</div>
             <div class="option-price">$8.95 CAD</div>
           </div>
-          <div class="option-card-label \${modalState.bread === 'tortilla' ? 'selected' : ''}" onclick="selectBread('tortilla', this)">
+          <div class="option-card-label ` + (modalState.bread === 'tortilla' ? 'selected' : '') + `" onclick="selectBread('tortilla', this)">
             <div class="option-name">Pain Tortilla</div>
             <div class="option-price">+$1.00 ($9.95)</div>
           </div>
-          <div class="option-card-label \${modalState.bread === 'naan' ? 'selected' : ''}" onclick="selectBread('naan', this)">
+          <div class="option-card-label ` + (modalState.bread === 'naan' ? 'selected' : '') + `" onclick="selectBread('naan', this)">
             <div class="option-name">Pain Naan Tandoor</div>
             <div class="option-price">+$2.00 ($10.95)</div>
           </div>
@@ -1954,11 +1981,11 @@ function buildDynamicCustomizer(dish) {
           <small style="color: #FF5500;">Trio: +$5.30</small>
         </div>
         <div style="display: flex; gap: 10px;">
-          <div class="option-card-label \${modalState.format === 'solo' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('solo', this)">
+          <div class="option-card-label ` + (modalState.format === 'solo' ? 'selected' : '') + `" style="flex: 1;" onclick="selectFormat('solo', this)">
             <div class="option-name">Seul (Solo)</div>
             <div class="option-price" id="lblSoloPrice">$8.95 CAD</div>
           </div>
-          <div class="option-card-label \${modalState.format === 'trio' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('trio', this)">
+          <div class="option-card-label ` + (modalState.format === 'trio' ? 'selected' : '') + `" style="flex: 1;" onclick="selectFormat('trio', this)">
             <div class="option-name">Formule Trio 🍟🥤</div>
             <div class="option-price" id="lblTrioPrice">+$5.30 (Dès $14.25)</div>
           </div>
@@ -1966,14 +1993,14 @@ function buildDynamicCustomizer(dish) {
       </div>
 
       <!-- Step 3: Trio Options (Only if Trio Selected) -->
-      <div id="trioOptionsSection" style="display: \${modalState.format === 'trio' ? 'flex' : 'none'}; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
+      <div id="trioOptionsSection" style="display: ` + (modalState.format === 'trio' ? 'flex' : 'none') + `; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
         <div>
           <div class="customizer-section-title">
             <span style="color: #E5A93C;">Accompagnement Trio (Inclus)</span>
           </div>
           <div style="display: flex; gap: 8px;">
-            <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
-            <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+            <div class="chip-tag ` + (modalState.trioSide === 'frites' ? 'selected' : '') + `" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
+            <div class="chip-tag ` + (modalState.trioSide === 'patates' ? 'selected' : '') + `" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
           </div>
         </div>
 
@@ -1982,12 +2009,12 @@ function buildDynamicCustomizer(dish) {
             <span style="color: #E5A93C;">Boisson Trio Incluse (Canette)</span>
           </div>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <div class="chip-tag \${modalState.trioDrink === 'pepsi' ? 'selected' : ''}" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
-            <div class="chip-tag \${modalState.trioDrink === 'diet' ? 'selected' : ''}" onclick="selectTrioDrink('diet', this)">🥤 Pepsi Diète</div>
-            <div class="chip-tag \${modalState.trioDrink === '7up' ? 'selected' : ''}" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
-            <div class="chip-tag \${modalState.trioDrink === 'crush' ? 'selected' : ''}" onclick="selectTrioDrink('crush', this)">🥤 Crush Orange</div>
-            <div class="chip-tag \${modalState.trioDrink === 'nestea' ? 'selected' : ''}" onclick="selectTrioDrink('nestea', this)">🥤 Nestea</div>
-            <div class="chip-tag \${modalState.trioDrink === 'eau' ? 'selected' : ''}" onclick="selectTrioDrink('eau', this)">💧 Bouteille d'Eau</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'pepsi' ? 'selected' : '') + `" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'diet' ? 'selected' : '') + `" onclick="selectTrioDrink('diet', this)">🥤 Pepsi Diète</div>
+            <div class="chip-tag ` + (modalState.trioDrink === '7up' ? 'selected' : '') + `" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'crush' ? 'selected' : '') + `" onclick="selectTrioDrink('crush', this)">🥤 Crush Orange</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'nestea' ? 'selected' : '') + `" onclick="selectTrioDrink('nestea', this)">🥤 Nestea</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'eau' ? 'selected' : '') + `" onclick="selectTrioDrink('eau', this)">💧 Bouteille d'Eau</div>
           </div>
         </div>
       </div>
@@ -2042,21 +2069,21 @@ function buildDynamicCustomizer(dish) {
           <small style="color: #FF5500;">Au Choix</small>
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div class="option-card-label \${modalState.curryCombo === 'base' ? 'selected' : ''}" onclick="selectCurryCombo('base', this)">
+          <div class="option-card-label ` + (modalState.curryCombo === 'base' ? 'selected' : '') + `" onclick="selectCurryCombo('base', this)">
             <div class="option-name">Bol Seul (Sans Accompagnement)</div>
-            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+            <div class="option-price">$` + base.toFixed(2) + ` CAD</div>
           </div>
-          <div class="option-card-label \${modalState.curryCombo === 'combo1' ? 'selected' : ''}" onclick="selectCurryCombo('combo1', this)">
+          <div class="option-card-label ` + (modalState.curryCombo === 'combo1' ? 'selected' : '') + `" onclick="selectCurryCombo('combo1', this)">
             <div class="option-name">COMBO 1 : Bol + Riz Basmati 🍚</div>
-            <div class="option-price">$\${c1.toFixed(2)} CAD</div>
+            <div class="option-price">$` + c1.toFixed(2) + ` CAD</div>
           </div>
-          <div class="option-card-label \${modalState.curryCombo === 'combo2' ? 'selected' : ''}" onclick="selectCurryCombo('combo2', this)">
+          <div class="option-card-label ` + (modalState.curryCombo === 'combo2' ? 'selected' : '') + `" onclick="selectCurryCombo('combo2', this)">
             <div class="option-name">COMBO 2 : Bol + Riz + Naan Fromage 🫓🧀</div>
-            <div class="option-price">$\${c2.toFixed(2)} CAD</div>
+            <div class="option-price">$` + c2.toFixed(2) + ` CAD</div>
           </div>
-          <div class="option-card-label \${modalState.curryCombo === 'combo3' ? 'selected' : ''}" onclick="selectCurryCombo('combo3', this)">
+          <div class="option-card-label ` + (modalState.curryCombo === 'combo3' ? 'selected' : '') + `" onclick="selectCurryCombo('combo3', this)">
             <div class="option-name">COMBO 3 : Bol + Riz + Naan Fromage + Boisson 🥤</div>
-            <div class="option-price">$\${c3.toFixed(2)} CAD</div>
+            <div class="option-price">$` + c3.toFixed(2) + ` CAD</div>
           </div>
         </div>
       </div>
@@ -2074,13 +2101,13 @@ function buildDynamicCustomizer(dish) {
           <span>Option Boisson Fraîche</span>
         </div>
         <div style="display: flex; gap: 10px;">
-          <div class="option-card-label \${!modalState.plateDrink ? 'selected' : ''}" style="flex: 1;" onclick="selectPlateDrink(false, this)">
+          <div class="option-card-label ` + (!modalState.plateDrink ? 'selected' : '') + `" style="flex: 1;" onclick="selectPlateDrink(false, this)">
             <div class="option-name">Assiette Seule</div>
-            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+            <div class="option-price">$` + base.toFixed(2) + ` CAD</div>
           </div>
-          <div class="option-card-label \${modalState.plateDrink ? 'selected' : ''}" style="flex: 1;" onclick="selectPlateDrink(true, this)">
+          <div class="option-card-label ` + (modalState.plateDrink ? 'selected' : '') + `" style="flex: 1;" onclick="selectPlateDrink(true, this)">
             <div class="option-name">Avec Boisson 🥤</div>
-            <div class="option-price">$\${withDrink.toFixed(2)} CAD</div>
+            <div class="option-price">$` + withDrink.toFixed(2) + ` CAD</div>
           </div>
         </div>
       </div>
@@ -2090,10 +2117,10 @@ function buildDynamicCustomizer(dish) {
           <span>Choix de Salade (Incluse avec Riz & Pain Kebab)</span>
         </div>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <div class="chip-tag \${modalState.plateSalad === 'maison' ? 'selected' : ''}" onclick="selectPlateSalad('maison', this)">🥗 Salade Maison</div>
-          <div class="chip-tag \${modalState.plateSalad === 'chou' ? 'selected' : ''}" onclick="selectPlateSalad('chou', this)">🥗 Salade de Chou</div>
-          <div class="chip-tag \${modalState.plateSalad === 'macaroni' ? 'selected' : ''}" onclick="selectPlateSalad('macaroni', this)">🥗 Salade Macaroni</div>
-          <div class="chip-tag \${modalState.plateSalad === 'nouilles' ? 'selected' : ''}" onclick="selectPlateSalad('nouilles', this)">🍜 Nouilles Légumes Sautés</div>
+          <div class="chip-tag ` + (modalState.plateSalad === 'maison' ? 'selected' : '') + `" onclick="selectPlateSalad('maison', this)">🥗 Salade Maison</div>
+          <div class="chip-tag ` + (modalState.plateSalad === 'chou' ? 'selected' : '') + `" onclick="selectPlateSalad('chou', this)">🥗 Salade de Chou</div>
+          <div class="chip-tag ` + (modalState.plateSalad === 'macaroni' ? 'selected' : '') + `" onclick="selectPlateSalad('macaroni', this)">🥗 Salade Macaroni</div>
+          <div class="chip-tag ` + (modalState.plateSalad === 'nouilles' ? 'selected' : '') + `" onclick="selectPlateSalad('nouilles', this)">🍜 Nouilles Légumes Sautés</div>
         </div>
       </div>
 
@@ -2102,8 +2129,8 @@ function buildDynamicCustomizer(dish) {
           <span>Choix d'Accompagnement Chaud</span>
         </div>
         <div style="display: flex; gap: 8px;">
-          <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
-          <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+          <div class="chip-tag ` + (modalState.trioSide === 'frites' ? 'selected' : '') + `" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
+          <div class="chip-tag ` + (modalState.trioSide === 'patates' ? 'selected' : '') + `" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
         </div>
       </div>
     `;
@@ -2119,25 +2146,25 @@ function buildDynamicCustomizer(dish) {
           <span>Format</span>
         </div>
         <div style="display: flex; gap: 10px;">
-          <div class="option-card-label \${modalState.format === 'solo' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('solo', this)">
+          <div class="option-card-label ` + (modalState.format === 'solo' ? 'selected' : '') + `" style="flex: 1;" onclick="selectFormat('solo', this)">
             <div class="option-name">Seul (Solo)</div>
-            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+            <div class="option-price">$` + base.toFixed(2) + ` CAD</div>
           </div>
-          <div class="option-card-label \${modalState.format === 'trio' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('trio', this)">
+          <div class="option-card-label ` + (modalState.format === 'trio' ? 'selected' : '') + `" style="flex: 1;" onclick="selectFormat('trio', this)">
             <div class="option-name">Formule Trio 🍟🥤</div>
-            <div class="option-price">$\${trio.toFixed(2)} CAD</div>
+            <div class="option-price">$` + trio.toFixed(2) + ` CAD</div>
           </div>
         </div>
       </div>
 
-      <div id="trioOptionsSection" style="display: \${modalState.format === 'trio' ? 'flex' : 'none'}; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
+      <div id="trioOptionsSection" style="display: ` + (modalState.format === 'trio' ? 'flex' : 'none') + `; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
         <div>
           <div class="customizer-section-title">
             <span style="color: #E5A93C;">Accompagnement Trio (Inclus)</span>
           </div>
           <div style="display: flex; gap: 8px;">
-            <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites</div>
-            <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+            <div class="chip-tag ` + (modalState.trioSide === 'frites' ? 'selected' : '') + `" onclick="selectTrioSide('frites', this)">🍟 Frites</div>
+            <div class="chip-tag ` + (modalState.trioSide === 'patates' ? 'selected' : '') + `" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
           </div>
         </div>
         <div>
@@ -2145,9 +2172,9 @@ function buildDynamicCustomizer(dish) {
             <span style="color: #E5A93C;">Boisson Incluse</span>
           </div>
           <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-            <div class="chip-tag \${modalState.trioDrink === 'pepsi' ? 'selected' : ''}" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
-            <div class="chip-tag \${modalState.trioDrink === '7up' ? 'selected' : ''}" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
-            <div class="chip-tag \${modalState.trioDrink === 'eau' ? 'selected' : ''}" onclick="selectTrioDrink('eau', this)">💧 Eau</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'pepsi' ? 'selected' : '') + `" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
+            <div class="chip-tag ` + (modalState.trioDrink === '7up' ? 'selected' : '') + `" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
+            <div class="chip-tag ` + (modalState.trioDrink === 'eau' ? 'selected' : '') + `" onclick="selectTrioDrink('eau', this)">💧 Eau</div>
           </div>
         </div>
       </div>
@@ -2249,7 +2276,6 @@ function recalculateModalTotal() {
     total = currentRefDish.basePrice || 8.95;
   }
 
-  // Add extras
   modalState.extras.forEach(ext => { total += ext.price; });
 
   const priceEl = document.getElementById('refModalPrice');
@@ -2266,16 +2292,16 @@ function addCurrentDishToCart(andCheckout = false) {
 
   if (currentRefDish.cat === 'wraps') {
     const breadLbl = modalState.bread === 'naan' ? 'Pain Naan' : (modalState.bread === 'tortilla' ? 'Tortilla' : 'Pain Kebab');
-    const formatLbl = modalState.format === 'trio' ? `Trio (\${modalState.trioSide} + \${modalState.trioDrink})` : 'Seul';
-    customizedName += ` (\${breadLbl} - \${formatLbl})`;
+    const formatLbl = modalState.format === 'trio' ? ('Trio (' + modalState.trioSide + ' + ' + modalState.trioDrink + ')') : 'Seul';
+    customizedName += ' (' + breadLbl + ' - ' + formatLbl + ')';
   } else if (currentRefDish.cat === 'curry') {
     if (modalState.curryCombo === 'combo1') customizedName += ' (Combo 1: +Riz)';
     else if (modalState.curryCombo === 'combo2') customizedName += ' (Combo 2: +Riz +Naan Fromage)';
     else if (modalState.curryCombo === 'combo3') customizedName += ' (Combo 3: +Riz +Naan Fromage +Boisson)';
   } else if (currentRefDish.cat === 'assiettes') {
-    customizedName += modalState.plateDrink ? ` (Avec Boisson - \${modalState.plateSalad})` : ` (\${modalState.plateSalad})`;
+    customizedName += modalState.plateDrink ? (' (Avec Boisson - ' + modalState.plateSalad + ')') : (' (' + modalState.plateSalad + ')');
   } else if (modalState.format === 'trio') {
-    customizedName += ` (Trio \${modalState.trioSide} + \${modalState.trioDrink})`;
+    customizedName += ' (Trio ' + modalState.trioSide + ' + ' + modalState.trioDrink + ')';
   }
 
   cart.push({
@@ -2314,13 +2340,13 @@ function updateCartUI() {
       container.innerHTML = cart.map((item, idx) => `
         <div style="display: flex; align-items: center; justify-content: space-between; background: #181822; padding: 12px; border-radius: 14px; margin-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="\${item.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+            <img src="` + item.img + `" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
             <div>
-              <div style="font-size: 13px; font-weight: 800;">\${item.name}</div>
-              <div style="font-size: 12px; color: #FF5500;">$\${item.price.toFixed(2)} CAD</div>
+              <div style="font-size: 13px; font-weight: 800;">` + item.name + `</div>
+              <div style="font-size: 12px; color: #FF5500;">$` + item.price.toFixed(2) + ` CAD</div>
             </div>
           </div>
-          <button onclick="removeFromCart(\${idx})" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>
+          <button onclick="removeFromCart(` + idx + `)" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>
         </div>
       `).join('');
     }
@@ -2360,16 +2386,21 @@ function checkoutOrder() {
   }
 
   const orderId = Math.floor(1000 + Math.random() * 9000);
+  const securityPin = Math.floor(1000 + Math.random() * 9000).toString();
   const total = cart.reduce((sum, item) => sum + item.price, 0) * 1.14975;
 
   const newOrder = {
     id: orderId,
-    customerName: clientProfile.name || "Client",
+    customerName: clientProfile.name || "Client Invité",
+    customerPhone: clientProfile.phone || "(819) 850-3972",
+    deliveryAddress: clientProfile.address || "Drummondville, QC",
+    fulfillment: document.getElementById('btnModeDelivery')?.classList.contains('active') ? 'delivery' : 'pickup',
     total: total,
-    status: 'new',
+    status: 'new', // new -> prep -> ready -> delivering -> completed
     items: [...cart],
-    pin: '2325',
-    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+    securityPin: securityPin,
+    createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }),
+    createdTimestamp: Date.now()
   };
 
   let allOrders = [];
@@ -2379,13 +2410,56 @@ function checkoutOrder() {
   } catch(e){}
   allOrders.unshift(newOrder);
   localStorage.setItem('lmdw_all_orders', JSON.stringify(allOrders));
+  localStorage.setItem('lmdw_last_order_id', orderId);
+
+  // Loyalty points accrued (1 pt per $1)
+  const earnedPts = Math.floor(total);
+  clientProfile.points += earnedPts;
+  document.getElementById('lblTopPoints').innerText = clientProfile.points + ' Pts';
+  document.getElementById('lblScanPointsVal').innerText = clientProfile.points + ' Pts';
 
   cart = [];
   updateCartUI();
   closeCartModal();
 
+  displayActiveOrderTracking(newOrder);
   switchTab('chat');
   showToast("🎉 Commande #" + orderId + " transmise à la cuisine !", "✅");
+}
+
+function displayActiveOrderTracking(order) {
+  const noOrderEl = document.getElementById('noActiveOrderMsg');
+  const activeEl = document.getElementById('activeOrderDisplay');
+
+  if (!order) {
+    if (noOrderEl) noOrderEl.style.display = 'block';
+    if (activeEl) activeEl.style.display = 'none';
+    return;
+  }
+
+  if (noOrderEl) noOrderEl.style.display = 'none';
+  if (activeEl) activeEl.style.display = 'block';
+
+  document.getElementById('lblTrackOrderId').innerText = 'Commande #' + order.id;
+  document.getElementById('lblTrackSecurityPin').innerText = order.securityPin || '----';
+
+  const statusMap = {
+    new: 'Reçue en Cuisine',
+    prep: 'En Préparation',
+    ready: (order.fulfillment === 'delivery' ? 'Prêt - En attente livreur' : 'Prêt pour Cueillette'),
+    delivering: 'En Cours de Livraison 🛵',
+    completed: 'Livrée & Complétée ✅'
+  };
+
+  document.getElementById('lblTrackStatus').innerText = statusMap[order.status] || 'En Cuisine';
+
+  const itemsSummary = order.items.map(it => '• ' + it.name).join('<br>');
+  document.getElementById('lblTrackDetails').innerHTML = `
+    <strong>Mode :</strong> ` + (order.fulfillment === 'delivery' ? '🛵 Livraison à Domicile' : '🛍️ Cueillette au Comptoir') + `<br>
+    <strong>Adresse :</strong> ` + order.deliveryAddress + `<br>
+    <strong>Total :</strong> $` + order.total.toFixed(2) + ` CAD<br>
+    <strong>Articles :</strong><br>` + itemsSummary + `
+  `;
 }
 
 function switchTab(tabId) {
@@ -2402,8 +2476,23 @@ function switchTab(tabId) {
   if (tabId === 'scan') {
     const canvas = document.getElementById('hubQrCanvas');
     if (canvas && typeof QRCode !== 'undefined') {
-      QRCode.toCanvas(canvas, 'LMDW-MEMBER-WALKSE-50', { width: 180, margin: 1 });
+      const code = 'LMDW-MEMBRE-' + (clientProfile.name.toUpperCase().replace(/\s+/g, '')) + '-' + clientProfile.points;
+      QRCode.toCanvas(canvas, code, { width: 180, margin: 1 });
+      document.getElementById('lblMemberCode').innerText = code;
     }
+  }
+
+  if (tabId === 'chat') {
+    // Check latest order status
+    try {
+      const raw = localStorage.getItem('lmdw_all_orders');
+      if (raw) {
+        const orders = JSON.parse(raw);
+        if (orders && orders.length > 0) {
+          displayActiveOrderTracking(orders[0]);
+        }
+      }
+    } catch(e){}
   }
 }
 
@@ -2429,6 +2518,7 @@ function editProfileDetails() {
     clientProfile.name = newName;
     document.getElementById('profileCardName').innerText = newName;
     document.getElementById('headerUserInitial').innerText = newName.charAt(0).toUpperCase();
+    document.getElementById('profileAvatarBig').innerText = newName.charAt(0).toUpperCase();
     document.getElementById('greetingUserTitle').innerText = (currentLanguage === 'fr' ? 'Bonjour, ' : 'Hello, ') + newName;
     showToast("Profil mis à jour !", "👤");
   }
@@ -2442,25 +2532,6 @@ function toggleLanguage(lang) {
   } else {
     document.getElementById('greetingUserTitle').innerText = 'Bonjour, ' + clientProfile.name;
     showToast("Langue changée en Français", "🌐");
-  }
-}
-
-function openOwnerSecurityModal() {
-  document.getElementById('ownerSecurityModal').classList.add('open');
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('open');
-}
-
-function verifyOwnerPin() {
-  const pin = document.getElementById('txtOwnerPin').value;
-  if (pin === '2325' || pin.toLowerCase() === 'admin') {
-    closeModal('ownerSecurityModal');
-    window.location.href = '/admin.html';
-  } else {
-    alert("Code PIN incorrect.");
   }
 }
 

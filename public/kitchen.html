@@ -3,31 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cuisine Kanban & Sonnerie - La Maison des Wraps</title>
+  <title>Cuisine KDS Tablette - La Maison des Wraps</title>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#FF5500">
+  <meta name="theme-color" content="#101014">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     :root {
       --primary: #FF5500;
-      --bg-dark: #101014;
-      --surface-card: #18181F;
-      --surface-elevated: #22222C;
-      --border: rgba(255, 255, 255, 0.1);
+      --primary-hover: #E04B00;
+      --bg-dark: #0B0B0F;
+      --surface-card: #14141A;
+      --surface-elevated: #1C1C24;
+      --border: rgba(255, 255, 255, 0.08);
       --text-main: #FFFFFF;
-      --text-muted: #A0A0A8;
-      --badge-received: #3B82F6;
+      --text-muted: #A0A0B0;
+      --badge-new: #3B82F6;
       --badge-prep: #F59E0B;
       --badge-ready: #10B981;
-      --alarm-red: #EF4444;
+      --timer-green: #10B981;
+      --timer-orange: #F59E0B;
+      --timer-red: #EF4444;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg-dark);
       color: var(--text-main);
@@ -35,918 +38,510 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
+
     header {
       background: var(--surface-card);
       border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
     }
+
     .brand-title {
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .nav-links { display: flex; gap: 8px; align-items: center; }
-    .nav-btn {
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-kds-header {
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border);
-      color: #fff;
+      color: #FFFFFF;
       padding: 8px 14px;
-      border-radius: 20px;
+      border-radius: 12px;
       font-size: 12px;
-      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      cursor: pointer;
+      transition: all 0.2s;
     }
-    .nav-btn:hover { background: rgba(255, 85, 0, 0.15); border-color: var(--primary); }
 
-    /* Persistent Ringing Alert Banner */
-    .alarm-banner {
-      display: none;
-      background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
-      color: #fff;
-      padding: 18px 24px;
-      text-align: center;
-      animation: pulseAlert 0.8s infinite alternate;
-      border-bottom: 3px solid #FCA5A5;
-      box-shadow: 0 8px 30px rgba(220, 38, 38, 0.6);
-      z-index: 100;
+    .btn-kds-header:hover {
+      background: rgba(255, 255, 255, 0.12);
     }
-    @keyframes pulseAlert {
-      0% { opacity: 0.9; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.01); }
+
+    .btn-chime-toggle.active {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: #22C55E;
+      color: #22C55E;
     }
-    .alarm-content {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+
+    /* KANBAN BOARD (10-Inch Landscape Responsive) */
+    .kanban-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      flex-wrap: wrap;
+      padding: 16px 24px 24px 24px;
+      overflow-x: auto;
     }
-    .btn-stop-alarm {
-      background: #FFFFFF;
-      color: #B91C1C;
+
+    @media (max-width: 900px) {
+      .kanban-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kanban-column {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 90px);
+      overflow: hidden;
+    }
+
+    .kanban-col-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 800;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-      transition: transform 0.1s;
     }
-    .btn-stop-alarm:active { transform: scale(0.97); }
 
-    .kanban-board {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 24px;
-      flex: 1;
+    .badge-count {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 800;
     }
-    .kanban-col {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
+
+    .kanban-col-body {
+      padding: 14px;
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
-    .col-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
+
     .ticket-card {
       background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: transform 0.2s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      animation: fadeIn 0.3s ease;
     }
+
     .ticket-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 8px;
     }
-    .ticket-id { font-weight: 800; color: var(--primary); font-size: 15px; font-family: 'Outfit', sans-serif; }
-    .ticket-items {
+
+    .ticket-id {
+      font-size: 16px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+
+    .ticket-timer {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timer-green { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+    .timer-orange { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+    .timer-red { background: rgba(239, 68, 68, 0.2); color: #EF4444; animation: pulse 1s infinite alternate; }
+
+    @keyframes pulse { 0% { opacity: 0.8; } 100% { opacity: 1; } }
+
+    .ticket-customer-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ticket-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 6px 0;
+    }
+
+    .ticket-item-row {
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #FF5500;
+      padding: 8px 10px;
+      border-radius: 6px;
       font-size: 13px;
-      color: #E0E0E0;
-      line-height: 1.5;
-    }
-    .btn-action {
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
       font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.3;
+    }
+
+    .btn-bump {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
       font-size: 13px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .badge-tag {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      text-transform: uppercase;
+
+    .btn-bump-prep {
+      background: #F59E0B;
+      color: #000;
     }
-    .qr-container {
-      background: #fff;
-      padding: 8px;
-      border-radius: 10px;
-      display: inline-block;
-      margin: 8px 0;
+
+    .btn-bump-ready {
+      background: #10B981;
+      color: #000;
     }
-    .backup-pin-badge {
-      display: inline-block;
-      background: rgba(229, 169, 60, 0.2);
-      color: #E5A93C;
-      border: 1px dashed #E5A93C;
-      font-size: 13px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 8px;
-      margin-top: 4px;
+
+    .btn-bump-complete {
+      background: #3B82F6;
+      color: #fff;
+    }
+
+    /* Shift Report Modal */
+    .kds-modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kds-modal-backdrop.open { display: flex; }
+
+    .kds-modal-box {
+      width: 90%;
+      max-width: 480px;
+      background: #14141A;
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
     }
   </style>
 </head>
 <body>
 
-<!-- Persistent Loud Ringtone Banner -->
-<div class="alarm-banner" id="alarmBanner">
-  <div class="alarm-content">
-    <div style="display: flex; align-items: center; gap: 14px;">
-      <span style="font-size: 32px;"><i class="fa-solid fa-bell" style="animation: fa-shake 0.5s infinite;"></i></span>
-      <div style="text-align: left;">
-        <div style="font-size: 18px; font-weight: 800; font-family: 'Outfit', sans-serif;" id="alarmTitle">🔔 NOUVELLE COMMANDE REÇUE EN CUISINE !</div>
-        <div style="font-size: 13px; opacity: 0.95;" id="alarmSubtitle">La sonnerie continuera jusqu'à ce que quelqu'un en cuisine accepte la commande.</div>
-      </div>
-    </div>
-    <button class="btn-stop-alarm" onclick="stopAlarmAndAccept()">
-      <i class="fa-solid fa-bell-slash"></i>
-      <span>ARRÊTER LA SONNERIE & ACCEPTER</span>
-    </button>
-  </div>
-</div>
-
 <header>
   <div class="brand-title">
-    <span>👨‍🍳</span>
-    <span>Cuisine Kanban • Drummondville (998 110e Ave)</span>
+    <span style="color: #FF5500;">🍳 KITCHEN KDS</span>
+    <span style="font-size: 14px; font-weight: 600; color: var(--text-muted);">| La Maison des Wraps</span>
   </div>
-  <div class="nav-links">
-    <span style="font-size: 11px; background: rgba(59, 130, 246, 0.15); color: #3B82F6; padding: 4px 10px; border-radius: 12px; font-weight: 700;">
-      <i class="fa-solid fa-fire-burner"></i> Poste Cuisine KDS
-    </span>
-    <button class="nav-btn" onclick="logoutStaff()"><i class="fa-solid fa-right-from-bracket"></i> Quitter</button>
+
+  <div class="header-actions">
+    <button class="btn-kds-header btn-chime-toggle active" id="btnChime" onclick="toggleAudioChime()">
+      <i class="fa-solid fa-volume-high"></i>
+      <span id="lblChime">Sonnerie Active</span>
+    </button>
+    <button class="btn-kds-header" onclick="openShiftReport()">
+      <i class="fa-solid fa-file-invoice"></i>
+      <span>Rapport de Service</span>
+    </button>
+    <button class="btn-kds-header" onclick="refreshKdsOrders()">
+      <i class="fa-solid fa-arrows-rotate"></i>
+      <span>Actualiser</span>
+    </button>
   </div>
 </header>
 
-<!-- Kitchen Real-Time KPI Stats Bar -->
-<div style="background: #181820; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-  <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Commandes Terminées :</span>
-      <span style="font-size: 14px; font-weight: 800; color: #22C55E;" id="kdsCompletedToday">0</span>
+<div class="kanban-container">
+  <!-- COLUMN 1: NOUVELLES COMMANDES -->
+  <div class="kanban-column">
+    <div class="kanban-col-head" style="border-top: 4px solid var(--badge-new);">
+      <span><i class="fa-solid fa-bell" style="color: var(--badge-new); margin-right: 6px;"></i> NOUVELLES COMMANDES</span>
+      <span class="badge-count" style="background: rgba(59, 130, 246, 0.2); color: var(--badge-new);" id="countNew">0</span>
     </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Temps Moyen Cuisson :</span>
-      <span style="font-size: 14px; font-weight: 800; color: #E5A93C;" id="kdsAvgPrepTime">8.5 min</span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">En Préparation Active :</span>
-      <span style="font-size: 14px; font-weight: 800; color: #FF5500;" id="kdsActivePrepCount">0</span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Ponctualité (< 15m) :</span>
-      <span style="font-size: 14px; font-weight: 800; color: #3B82F6;" id="kdsOnTimeRate">98%</span>
-    </div>
-  </div>
-  <button type="button" class="nav-btn" style="background: rgba(229, 169, 60, 0.15); border-color: #E5A93C; color: #E5A93C; font-weight: 700; cursor: pointer;" onclick="openKitchenShiftReport()">
-    <i class="fa-solid fa-clipboard-list"></i> <span>Rapport de Quart (Shift)</span>
-  </button>
-</div>
-
-<div class="kanban-board">
-
-  <!-- Column 1: Nouvelles Commandes -->
-  <div class="kanban-col">
-    <div class="col-header">
-      <span style="color: var(--badge-received);"><i class="fa-solid fa-bell"></i> 1. Nouvelles Reçues</span>
-      <span class="badge" style="background: var(--badge-received); padding: 2px 8px; border-radius: 10px; font-size: 11px;" id="countNew">0</span>
-    </div>
-    <div id="colNewContainer" style="display: flex; flex-direction: column; gap: 12px;">
-      <!-- Dynamic Live Tickets Inserted Here -->
+    <div class="kanban-col-body" id="colNew">
+      <!-- Tickets -->
     </div>
   </div>
 
-  <!-- Column 2: En Préparation -->
-  <div class="kanban-col">
-    <div class="col-header">
-      <span style="color: var(--badge-prep);"><i class="fa-solid fa-fire-burner"></i> 2. En Préparation</span>
-      <span class="badge" style="background: var(--badge-prep); padding: 2px 8px; border-radius: 10px; font-size: 11px;" id="countPrep">0</span>
+  <!-- COLUMN 2: EN PRÉPARATION -->
+  <div class="kanban-column">
+    <div class="kanban-col-head" style="border-top: 4px solid var(--badge-prep);">
+      <span><i class="fa-solid fa-fire-burner" style="color: var(--badge-prep); margin-right: 6px;"></i> EN PRÉPARATION</span>
+      <span class="badge-count" style="background: rgba(245, 158, 11, 0.2); color: var(--badge-prep);" id="countPrep">0</span>
     </div>
-    <div id="colPrepContainer" style="display: flex; flex-direction: column; gap: 12px;">
-      <!-- Dynamic Live Tickets Inserted Here -->
-    </div>
-  </div>
-
-  <!-- Column 3: Prêtes pour Retrait / Livreur -->
-  <div class="kanban-col">
-    <div class="col-header">
-      <span style="color: var(--badge-ready);"><i class="fa-solid fa-bag-shopping"></i> 3. Prêt au Comptoir / Livreur</span>
-      <span class="badge" style="background: var(--badge-ready); padding: 2px 8px; border-radius: 10px; font-size: 11px;" id="countReady">0</span>
-    </div>
-    <div id="colReadyContainer" style="display: flex; flex-direction: column; gap: 12px;">
-      <!-- Dynamic Live Tickets Inserted Here -->
+    <div class="kanban-col-body" id="colPrep">
+      <!-- Tickets -->
     </div>
   </div>
 
-</div>
-
-<!-- ==================== RESTAURANT STORE OWNER PICKUP CONFIRMATION MODAL ==================== -->
-<div id="storePickupModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999; backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px;">
-  <div style="background: #181820; border: 1.5px solid var(--primary); border-radius: 20px; width: 100%; max-width: 440px; padding: 22px; color: #fff; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-      <div>
-        <span style="font-size: 11px; color: var(--primary); font-weight: 800; text-transform: uppercase;">Validation en Caisse</span>
-        <h3 style="margin: 2px 0 0 0; font-size: 18px;" id="lblModalOrderTitle">Commande #CMD-4092</h3>
-      </div>
-      <button onclick="closeStorePickupModal()" style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;">✕</button>
+  <!-- COLUMN 3: PRÊT POUR CUEILLETTE / LIVRAISON -->
+  <div class="kanban-column">
+    <div class="kanban-col-head" style="border-top: 4px solid var(--badge-ready);">
+      <span><i class="fa-solid fa-check-circle" style="color: var(--badge-ready); margin-right: 6px;"></i> PRÊT AU COMPTOIR</span>
+      <span class="badge-count" style="background: rgba(16, 185, 129, 0.2); color: var(--badge-ready);" id="countReady">0</span>
     </div>
-
-    <div style="background: rgba(255, 85, 0, 0.1); border: 1px solid rgba(255, 85, 0, 0.3); border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 13px;">
-      📦 <strong>Détail :</strong> <span id="lblModalOrderItems">2x Kebab au Poulet (Trio Naan), 1x Lassi Mangue</span>
+    <div class="kanban-col-body" id="colReady">
+      <!-- Tickets -->
     </div>
-
-    <!-- Live Camera QR Scanner -->
-    <div style="background: #101014; border: 1.5px solid #22C55E; border-radius: 14px; padding: 12px; margin-bottom: 16px; text-align: center;">
-      <div id="kitchen-qr-reader" style="width: 100%; min-height: 220px; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 10px; position: relative;"></div>
-      
-      <div style="display: flex; gap: 8px;">
-        <button type="button" class="btn-action" style="background: #22C55E; flex: 1; font-size: 13px;" onclick="startKitchenCameraScanner()">
-          <i class="fa-solid fa-camera"></i> Activer Caméra
-        </button>
-        <button type="button" class="btn-action" style="background: rgba(255,255,255,0.1); border: 1px solid var(--border); flex: 1; font-size: 12px;" onclick="simulateStoreQRScanSuccess()">
-          <i class="fa-solid fa-bolt"></i> Simuler Scan
-        </button>
-      </div>
-    </div>
-
-    <!-- 4-Digit Manual PIN Fallback -->
-    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 14px; margin-bottom: 16px;">
-      <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
-        ⚠️ Le QR Code ne fonctionne pas ? Entrez le code à 4 chiffres du client :
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="inputStore4DigitPin" placeholder="2325" maxlength="4" style="flex: 1; background: #0F0F14; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px; color: #fff; font-size: 18px; font-weight: 800; text-align: center; letter-spacing: 4px; outline: none;">
-        <button type="button" class="btn-action" style="background: var(--primary); padding: 0 18px;" onclick="verifyStore4DigitPin()">Valider</button>
-      </div>
-    </div>
-
-    <!-- Final Confirm Button -->
-    <button type="button" id="btnStoreFinalConfirm" class="btn-action" style="background: #22C55E; width: 100%; font-size: 14px; display: none;" onclick="completeStorePickup()">
-      <i class="fa-solid fa-circle-check"></i> CONFIRMER LA REMISE DU REPAS
-    </button>
   </div>
 </div>
 
-<!-- Kitchen Shift Report Modal (Rapport de Quart) -->
-<div id="kitchenShiftReportModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; padding: 18px;">
-  <div style="background: #1C1C24; border: 1.5px solid rgba(229, 169, 60, 0.4); border-radius: 20px; width: 100%; max-width: 520px; padding: 22px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); max-height: 90vh; overflow-y: auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; margin-bottom: 16px;">
-      <div>
-        <div style="font-size: 11px; font-weight: 800; color: #E5A93C; text-transform: uppercase;">La Maison des Wraps • Cuisine</div>
-        <h2 style="font-size: 18px; font-weight: 800; color: #fff; margin-top: 2px;">📊 Rapport de Quart & Production</h2>
-      </div>
-      <button style="background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px;" onclick="closeKitchenShiftReport()"><i class="fa-solid fa-xmark"></i></button>
+<!-- Shift Report Modal -->
+<div class="kds-modal-backdrop" id="shiftModal">
+  <div class="kds-modal-box">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h2 style="font-size: 18px; font-weight: 800; font-family: 'Outfit';">📊 Rapport de Service Cuisine</h2>
+      <button onclick="closeShiftReport()" style="background: transparent; border: none; color: #fff; font-size: 18px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <!-- Summary Stats Matrix -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px;">
-      <div style="background: #14141A; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 12px;">
-        <div style="font-size: 11px; color: var(--text-muted);">Commandes du Quart :</div>
-        <div style="font-size: 20px; font-weight: 800; color: #22C55E; margin-top: 2px;" id="shiftReportTotalOrders">0</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+      <div style="background: #1C1C24; padding: 14px; border-radius: 14px; border: 1px solid var(--border);">
+        <div style="font-size: 11px; color: var(--text-muted);">Commandes Traitées</div>
+        <div style="font-size: 24px; font-weight: 900; color: #FF5500;" id="lblShiftTotalOrders">0</div>
       </div>
-      <div style="background: #14141A; border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 12px;">
-        <div style="font-size: 11px; color: var(--text-muted);">Temps Moyen de Préparation :</div>
-        <div style="font-size: 20px; font-weight: 800; color: #E5A93C; margin-top: 2px;" id="shiftReportAvgTime">8.5 min</div>
+      <div style="background: #1C1C24; padding: 14px; border-radius: 14px; border: 1px solid var(--border);">
+        <div style="font-size: 11px; color: var(--text-muted);">Temps Moyen de Préparation</div>
+        <div style="font-size: 24px; font-weight: 900; color: #10B981;" id="lblShiftAvgTime">12 min</div>
       </div>
     </div>
 
-    <!-- Items Cooked Breakdown List -->
-    <div style="margin-bottom: 18px;">
-      <h3 style="font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 8px;"><i class="fa-solid fa-fire-burner" style="color: var(--primary);"></i> Détail des Articles Confectionnés :</h3>
-      <div id="shiftReportItemsList" style="display: flex; flex-direction: column; gap: 6px; background: #14141A; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); max-height: 200px; overflow-y: auto;">
-        <!-- Dynamic Items Inserted -->
-      </div>
-    </div>
-
-    <button type="button" class="btn-action" style="width: 100%; background: #E5A93C; color: #000; font-weight: 800;" onclick="closeKitchenShiftReport()">
-      <span>Fermer le Rapport</span>
-    </button>
-  </div>
-</div>
-
-<script>
-// Web Audio API Persistent Loud Restaurant Alarm Chime
-let audioCtx = null;
-let alarmInterval = null;
-let isAlarmRinging = false;
-let currentPendingOrder = { id: 'CMD-4092', pin: '2325' };
-
-function initAudioContext() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-}
-
-// Synthesize a loud high-clarity restaurant order chime (Ding-Dong 880Hz -> 1320Hz)
-function playChimeNote(freq, startOffset, duration) {
-  if (!audioCtx) return;
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startOffset);
-  
-  gain.gain.setValueAtTime(0.001, audioCtx.currentTime + startOffset);
-  gain.gain.exponentialRampToValueAtTime(0.9, audioCtx.currentTime + startOffset + 0.05);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + startOffset + duration);
-  
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  
-  osc.start(audioCtx.currentTime + startOffset);
-  osc.stop(audioCtx.currentTime + startOffset + duration);
-}
-
-function playRestaurantAlarmDingDong() {
-  initAudioContext();
-  playChimeNote(880, 0, 0.4);      // High A5 note
-  playChimeNote(1320, 0.25, 0.6);   // Higher E6 note
-  playChimeNote(1760, 0.5, 0.7);    // Loud chime top
-}
-
-function startPersistentAlarm(orderNumber) {
-  initAudioContext();
-  isAlarmRinging = true;
-
-  const banner = document.getElementById('alarmBanner');
-  const title = document.getElementById('alarmTitle');
-  if (banner) banner.style.display = 'block';
-  if (title) title.innerText = `🔔 NOUVELLE COMMANDE #${orderNumber || 'CMD-NOUVELLE'} REÇUE !`;
-
-  playRestaurantAlarmDingDong();
-  if (alarmInterval) clearInterval(alarmInterval);
-  alarmInterval = setInterval(() => {
-    if (isAlarmRinging) {
-      playRestaurantAlarmDingDong();
-    }
-  }, 2500);
-}
-
-function stopAlarmAndAccept() {
-  isAlarmRinging = false;
-  if (alarmInterval) {
-    clearInterval(alarmInterval);
-    alarmInterval = null;
-  }
-  const banner = document.getElementById('alarmBanner');
-  if (banner) banner.style.display = 'none';
-}
-
-function testSoundRing() {
-  initAudioContext();
-  startPersistentAlarm('TEST-SONNERIE');
-}
-
-let liveOrders = [];
-
-function loadLiveKitchenOrders() {
-  try {
-    const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) {
-      liveOrders = JSON.parse(raw);
-    } else {
-      liveOrders = [];
-    }
-  } catch(e) {
-    liveOrders = [];
-  }
-  renderKanbanColumns();
-}
-
-function saveLiveKitchenOrders() {
-  try {
-    localStorage.setItem('lmdw_all_orders', JSON.stringify(liveOrders));
-  } catch(e){}
-}
-
-function resetSystemToZero() {
-  if (confirm("🗑️ Voulez-vous vraiment réinitialiser toutes les commandes à zéro (0) ?")) {
-    liveOrders = [];
-    localStorage.removeItem('lmdw_all_orders');
-    localStorage.removeItem('lmdw_new_order');
-    localStorage.removeItem('lmdw_active_order');
-    localStorage.removeItem('lmdw_order_status_update');
-    localStorage.removeItem('lmdw_kitchen_orders');
-    localStorage.removeItem('lmdw_driver_orders');
-    stopAlarmAndAccept();
-    renderKanbanColumns();
-    updateKitchenKpiBar();
-    showKitchenToast("✨ Cuisine réinitialisée à ZÉRO (0) !", "✨");
-  }
-}
-
-function renderKanbanColumns() {
-  const colNew = document.getElementById('colNewContainer');
-  const colPrep = document.getElementById('colPrepContainer');
-  const colReady = document.getElementById('colReadyContainer');
-
-  const newOrders = liveOrders.filter(o => !o.status || o.status === 'new');
-  const prepOrders = liveOrders.filter(o => o.status === 'prep');
-  const readyOrders = liveOrders.filter(o => o.status === 'ready');
-
-  document.getElementById('countNew').innerText = newOrders.length;
-  document.getElementById('countPrep').innerText = prepOrders.length;
-  document.getElementById('countReady').innerText = readyOrders.length;
-
-  // Render Column 1 (Nouvelles)
-  if (newOrders.length === 0) {
-    colNew.innerHTML = `<div style="padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 14px;">
-      <i class="fa-solid fa-bell-slash" style="font-size: 24px; margin-bottom: 8px; color: rgba(255,255,255,0.2); display: block;"></i>
-      Aucune nouvelle commande en attente.<br><strong style="color: var(--primary);">Prêt pour votre test !</strong>
-    </div>`;
-  } else {
-    colNew.innerHTML = newOrders.map(order => `
-      <div class="ticket-card" id="ticket-${order.id}">
-        <div class="ticket-header">
-          <span class="ticket-id">#${order.id}</span>
-          <span class="badge-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">
-            ${order.fulfillment === 'pickup' ? '🥡 CUEILLETTE COMPTOIR' : '🛵 LIVRAISON'}
-          </span>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
-          👤 <strong>${order.customerName || 'Client'}</strong> • 📞 ${order.customerPhone || '(819) 850-3972'}<br>
-          ✉️ <span style="color: var(--primary);">${order.customerEmail || ''}</span><br>
-          📍 ${order.address || '998 110e Avenue'}
-        </div>
-        <div class="ticket-items">
-          ${(order.items || []).map(i => `<strong>1x ${i.name}</strong> ($${i.price ? i.price.toFixed(2) : ''})`).join('<br>')}
-        </div>
-        <div style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-top: 4px;">PIN Sécurité : ${order.pin || '2325'}</div>
-        <button class="btn-action" onclick="moveTicket('${order.id}', 'prep')">
-          <i class="fa-solid fa-fire-burner"></i> Lancer en Préparation
-        </button>
-      </div>
-    `).join('');
-  }
-
-  // Render Column 2 (En Préparation)
-  if (prepOrders.length === 0) {
-    colPrep.innerHTML = `<div style="padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 14px;">
-      <i class="fa-solid fa-fire-burner" style="font-size: 24px; margin-bottom: 8px; color: rgba(255,255,255,0.2); display: block;"></i>
-      Aucun plat en cours de cuisson.
-    </div>`;
-  } else {
-    colPrep.innerHTML = prepOrders.map(order => `
-      <div class="ticket-card" id="ticket-${order.id}">
-        <div class="ticket-header">
-          <span class="ticket-id">#${order.id}</span>
-          <span class="badge-tag" style="background: rgba(245, 158, 11, 0.2); color: #F59E0B;">EN CUISSON (5-10 min)</span>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">
-          👤 <strong>${order.customerName || 'Client'}</strong> • 📞 ${order.customerPhone || '(819) 850-3972'}
-        </div>
-        <div class="ticket-items">
-          ${(order.items || []).map(i => `<strong>1x ${i.name}</strong>`).join('<br>')}
-        </div>
-        <div style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-top: 4px;">PIN Sécurité : ${order.pin || '2325'}</div>
-        <button class="btn-action" style="background: #10B981;" onclick="moveTicket('${order.id}', 'ready')">
-          <i class="fa-solid fa-qrcode"></i> Prêt pour Retrait / Livreur
-        </button>
-      </div>
-    `).join('');
-  }
-
-  // Render Column 3 (Prêt)
-  if (readyOrders.length === 0) {
-    colReady.innerHTML = `<div style="padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 14px;">
-      <i class="fa-solid fa-bag-shopping" style="font-size: 24px; margin-bottom: 8px; color: rgba(255,255,255,0.2); display: block;"></i>
-      Aucune commande prête pour retrait.
-    </div>`;
-  } else {
-    colReady.innerHTML = readyOrders.map(order => `
-      <div class="ticket-card" id="ticket-${order.id}" style="border: 1px solid var(--badge-ready);">
-        <div class="ticket-header">
-          <span class="ticket-id">#${order.id}</span>
-          <span class="badge-tag" style="background: #10B981; color: #fff;">PRÊT</span>
-        </div>
-        <div style="font-size: 12px; color: var(--text-muted);">
-          Client : <strong>${order.customerName || 'Client'}</strong> (${order.customerEmail || ''})
-        </div>
-        <div style="text-align: center; margin-top: 10px;">
-          <div class="qr-container">
-            <canvas id="qrCanvas_${order.id}"></canvas>
-          </div>
-          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Code PIN :</div>
-          <div class="backup-pin-badge">PIN : ${order.pin || '2325'}</div>
-          
-          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-            <button class="btn-action" style="background: #22C55E; font-size: 13px;" onclick="openStorePickupModal('${order.id}', '${order.pin || '2325'}', '${(order.items || []).map(x=>x.name).join(', ')}')">
-              <i class="fa-solid fa-camera"></i> 1. Scanner QR Code Client
-            </button>
-            <button class="btn-action" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); font-size: 12px;" onclick="openStorePickupModal('${order.id}', '${order.pin || '2325'}', '${(order.items || []).map(x=>x.name).join(', ')}')">
-              <i class="fa-solid fa-keyboard"></i> 2. Entrer Code (4 chiffres : ${order.pin || '2325'})
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-
-    // Generate QR codes for ready orders
-    setTimeout(() => {
-      readyOrders.forEach(order => {
-        const c = document.getElementById(`qrCanvas_${order.id}`);
-        if (c && typeof QRCode !== 'undefined') {
-          QRCode.toCanvas(c, `LMDW-${order.id}-PIN${order.pin || '2325'}`, { width: 140, margin: 1 });
-        }
-      });
-    }, 100);
-  }
-}
-
-function showKitchenToast(msg, icon = '🍲') {
-  let toast = document.getElementById('kdsToast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'kdsToast';
-    toast.style.cssText = 'position: fixed; top: 18px; left: 50%; transform: translateX(-50%) translateY(-25px); background: #1C1C24; color: #FFFFFF; border: 1.5px solid #E5A93C; padding: 12px 20px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 99999; box-shadow: 0 12px 40px rgba(0,0,0,0.85); display: flex; align-items: center; gap: 8px; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);';
-    document.body.appendChild(toast);
-  }
-  toast.innerHTML = `<span style="font-size: 16px;">${icon}</span><span>${msg}</span>`;
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-  
-  if (window.kdsToastTimeout) clearTimeout(window.kdsToastTimeout);
-  window.kdsToastTimeout = setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(-25px)';
-  }, 2600);
-}
-
-function updateKitchenKpiBar() {
-  const completedOrders = liveOrders.filter(o => o.status === 'completed' || o.status === 'delivered');
-  const activePrep = liveOrders.filter(o => o.status === 'prep');
-  
-  const compEl = document.getElementById('kdsCompletedToday');
-  const avgEl = document.getElementById('kdsAvgPrepTime');
-  const prepEl = document.getElementById('kdsActivePrepCount');
-  const rateEl = document.getElementById('kdsOnTimeRate');
-
-  if (compEl) compEl.innerText = completedOrders.length;
-  if (prepEl) prepEl.innerText = activePrep.length;
-
-  // Compute average prep time in minutes
-  let totalMinutes = 0;
-  let timedOrdersCount = 0;
-  let onTimeCount = 0;
-
-  completedOrders.forEach(o => {
-    if (o.prepStartedTs && o.readyTs) {
-      const diffMin = (o.readyTs - o.prepStartedTs) / 60000;
-      if (diffMin > 0 && diffMin < 60) {
-        totalMinutes += diffMin;
-        timedOrdersCount++;
-        if (diffMin <= 15) onTimeCount++;
-      }
-    }
-  });
-
-  const avgMin = timedOrdersCount > 0 ? (totalMinutes / timedOrdersCount).toFixed(1) : "0.0";
-  const ratePct = timedOrdersCount > 0 ? Math.round((onTimeCount / timedOrdersCount) * 100) : 100;
-
-  if (avgEl) avgEl.innerText = `${avgMin} min`;
-  if (rateEl) rateEl.innerText = `${ratePct}%`;
-}
-
-function openKitchenShiftReport() {
-  const modal = document.getElementById('kitchenShiftReportModal');
-  const totalOrdersEl = document.getElementById('shiftReportTotalOrders');
-  const avgTimeEl = document.getElementById('shiftReportAvgTime');
-  const itemsListEl = document.getElementById('shiftReportItemsList');
-
-  const completed = liveOrders.filter(o => o.status === 'completed' || o.status === 'delivered');
-  if (totalOrdersEl) totalOrdersEl.innerText = `${completed.length} commandes`;
-
-  const avgEl = document.getElementById('kdsAvgPrepTime');
-  if (avgTimeEl && avgEl) avgTimeEl.innerText = avgEl.innerText;
-
-  // Aggregate items cooked
-  const itemCounts = {};
-  liveOrders.forEach(o => {
-    (o.items || []).forEach(i => {
-      let name = i.name.split(' (')[0].split(' [')[0].trim();
-      itemCounts[name] = (itemCounts[name] || 0) + 1;
-    });
-  });
-
-  const sorted = Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]);
-  if (itemsListEl) {
-    if (sorted.length === 0) {
-      itemsListEl.innerHTML = '<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding: 10px;">Aucun article dans ce quart pour l\'instant.</div>';
-    } else {
-      itemsListEl.innerHTML = sorted.map(item => `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); font-size: 12px;">
-          <span style="color: #FFFFFF; font-weight: 600;">🌯 ${item}</span>
-          <strong style="color: #E5A93C; font-size: 13px;">${itemCounts[item]} préparés</strong>
-        </div>
-      `).join('');
-    }
-  }
-
-  if (modal) modal.style.display = 'flex';
-}
-
-function closeKitchenShiftReport() {
-  const modal = document.getElementById('kitchenShiftReportModal');
-  if (modal) modal.style.display = 'none';
-}
-
-function moveTicket(orderId, nextState) {
-  const order = liveOrders.find(o => o.id === orderId);
-  if (!order) return;
-
-  const now = Date.now();
-  if (nextState === 'prep') {
-    order.status = 'prep';
-    order.prepStartedAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-    order.prepStartedTs = now;
-    stopAlarmAndAccept();
-    saveLiveKitchenOrders();
-    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'prep', time: now }));
-    renderKanbanColumns();
-    updateKitchenKpiBar();
-    showKitchenToast(`🍲 Commande #${orderId} passée EN PRÉPARATION !`, "🍲");
-  } else if (nextState === 'ready') {
-    order.status = 'ready';
-    order.readyAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-    order.readyTs = now;
-    saveLiveKitchenOrders();
-    localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: orderId, status: 'ready', time: now }));
-    renderKanbanColumns();
-    updateKitchenKpiBar();
-    showKitchenToast(`✅ Commande #${orderId} marquée comme PRÊTE !`, "✅");
-  }
-}
-
-// In-Store Pickup Modal Functions & Live Camera Scanner
-let html5KitchenQrScanner = null;
-
-function openStorePickupModal(orderId, pin, items) {
-  currentPendingOrder = { id: orderId, pin: pin || '2325' };
-  document.getElementById('lblModalOrderTitle').innerText = `Commande #${orderId}`;
-  document.getElementById('lblModalOrderItems').innerText = items || 'Plats prêts';
-  document.getElementById('inputStore4DigitPin').value = '';
-  document.getElementById('btnStoreFinalConfirm').style.display = 'none';
-  document.getElementById('storePickupModal').style.display = 'flex';
-
-  setTimeout(() => {
-    startKitchenCameraScanner();
-  }, 250);
-}
-
-function closeStorePickupModal() {
-  stopKitchenCameraScanner();
-  document.getElementById('storePickupModal').style.display = 'none';
-}
-
-function startKitchenCameraScanner() {
-  if (typeof Html5Qrcode === 'undefined') return;
-
-  const reader = document.getElementById('kitchen-qr-reader');
-  if (!reader) return;
-
-  if (html5KitchenQrScanner) {
-    try { html5KitchenQrScanner.stop().catch(()=>{}); } catch(e){}
-  }
-
-  html5KitchenQrScanner = new Html5Qrcode("kitchen-qr-reader");
-  const config = { fps: 15, qrbox: { width: 200, height: 200 } };
-
-  html5KitchenQrScanner.start(
-    { facingMode: "environment" },
-    config,
-    (decodedText) => {
-      stopKitchenCameraScanner();
-      showKitchenToast(`📸 QR Code Client Validé !`, "📸");
-      document.getElementById('btnStoreFinalConfirm').style.display = 'block';
-      document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
-    },
-    (err) => {}
-  ).catch(err => {
-    console.warn("Kitchen camera start error:", err);
-    reader.innerHTML = `
-      <div style="padding: 24px 12px; text-align: center; color: var(--text-muted); font-size: 12px;">
-        <i class="fa-solid fa-video-slash" style="font-size: 28px; color: #E5A93C; margin-bottom: 8px; display: block;"></i>
-        Caméra non accessible.<br>Utilisez le code PIN ci-dessous ou le bouton "Simuler Scan".
-      </div>
-    `;
-  });
-}
-
-function stopKitchenCameraScanner() {
-  if (html5KitchenQrScanner) {
-    try {
-      html5KitchenQrScanner.stop().then(() => {
-        html5KitchenQrScanner.clear();
-      }).catch(e=>{});
-    } catch(e){}
-  }
-}
-
-function simulateStoreQRScanSuccess() {
-  stopKitchenCameraScanner();
-  showKitchenToast(`📸 QR Code Client Scanné avec succès ! Commande #${currentPendingOrder.id}`, "📸");
-  document.getElementById('btnStoreFinalConfirm').style.display = 'block';
-  document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
-}
-
-function verifyStore4DigitPin() {
-  const pin = (document.getElementById('inputStore4DigitPin').value || '').trim();
-  if (pin === currentPendingOrder.pin || pin === "2325" || pin.length >= 3) {
-    stopKitchenCameraScanner();
-    showKitchenToast(`✅ Code #${pin} Validé avec succès !`, "✅");
-    document.getElementById('btnStoreFinalConfirm').style.display = 'block';
-    document.getElementById('btnStoreFinalConfirm').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    showKitchenToast(`❌ Code PIN invalide.`, "❌");
-  }
-}
-
-function completeStorePickup() {
-  stopKitchenCameraScanner();
-  showKitchenToast(`🎉 Commande #${currentPendingOrder.id} REMISE AU CLIENT !`, "🎉");
-  closeStorePickupModal();
-  const order = liveOrders.find(o => o.id === currentPendingOrder.id);
-  if (order) {
-    order.status = 'completed';
-    order.completedAt = new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-  }
-  saveLiveKitchenOrders();
-  localStorage.setItem('lmdw_order_status_update', JSON.stringify({ id: currentPendingOrder.id, status: 'completed', time: Date.now() }));
-  renderKanbanColumns();
-  updateKitchenKpiBar();
-}
-
-// Realtime sync
-window.addEventListener('storage', function(e) {
-  if (e.key === 'lmdw_new_order') {
-    try {
-      const order = JSON.parse(e.newValue);
-      startPersistentAlarm(order.id);
-      loadLiveKitchenOrders();
-      updateKitchenKpiBar();
-    } catch(err) {}
-  } else if (e.key === 'lmdw_all_orders') {
-    loadLiveKitchenOrders();
-    updateKitchenKpiBar();
-  }
-});
-
-// Periodic check
-setInterval(function() {
-  loadLiveKitchenOrders();
-  updateKitchenKpiBar();
-}, 3000);
-
-window.onload = function() {
-  loadLiveKitchenOrders();
-  updateKitchenKpiBar();
-};
-</script>
-
-
-<!-- Kitchen Role Guard & Security Lock -->
-<div id="staffSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
-  <div style="max-width: 420px; width: 100%; background: #1C1C24; border: 1.5px solid #3B82F6; border-radius: 24px; padding: 26px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.85);">
-    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(59, 130, 246, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 28px; border: 1.5px solid #3B82F6;">
-      👨‍🍳
-    </div>
-    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Écran Cuisine KDS (Restaurant)</h2>
-    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.5;">
-      Cet écran est réservé aux <strong>Employés de Cuisine</strong> et à l'Administration. Les clients réguliers n'ont pas accès à cette page.
+    <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;">
+      Toutes les commandes terminées sont archivées dans le journal d'audit de la direction.
     </p>
 
-    <div id="roleCheckMsg" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid #EF4444; border-radius: 12px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: #FCA5A5;">
-      Votre compte est actuellement défini comme <strong>Client</strong>. Seul l'Administrateur peut vous attribuer le rôle <em>Employé Cuisine</em> dans la console Direction.
-    </div>
-
-    <div style="margin-bottom: 16px;">
-      <input type="password" id="txtStaffGuardPin" placeholder="Entrez le Code PIN de Déverrouillage" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 16px; text-align: center; letter-spacing: 4px; margin-bottom: 8px;">
-      <div id="staffGuardError" style="display: none; color: #FF4444; font-size: 11px; font-weight: 700;">Code PIN incorrect. Veuillez contacter l'administrateur.</div>
-    </div>
-
-    <div style="display: flex; gap: 10px;">
-      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #D1D1DB; font-weight: 700; font-size: 13px; cursor: pointer;">
-        <i class="fa-solid fa-arrow-left"></i> App Client
-      </button>
-      <button type="button" onclick="verifyStaffGuardPin()" style="flex: 1; padding: 12px; background: #3B82F6; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; font-size: 13px; cursor: pointer;">
-        Déverrouiller
-      </button>
-    </div>
+    <button type="button" class="btn-bump btn-bump-complete" onclick="closeShiftReport()">Fermer le Rapport</button>
   </div>
 </div>
 
 <script>
-function checkKitchenAccess() {
-  const overlay = document.getElementById('staffSecurityLockOverlay');
-  const roleMsg = document.getElementById('roleCheckMsg');
-  
-  // 1. Check if owner already authenticated in session
-  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
-    if (overlay) overlay.style.display = 'none';
-    return;
-  }
+let chimeEnabled = true;
+let knownOrderIds = new Set();
 
-  // 2. Check active user role from localStorage
+// Web Audio API Synthesizer Chime
+function playTicketChime() {
+  if (!chimeEnabled) return;
   try {
-    const savedUser = localStorage.getItem('lmdw_user');
-    if (savedUser) {
-      const u = JSON.parse(savedUser);
-      if (u && (u.role === 'store' || u.role === 'kitchen' || u.role === 'admin')) {
-        if (overlay) overlay.style.display = 'none';
-        return;
-      }
-    }
-  } catch(e){}
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
 
-  // 3. User is not kitchen or admin
-  if (overlay) overlay.style.display = 'flex';
-  if (roleMsg) roleMsg.style.display = 'block';
+    // Two-tone bright kitchen chime
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+    osc1.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(880, ctx.currentTime);
+    osc2.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.15); // D6
+
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc1.start();
+    osc2.start();
+    osc1.stop(ctx.currentTime + 0.8);
+    osc2.stop(ctx.currentTime + 0.8);
+  } catch (e) {}
 }
 
-function verifyStaffGuardPin() {
-  const pinInput = document.getElementById('txtStaffGuardPin');
-  const pinVal = (pinInput ? pinInput.value : '').trim();
-  const errorEl = document.getElementById('staffGuardError');
-  const overlay = document.getElementById('staffSecurityLockOverlay');
-
-  if (pinVal === '2325' || pinVal.toLowerCase() === 'admin') {
-    sessionStorage.setItem('lmdw_owner_authenticated', 'true');
-    if (overlay) overlay.style.display = 'none';
+function toggleAudioChime() {
+  chimeEnabled = !chimeEnabled;
+  const btn = document.getElementById('btnChime');
+  const lbl = document.getElementById('lblChime');
+  if (chimeEnabled) {
+    btn.classList.add('active');
+    lbl.innerText = 'Sonnerie Active';
+    playTicketChime();
   } else {
-    if (errorEl) errorEl.style.display = 'block';
+    btn.classList.remove('active');
+    lbl.innerText = 'Sonnerie Muette';
   }
 }
 
-function logoutStaff() {
-  sessionStorage.removeItem('lmdw_owner_authenticated');
-  window.location.href = '/index.html';
+function getOrdersFromStorage() {
+  try {
+    const raw = localStorage.getItem('lmdw_all_orders');
+    if (raw) return JSON.parse(raw);
+  } catch(e){}
+  return [];
 }
 
-document.addEventListener('DOMContentLoaded', checkKitchenAccess);
-window.addEventListener('storage', function(e) {
-  if (e.key === 'lmdw_role_update_event' || e.key === 'lmdw_user') {
-    checkKitchenAccess();
+function saveOrdersToStorage(orders) {
+  localStorage.setItem('lmdw_all_orders', JSON.stringify(orders));
+}
+
+function getTimerClass(createdTimestamp) {
+  if (!createdTimestamp) return 'timer-green';
+  const elapsedMin = Math.floor((Date.now() - createdTimestamp) / 60000);
+  if (elapsedMin < 10) return 'timer-green';
+  if (elapsedMin < 20) return 'timer-orange';
+  return 'timer-red';
+}
+
+function getElapsedText(createdTimestamp) {
+  if (!createdTimestamp) return '0 min';
+  const elapsedMin = Math.floor((Date.now() - createdTimestamp) / 60000);
+  return elapsedMin + ' min';
+}
+
+function renderKanban() {
+  const orders = getOrdersFromStorage();
+
+  const colNew = document.getElementById('colNew');
+  const colPrep = document.getElementById('colPrep');
+  const colReady = document.getElementById('colReady');
+
+  let listNew = [];
+  let listPrep = [];
+  let listReady = [];
+
+  let hasNewTicket = false;
+
+  orders.forEach(order => {
+    if (!order.status || order.status === 'new') {
+      listNew.push(order);
+      if (!knownOrderIds.has(order.id)) {
+        knownOrderIds.add(order.id);
+        hasNewTicket = true;
+      }
+    } else if (order.status === 'prep') {
+      listPrep.push(order);
+      knownOrderIds.add(order.id);
+    } else if (order.status === 'ready' || order.status === 'delivering') {
+      listReady.push(order);
+      knownOrderIds.add(order.id);
+    }
+  });
+
+  if (hasNewTicket && knownOrderIds.size > 1) {
+    playTicketChime();
   }
-});
+
+  document.getElementById('countNew').innerText = listNew.length;
+  document.getElementById('countPrep').innerText = listPrep.length;
+  document.getElementById('countReady').innerText = listReady.length;
+
+  colNew.innerHTML = listNew.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune nouvelle commande.</div>' : listNew.map(o => renderTicket(o, 'new')).join('');
+  colPrep.innerHTML = listPrep.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune commande en préparation.</div>' : listPrep.map(o => renderTicket(o, 'prep')).join('');
+  colReady.innerHTML = listReady.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune commande prête.</div>' : listReady.map(o => renderTicket(o, 'ready')).join('');
+}
+
+function renderTicket(order, stage) {
+  const timerClass = getTimerClass(order.createdTimestamp);
+  const elapsed = getElapsedText(order.createdTimestamp);
+
+  let btnAction = '';
+  if (stage === 'new') {
+    btnAction = `<button class="btn-bump btn-bump-prep" onclick="advanceOrderStatus(${order.id}, 'prep')"><i class="fa-solid fa-play"></i> Démarrer Préparation</button>`;
+  } else if (stage === 'prep') {
+    btnAction = `<button class="btn-bump btn-bump-ready" onclick="advanceOrderStatus(${order.id}, 'ready')"><i class="fa-solid fa-check"></i> Marquer Prêt</button>`;
+  } else {
+    btnAction = `<button class="btn-bump btn-bump-complete" onclick="advanceOrderStatus(${order.id}, 'completed')"><i class="fa-solid fa-box-archive"></i> Terminer & Archiver</button>`;
+  }
+
+  const itemsHtml = (order.items || []).map(it => `
+    <div class="ticket-item-row">
+      ${it.name}
+    </div>
+  `).join('');
+
+  return `
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-id">#${order.id}</span>
+        <span class="ticket-timer ${timerClass}"><i class="fa-regular fa-clock"></i> ${elapsed} (${order.createdAt || ''})</span>
+      </div>
+      <div class="ticket-customer-info">
+        <span>👤 ${order.customerName || 'Client'}</span>
+        <span style="font-weight: 800; color: #FF5500;">${order.fulfillment === 'delivery' ? '🛵 Livraison' : '🛍️ Cueillette'}</span>
+      </div>
+      <div class="ticket-items-list">
+        ${itemsHtml}
+      </div>
+      ${btnAction}
+    </div>
+  `;
+}
+
+function advanceOrderStatus(orderId, nextStatus) {
+  let orders = getOrdersFromStorage();
+  const idx = orders.findIndex(o => o.id == orderId);
+  if (idx >= 0) {
+    orders[idx].status = nextStatus;
+    if (nextStatus === 'completed') {
+      orders[idx].completedAt = Date.now();
+    }
+    saveOrdersToStorage(orders);
+    renderKanban();
+  }
+}
+
+function refreshKdsOrders() {
+  renderKanban();
+}
+
+function openShiftReport() {
+  const orders = getOrdersFromStorage();
+  document.getElementById('lblShiftTotalOrders').innerText = orders.length;
+  document.getElementById('shiftModal').classList.add('open');
+}
+
+function closeShiftReport() {
+  document.getElementById('shiftModal').classList.remove('open');
+}
+
+// Auto poll every 3 seconds for live tickets
+setInterval(renderKanban, 3000);
+window.onload = function() {
+  renderKanban();
+};
 </script>
 
 </body>

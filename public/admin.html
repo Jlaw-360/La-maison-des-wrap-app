@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tableau de Bord Exécutif & KPI - La Maison des Wraps</title>
+  <title>Direction & Administration - La Maison des Wraps</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0C0C0E">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root {
       --bg-main: #0C0C0E;
@@ -29,7 +30,9 @@
       --font-heading: 'Plus Jakarta Sans', sans-serif;
       --font-body: 'Inter', sans-serif;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg-main);
       color: var(--text-white);
@@ -38,6 +41,7 @@
       display: flex;
       flex-direction: column;
     }
+
     header {
       background: var(--bg-surface);
       border-bottom: 1px solid var(--border);
@@ -48,6 +52,7 @@
       flex-wrap: wrap;
       gap: 14px;
     }
+
     .brand-title {
       font-family: var(--font-heading);
       font-size: 16px;
@@ -56,1279 +61,650 @@
       align-items: center;
       gap: 10px;
     }
+
     .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
     .nav-btn {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 12px;
-      padding: 7px 12px;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border);
+      color: var(--text-body);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-    .nav-btn:hover { color: #fff; border-color: var(--primary); }
-    .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .nav-btn.active {
+      background: #FF5500;
+      color: #FFFFFF;
+      border-color: #FF5500;
+    }
 
     .admin-container {
-      max-width: 1100px;
+      padding: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
       width: 100%;
-      margin: 24px auto;
-      padding: 0 18px;
-      flex: 1;
       display: flex;
       flex-direction: column;
       gap: 24px;
     }
 
-    /* Period Filter Pills */
-    .period-filter-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 12px 16px;
-      border-radius: 14px;
-    }
-    .period-pills { display: flex; gap: 6px; }
-    .period-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .period-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    /* Executive KPI Grid */
+    /* KPI Row */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
+      gap: 16px;
     }
-    .kpi-card {
+
+    .kpi-box {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 20px;
+      padding: 20px;
       position: relative;
       overflow: hidden;
     }
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
-    }
-    .kpi-card.income::before { background: var(--accent-green); }
-    .kpi-card.delivery::before { background: var(--accent-blue); }
-    .kpi-card.pickup::before { background: var(--accent-gold); }
-    .kpi-card.aov::before { background: var(--accent-purple); }
 
-    .kpi-card h4 {
-      font-size: 11px;
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
-      font-weight: 700;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
     }
-    .kpi-card .val {
+
+    .kpi-value {
       font-family: var(--font-heading);
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 4px;
+      font-size: 28px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-top: 6px;
     }
-    .kpi-card .sub {
+
+    .kpi-sub {
       font-size: 11px;
-      color: var(--text-muted);
-    }
-    .badge-trend {
-      display: inline-flex;
+      color: var(--accent-green);
+      margin-top: 4px;
+      display: flex;
       align-items: center;
       gap: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 6px;
     }
-    .badge-trend.up { background: rgba(34, 197, 94, 0.15); color: #22C55E; }
 
-    /* Breakdown Section (Delivery vs Pickup + Taxes) */
-    .breakdown-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    @media(max-width: 768px) {
-      .breakdown-grid { grid-template-columns: 1fr; }
-    }
-    .breakdown-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-    }
-    .breakdown-card h3 {
-      font-size: 14px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .progress-bar-wrap {
-      background: var(--bg-surface);
-      height: 10px;
-      border-radius: 6px;
-      overflow: hidden;
-      margin: 12px 0 8px 0;
-      display: flex;
-    }
-    .progress-fill { height: 100%; }
-
-    /* Visual Performance Charts */
+    /* Analytics Chart Grid */
     .charts-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 2fr 1fr 1fr;
       gap: 16px;
     }
-    @media (max-width: 850px) {
+
+    @media (max-width: 1024px) {
       .charts-grid { grid-template-columns: 1fr; }
     }
+
     .chart-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chart-header h3 {
-      font-size: 14px;
+
+    .chart-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
       font-weight: 800;
-      color: #fff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
     }
-    .chart-container {
+
+    .chart-container-box {
       position: relative;
       height: 240px;
       width: 100%;
     }
 
-    /* AI Growth Recommendations Box */
-    .growth-card {
-      background: linear-gradient(135deg, rgba(255, 85, 0, 0.08) 0%, rgba(229, 169, 60, 0.05) 100%);
-      border: 1.5px solid rgba(255, 85, 0, 0.3);
-      border-radius: 18px;
-      padding: 20px;
-    }
-    .growth-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .growth-header h3 {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .action-matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 12px;
-    }
-    .action-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .action-box h4 {
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .action-box p {
-      font-size: 11px;
-      color: var(--text-body);
-      line-height: 1.4;
-    }
-    .action-box .impact-tag {
-      align-self: flex-start;
-      font-size: 10px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-top: 4px;
-    }
-
-    /* Users & Roles Management Table */
-    .users-table-card {
+    /* Table Sections */
+    .table-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 20px;
-    }
-    .table-header-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      gap: 12px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 14px;
     }
-    .search-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 1;
-      max-width: 320px;
-    }
-    .search-box input {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
+
+    table {
       width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
     }
-    .user-list { display: flex; flex-direction: column; gap: 10px; }
-    .user-row {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      display: flex;
-      justify-content: space-between;
+
+    th {
+      text-align: left;
+      padding: 12px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-body);
+    }
+
+    .status-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
     }
-    .user-info { display: flex; align-items: center; gap: 12px; }
-    .user-avatar {
-      width: 40px;
-      height: 40px;
+
+    .status-in-stock { background: rgba(34, 197, 94, 0.15); color: #22C55E; }
+    .status-86 { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+
+    /* Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #242430;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
       border-radius: 50%;
-      background: rgba(255, 85, 0, 0.15);
-      color: var(--primary);
+    }
+
+    input:checked + .slider { background-color: #FF5500; }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* Security PIN Modal */
+    .admin-auth-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(12, 12, 14, 0.96);
+      backdrop-filter: blur(20px);
+      z-index: 99999;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      font-weight: 800;
     }
-    .user-details h3 { font-size: 14px; font-weight: 700; }
-    .user-details p { font-size: 11px; color: var(--text-muted); }
-    .role-select {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      outline: none;
-    }
-    .save-role-btn {
-      background: var(--primary);
-      border: none;
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+
+    .auth-box {
+      width: 90%;
+      max-width: 400px;
+      background: #181820;
+      border: 1.5px solid #FF5500;
+      border-radius: 26px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.9);
     }
   </style>
 </head>
 <body>
 
+<!-- Security PIN Gate -->
+<div class="admin-auth-overlay" id="adminPinGate">
+  <div class="auth-box">
+    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255,85,0,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 24px; color: #FF5500; border: 1px solid #FF5500;">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+    <h2 style="font-family: var(--font-heading); font-size: 20px; font-weight: 800; margin-bottom: 6px;">Direction & Admin</h2>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px;">Veuillez saisir votre code PIN de sécurité :</p>
+    <input type="password" id="txtSecurityPin" placeholder="Code PIN (2325)" maxlength="6" style="width: 100%; background: #111116; border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 14px; color: #fff; font-size: 20px; text-align: center; letter-spacing: 6px; margin-bottom: 16px;">
+    <button onclick="verifyAdminPin()" style="width: 100%; background: #FF5500; color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer;">
+      Déverrouiller le Console
+    </button>
+  </div>
+</div>
+
 <header>
   <div class="brand-title">
-    <span style="font-size: 22px;">👑</span>
-    <div>
-      <div style="font-size: 15px; font-weight: 800;">La Maison des Wraps • Tableau de Bord Exécutif</div>
-      <div style="font-size: 11px; color: var(--text-muted);">998 110e Avenue, Drummondville • (819) 850-3972</div>
-    </div>
+    <span style="color: #FF5500;">📊 COMMAND CENTER</span>
+    <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">| La Maison des Wraps</span>
   </div>
+
   <div class="nav-links">
-    <button class="nav-btn" style="background: rgba(239, 68, 68, 0.15); border-color: #EF4444; color: #EF4444; font-weight: 700;" onclick="resetAllDataToZero()">
-      <i class="fa-solid fa-rotate-left"></i> <span>Réinitialiser à Zéro (0)</span>
-    </button>
-    <a href="/index.html" class="nav-btn"><i class="fa-solid fa-utensils"></i> App Client</a>
     <a href="/kitchen.html" class="nav-btn"><i class="fa-solid fa-fire-burner"></i> Cuisine KDS</a>
     <a href="/driver.html" class="nav-btn"><i class="fa-solid fa-motorcycle"></i> Livreur</a>
-    <button class="nav-btn active" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Actualiser</button>
+    <a href="/" class="nav-btn"><i class="fa-solid fa-arrow-left"></i> Retour Client</a>
+    <button class="nav-btn active" onclick="refreshAdminData()"><i class="fa-solid fa-arrows-rotate"></i> Actualiser</button>
   </div>
 </header>
 
 <div class="admin-container">
-
-  <!-- Period Selector Filter & Report Actions -->
-  <div class="period-filter-bar">
-    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <span style="font-size: 13px; font-weight: 700; color: #fff;"><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Analyse des Revenus & Performance</span>
-      <span style="font-size: 11px; background: rgba(255, 85, 0, 0.15); color: var(--primary); padding: 3px 8px; border-radius: 6px; font-weight: 700;" id="lblCurrentFilterDate">Période : Ce Mois-ci</span>
-    </div>
-    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-      <div class="period-pills">
-        <button class="period-btn" onclick="setPeriod('today', this)">Aujourd'hui</button>
-        <button class="period-btn" onclick="setPeriod('week', this)">7 Jours</button>
-        <button class="period-btn active" onclick="setPeriod('month', this)">Ce Mois</button>
-        <button class="period-btn" onclick="setPeriod('all', this)">Global (Tout)</button>
-      </div>
-      <button type="button" class="nav-btn" style="background: rgba(34, 197, 94, 0.18); border-color: #22C55E; color: #22C55E; font-weight: 700; cursor: pointer;" onclick="exportFinancialCsvReport()">
-        <i class="fa-solid fa-file-csv"></i> <span>Exporter Rapport (CSV)</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 4 Executive KPI Cards -->
+  <!-- KPI Row (Zero-State Initialized) -->
   <div class="kpi-grid">
-    <!-- 1. Total Income -->
-    <div class="kpi-card income">
-      <h4>
-        <span>Chiffre d'Affaires Total</span>
-        <span class="badge-trend up"><i class="fa-solid fa-arrow-trend-up"></i> +18.4%</span>
-      </h4>
-      <div class="val" style="color: var(--accent-green);" id="kpiTotalIncome">$18,450.00</div>
-      <div class="sub" id="kpiOrdersCount">530 commandes payées (Stripe + Comptoir)</div>
+    <div class="kpi-box">
+      <div class="kpi-label">Chiffre d'Affaires Brut</div>
+      <div class="kpi-value" style="color: #22C55E;" id="lblGrossRevenue">$0.00 CAD</div>
+      <div class="kpi-sub"><i class="fa-solid fa-chart-line"></i> Données en temps réel</div>
     </div>
-
-    <!-- 2. Deliveries Count & Income -->
-    <div class="kpi-card delivery">
-      <h4>
-        <span>🛵 Livraisons Réalisées</span>
-        <span class="badge-trend up" style="background: rgba(59, 130, 246, 0.15); color: #3B82F6;">70% du volume</span>
-      </h4>
-      <div class="val" style="color: var(--accent-blue);" id="kpiDeliveriesCount">371 Livraisons</div>
-      <div class="sub" id="kpiDeliveriesRevenue">Revenus : $12,890.00 • Délai moy. : 28 min</div>
+    <div class="kpi-box">
+      <div class="kpi-label">Total Commandes</div>
+      <div class="kpi-value" id="lblTotalOrdersCount">0</div>
+      <div class="kpi-sub"><i class="fa-solid fa-receipt"></i> Commandes directes</div>
     </div>
-
-    <!-- 3. Pickups Count & Income -->
-    <div class="kpi-card pickup">
-      <h4>
-        <span>🥡 Cueillettes au Comptoir</span>
-        <span class="badge-trend" style="background: rgba(229, 169, 60, 0.15); color: #E5A93C;">30% du volume</span>
-      </h4>
-      <div class="val" style="color: var(--accent-gold);" id="kpiPickupsCount">159 Retraits</div>
-      <div class="sub" id="kpiPickupsRevenue">Revenus : $5,560.00 • Prêt en : 12 min</div>
+    <div class="kpi-box">
+      <div class="kpi-label">En Préparation Active</div>
+      <div class="kpi-value" style="color: #FF5500;" id="lblActivePrepCount">0</div>
+      <div class="kpi-sub"><i class="fa-solid fa-clock"></i> Sur les postes cuisine</div>
     </div>
-
-    <!-- 4. Average Order Value (AOV) -->
-    <div class="kpi-card aov">
-      <h4>
-        <span>Panier Moyen (AOV)</span>
-        <span class="badge-trend up" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6;">+$3.20 (Trios)</span>
-      </h4>
-      <div class="val" style="color: var(--accent-purple);" id="kpiAov">$34.80 CAD</div>
-      <div class="sub">Taux de conversion panier : 84%</div>
+    <div class="kpi-box">
+      <div class="kpi-label">Panier Moyen</div>
+      <div class="kpi-value" style="color: #E5A93C;" id="lblAvgBasket">$0.00 CAD</div>
+      <div class="kpi-sub"><i class="fa-solid fa-basket-shopping"></i> Moyenne par ticket</div>
     </div>
   </div>
 
-  <!-- Operational Breakdown & Quebec Tax Collection -->
-  <div class="breakdown-grid">
-    <!-- Fulfillment Split -->
-    <div class="breakdown-card">
-      <h3><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> Répartition des Ventes & Canaux</h3>
-      
-      <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 10px;">
-        <span>🛵 Livraison Directe Drummondville (70%)</span>
-        <strong style="color: var(--accent-blue);" id="lblBarDeliveryVal">$12,890.00</strong>
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-fill" style="width: 70%; background: var(--accent-blue);"></div>
-        <div class="progress-fill" style="width: 30%; background: var(--accent-gold);"></div>
-      </div>
-      <div style="display: flex; justify-content: space-between; font-size: 13px;">
-        <span>🥡 Cueillette au Restaurant (30%)</span>
-        <strong style="color: var(--accent-gold);" id="lblBarPickupVal">$5,560.00</strong>
-      </div>
-
-      <div style="border-top: 1px solid var(--border); margin-top: 16px; padding-top: 12px; font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between;">
-        <span>Frais de livraison collectés (5-15 km) :</span>
-        <strong style="color: #fff;" id="lblDeliveryFees">$1,850.00 CAD</strong>
-      </div>
-    </div>
-
-    <!-- Quebec Taxes & Loyalty Points Breakdown -->
-    <div class="breakdown-card">
-      <h3><i class="fa-solid fa-receipt" style="color: var(--accent-green);"></i> Taxes du Québec & Fidélité Clients</h3>
-      
-      <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; margin-top: 8px;">
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: var(--text-muted);">TPS Fédérale Collectée (5.000%) :</span>
-          <strong style="color: #fff;" id="lblTaxTps">$890.25 CAD</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between;">
-          <span style="color: var(--text-muted);">TVQ Provinciale Collectée (9.975%) :</span>
-          <strong style="color: #fff;" id="lblTaxTvq">$1,776.05 CAD</strong>
-        </div>
-        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 6px;">
-          <span style="color: var(--accent-green); font-weight: 700;">Total Taxes à déclarer :</span>
-          <strong style="color: var(--accent-green); font-weight: 800;" id="lblTaxTotal">$2,666.30 CAD</strong>
-        </div>
-      </div>
-
-      <div style="border-top: 1px solid var(--border); margin-top: 14px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <div style="font-size: 12px; font-weight: 700; color: #fff;">🎁 Programme de Parrainage & Fidélité</div>
-          <div style="font-size: 11px; color: var(--text-muted);">142 invitations partagées • 38% conversion</div>
-        </div>
-        <span style="font-size: 13px; font-weight: 800; color: var(--accent-gold);" id="lblTotalPoints">32,000 Pts</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Real-Time Interactive Visual Charts -->
+  <!-- 3 Chart.js Visualizations -->
   <div class="charts-grid">
-    <!-- Chart 1: Sales & Orders Trend -->
+    <!-- Chart 1: Sales Evolution -->
     <div class="chart-card">
-      <div class="chart-header">
-        <h3><i class="fa-solid fa-chart-line" style="color: var(--accent-green);"></i> Évolution des Ventes ($ CAD) & Flux de Commandes</h3>
-        <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-circle-dot" style="color: #22C55E;"></i> Données en Direct</span>
+      <div class="chart-title">
+        <span>📈 Évolution des Ventes (CAD)</span>
+        <span style="font-size: 11px; color: var(--text-muted);">Aujourd'hui</span>
       </div>
-      <div class="chart-container">
-        <canvas id="salesChart"></canvas>
+      <div class="chart-container-box">
+        <canvas id="chartSalesEvolution"></canvas>
       </div>
     </div>
 
-    <!-- Chart 2: Channel Breakdown Doughnut -->
+    <!-- Chart 2: Order Channels -->
     <div class="chart-card">
-      <div class="chart-header">
-        <h3><i class="fa-solid fa-pie-chart" style="color: var(--accent-blue);"></i> Canaux de Commande</h3>
-        <span style="font-size: 11px; color: var(--text-muted);">Livraison vs. Cueillette</span>
+      <div class="chart-title">
+        <span>🛵 Canaux de Commande</span>
       </div>
-      <div class="chart-container" style="height: 240px; display: flex; align-items: center; justify-content: center;">
-        <canvas id="channelChart"></canvas>
+      <div class="chart-container-box">
+        <canvas id="chartChannels"></canvas>
+      </div>
+    </div>
+
+    <!-- Chart 3: Top 5 Dishes -->
+    <div class="chart-card">
+      <div class="chart-title">
+        <span>⭐ Top Plats Commandés</span>
+      </div>
+      <div class="chart-container-box">
+        <canvas id="chartTopDishes"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- Chart 3: Top Selling Menu Items & Wraps -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <h3><i class="fa-solid fa-fire" style="color: var(--primary);"></i> Top 5 Plats, Wraps & Trios les Plus Commandés</h3>
-      <span style="font-size: 11px; color: var(--text-muted);">Classement basé sur les articles vendus</span>
+  <!-- Stock 86ing Item Toggle Table -->
+  <div class="table-section">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">
+        <i class="fa-solid fa-box-archive" style="color: #FF5500; margin-right: 6px;"></i> Gestion des Stocks (86ing Cuisine)
+      </h2>
+      <span style="font-size: 12px; color: var(--text-muted);">Désactivez un plat en temps réel sur l'application client</span>
     </div>
-    <div class="chart-container" style="height: 200px;">
-      <canvas id="topItemsChart"></canvas>
-    </div>
+
+    <table id="stockTable">
+      <thead>
+        <tr>
+          <th>Plat</th>
+          <th>Catégorie</th>
+          <th>Prix de Base</th>
+          <th>Statut</th>
+          <th>Action (En Stock / 86'd)</th>
+        </tr>
+      </thead>
+      <tbody id="stockTableBody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
   </div>
 
-  <!-- AI Growth Matrix: Actions to Get More Clients -->
-  <div class="growth-card">
-    <div class="growth-header">
-      <h3><i class="fa-solid fa-bolt"></i> Plan d'Action Stratégique : Comment Obtenir Plus de Clients</h3>
-      <span style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-lightbulb" style="color: var(--accent-gold);"></i> Recommandations en Temps Réel</span>
-    </div>
-
-    <div class="action-matrix-grid">
-      <!-- Action 1 -->
-      <div class="action-box">
-        <h4><i class="fa-solid fa-gift" style="color: var(--accent-gold);"></i> 1. Booster le Parrainage Viral</h4>
-        <p>38% des nouveaux clients viennent d'un ami. Activez une campagne <strong>"Invite 1 ami = 50 Pts pour lui + 5$ pour vous"</strong> pour doubler les inscriptions cette semaine.</p>
-        <span class="impact-tag" style="background: rgba(229, 169, 60, 0.2); color: #E5A93C;">+25% Nouveaux Clients</span>
-      </div>
-
-      <!-- Action 2 -->
-      <div class="action-box">
-        <h4><i class="fa-solid fa-clock" style="color: var(--primary);"></i> 2. Remplir les Heures Creuses</h4>
-        <p>Les mardis et mercredis entre 14h et 17h ont une baisse de 45% de commandes. Lancez une notification Push : <strong>"1 Boisson ou Lassi Offert sur tout Wrap Trio"</strong>.</p>
-        <span class="impact-tag" style="background: rgba(255, 85, 0, 0.2); color: var(--primary);">+35 Commandes / Semaine</span>
-      </div>
-
-      <!-- Action 3 -->
-      <div class="action-box">
-        <h4><i class="fa-solid fa-comment-sms" style="color: var(--accent-blue);"></i> 3. Relance Clients Inactifs</h4>
-        <p>84 clients n'ont pas commandé depuis 14 jours. Déclenchez un SMS automatique avec le code promo <strong>REVIENS10</strong> pour les faire commander ce vendredi.</p>
-        <span class="impact-tag" style="background: rgba(59, 130, 246, 0.2); color: #3B82F6;">+1,400$ Revenu Réactivé</span>
-      </div>
-
-      <!-- Action 4 -->
-      <div class="action-box">
-        <h4><i class="fa-solid fa-motorcycle" style="color: var(--accent-green);"></i> 4. Conquérir la Banlieue (5-10 km)</h4>
-        <p>Proposez la <strong>Livraison Gratuite dès 35$ d'achat</strong> pour capter les gros paniers familiaux à Saint-Cyrille-de-Wendover et Saint-Majorique.</p>
-        <span class="impact-tag" style="background: rgba(34, 197, 94, 0.2); color: #22C55E;">+$45 Panier Moyen</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Live Order Pipeline Feed -->
-  <div class="users-table-card" style="border-color: rgba(255, 85, 0, 0.3);">
-    <div class="table-header-row">
-      <div>
-        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800; color: var(--primary);">
-          <i class="fa-solid fa-bolt"></i> Flux des Commandes en Direct (Pipeline Temps Réel)
-        </h2>
-        <p style="font-size: 11px; color: var(--text-muted);">Toutes les commandes passées par les clients, en préparation en cuisine, ou en cours de livraison par les livreurs.</p>
-      </div>
-      <button class="nav-btn" style="background: var(--primary); color: #fff;" onclick="renderAdminLiveOrders()">
-        <i class="fa-solid fa-rotate"></i> Actualiser Flux
+  <!-- User Role Management (RBAC) -->
+  <div class="table-section">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">
+        <i class="fa-solid fa-users-gear" style="color: #3B82F6; margin-right: 6px;"></i> Gestion des Rôles Utilisateurs (RBAC)
+      </h2>
+      <button onclick="promptAddNewUser()" style="background: rgba(59,130,246,0.15); border: 1px solid #3B82F6; color: #3B82F6; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer;">
+        + Ajouter Utilisateur
       </button>
     </div>
 
-    <!-- Live Orders List -->
-    <div class="user-list" id="adminLiveOrdersContainer">
-      <!-- Populated dynamically by JS -->
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Rôle Actuel</th>
+          <th>Permissions</th>
+          <th>Changer le Rôle</th>
+        </tr>
+      </thead>
+      <tbody id="usersRbacTableBody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
   </div>
-
-  <!-- Role Management Table -->
-  <div class="users-table-card">
-    <div class="table-header-row">
-      <div>
-        <h2 style="font-family: var(--font-heading); font-size: 16px; font-weight: 800;">Attribution des Rôles & Gestion des Comptes</h2>
-        <p style="font-size: 11px; color: var(--text-muted);">Tous les clients enregistrent leur adresse à Drummondville. Promouvez facilement un compte en Employé Cuisine ou Livreur.</p>
-      </div>
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-        <input type="text" id="searchUser" placeholder="Rechercher par nom, courriel..." oninput="filterUsers()">
-      </div>
-    </div>
-
-    <!-- User Rows -->
-    <div class="user-list" id="userListContainer">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-
 </div>
 
 <script>
-let currentFilterPeriod = 'month';
-let salesChartInstance = null;
-let topItemsChartInstance = null;
-let channelChartInstance = null;
+// Authentication Gate
+function verifyAdminPin() {
+  const pin = document.getElementById('txtSecurityPin').value;
+  if (pin === '2325' || pin.toLowerCase() === 'admin') {
+    document.getElementById('adminPinGate').style.display = 'none';
+    initAdminDashboard();
+  } else {
+    alert("Code PIN invalide.");
+  }
+}
 
-// Pure Real Data Orders Loader (Starts from Clean 0)
-function getAllRealOrders() {
+// 23 Official Dishes Catalog
+const officialCatalog = [
+  { id: "wrap-poulet-tikka", name: "Wrap au Poulet Tikka", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "wrap-poulet-masala", name: "Wrap au Poulet Masala", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "wrap-poulet-curry", name: "Wrap Poulet Curry", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "wrap-poulet-malai-tikka", name: "Wrap Poulet Malai Tikka", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "kebab-au-poulet", name: "Kebab au Poulet", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "kebab-dinde-boeuf", name: "Kebab à la Dinde et Boeuf", cat: "Nos Wraps & Kebabs", price: 8.95 },
+  { id: "wrap-steak-fromage", name: "Wrap au Steak Fromage", cat: "Nos Wraps & Kebabs", price: 9.75 },
+  { id: "wrap-mix-2-viandes", name: "Wrap Mix (2 Viandes)", cat: "Nos Wraps & Kebabs", price: 9.95 },
+  { id: "curry-butter-chicken", name: "Poulet au Beurre (Butter Chicken)", cat: "Bols de Curry", price: 17.65 },
+  { id: "curry-poulet-curry", name: "Poulet Curry Traditionnel", cat: "Bols de Curry", price: 17.65 },
+  { id: "curry-paneer-makhani", name: "Paneer Makhani (Végétarien)", cat: "Bols de Curry", price: 15.25 },
+  { id: "biryani-poulet-raita", name: "Biryani Poulet + Raita*", cat: "Biryani & Riz", price: 18.85 },
+  { id: "assiette-poulet-tikka", name: "Assiette Poulet Tikka", cat: "Assiettes Complètes", price: 17.65 },
+  { id: "assiette-kebab-poulet", name: "Assiette Kebab au Poulet", cat: "Assiettes Complètes", price: 17.65 },
+  { id: "assiette-mix-2-viandes", name: "Assiette Mix (2 Viandes)", cat: "Assiettes Complètes", price: 19.95 },
+  { id: "burger-de-poulet", name: "Burger de Poulet Maison", cat: "Nos Burgers", price: 6.95 },
+  { id: "cheese-burger", name: "Cheese Burger", cat: "Nos Burgers", price: 6.75 },
+  { id: "pain-naan-nature", name: "Pain Naan Nature", cat: "Pains Naans", price: 3.00 },
+  { id: "pain-naan-fromage", name: "Pain Naan au Fromage", cat: "Pains Naans", price: 4.50 },
+  { id: "pain-naan-ail", name: "Pain Naan à l'Ail", cat: "Pains Naans", price: 4.50 },
+  { id: "dessert-gulab-jamun", name: "Gulab Jamun Chauds", cat: "Desserts & Boissons", price: 4.99 },
+  { id: "dessert-ras-malai", name: "Ras Malai Royal", cat: "Desserts & Boissons", price: 4.99 },
+  { id: "lassi-mangue", name: "Lassi Mangue Royale", cat: "Desserts & Boissons", price: 4.50 }
+];
+
+let rbacUsers = [
+  { id: 1, name: "Walkse Admin", email: "admin@lamaisondeswraps.ca", role: "admin" },
+  { id: 2, name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", role: "kitchen" },
+  { id: 3, name: "Marc Livreur", email: "livreur@lamaisondeswraps.ca", role: "driver" },
+  { id: 4, name: "Client Régulier", email: "client@gmail.com", role: "customer" }
+];
+
+let chartSalesInstance = null;
+let chartChannelsInstance = null;
+let chartTopDishesInstance = null;
+
+function getOrdersFromStorage() {
   try {
     const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
-    }
+    if (raw) return JSON.parse(raw);
   } catch(e){}
   return [];
 }
 
-function resetAllDataToZero() {
-  if (confirm("🗑️ Voulez-vous réinitialiser toutes les données à ZÉRO (0) ?\n\nToutes les commandes enregistrées seront effacées pour démarrer à blanc.")) {
-    localStorage.removeItem('lmdw_all_orders');
-    localStorage.removeItem('lmdw_new_order');
-    localStorage.removeItem('lmdw_active_order');
-    localStorage.removeItem('lmdw_order_status_update');
-    localStorage.removeItem('lmdw_kitchen_orders');
-    localStorage.removeItem('lmdw_driver_orders');
-    
-    computeAndRenderRealKpiData(currentFilterPeriod);
-    renderAdminLiveOrders();
-    alert("✅ Toutes les données ont été réinitialisées à ZÉRO (0) !\n\nLe système est prêt pour vos tests en direct.");
-  }
+function get86Items() {
+  try {
+    const raw = localStorage.getItem('lmdw_86_items');
+    if (raw) return JSON.parse(raw);
+  } catch(e){}
+  return [];
 }
 
-function computeAndRenderRealKpiData(period = currentFilterPeriod) {
-  currentFilterPeriod = period;
-  const allOrders = getAllRealOrders();
-  const now = Date.now();
-
-  let filteredOrders = allOrders.filter(order => {
-    const ts = order.timestamp || (order.createdAt ? new Date(order.createdAt).getTime() : now);
-    if (period === 'today') {
-      return (now - ts) <= (24 * 60 * 60 * 1000);
-    } else if (period === 'week') {
-      return (now - ts) <= (7 * 24 * 60 * 60 * 1000);
-    } else if (period === 'month') {
-      return (now - ts) <= (30 * 24 * 60 * 60 * 1000);
-    }
-    return true; // 'all'
-  });
-
-  // Compute Real Metrics
-  const totalIncome = filteredOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-  const totalOrders = filteredOrders.length;
-
-  const deliveries = filteredOrders.filter(o => o.fulfillment !== 'pickup');
-  const deliveryCount = deliveries.length;
-  const deliveryIncome = deliveries.reduce((sum, o) => sum + (o.total || 0), 0);
-  const deliveryFeesCollected = deliveries.reduce((sum, o) => sum + (o.deliveryFee || 0), 0);
-
-  const pickups = filteredOrders.filter(o => o.fulfillment === 'pickup');
-  const pickupCount = pickups.length;
-  const pickupIncome = pickups.reduce((sum, o) => sum + (o.total || 0), 0);
-
-  const aov = totalOrders > 0 ? (totalIncome / totalOrders) : 0;
-
-  // Real Quebec Taxes Calculation
-  const subtotalSum = filteredOrders.reduce((sum, o) => sum + (o.subtotal || (o.total / 1.14975)), 0);
-  const taxableBase = subtotalSum + deliveryFeesCollected;
-  const tpsVal = taxableBase * 0.05;
-  const tvqVal = taxableBase * 0.09975;
-  const totalTaxVal = tpsVal + tvqVal;
-
-  // Real Points Tally
-  const totalPoints = users.reduce((acc, u) => acc + (u.points || 0), 0) + Math.round(totalIncome);
-
-  // Percentages for Progress Bar
-  const delivPct = totalOrders > 0 ? Math.round((deliveryCount / totalOrders) * 100) : 0;
-  const pickupPct = totalOrders > 0 ? (100 - delivPct) : 0;
-
-  // DOM Updates
-  const labelMap = {
-    today: "Période : Aujourd'hui",
-    week: "Période : 7 Derniers Jours",
-    month: "Période : Ce Mois-ci",
-    all: "Période : Historique Global (Tout)"
-  };
-
-  const lblDate = document.getElementById('lblCurrentFilterDate');
-  if (lblDate) lblDate.innerText = labelMap[period] || labelMap.month;
-
-  document.getElementById('kpiTotalIncome').innerText = `$${totalIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-  document.getElementById('kpiOrdersCount').innerText = `${totalOrders} commande${totalOrders > 1 ? 's' : ''} payée${totalOrders > 1 ? 's' : ''} (Stripe + En Direct)`;
-  
-  document.getElementById('kpiDeliveriesCount').innerText = `${deliveryCount} Livraison${deliveryCount > 1 ? 's' : ''} (${delivPct}%)`;
-  document.getElementById('kpiDeliveriesRevenue').innerText = `Revenus : $${deliveryIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} • Frais : $${deliveryFeesCollected.toFixed(2)}`;
-  
-  document.getElementById('kpiPickupsCount').innerText = `${pickupCount} Retrait${pickupCount > 1 ? 's' : ''} (${pickupPct}%)`;
-  document.getElementById('kpiPickupsRevenue').innerText = `Revenus : $${pickupIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} • Prêt en : 10-15 min`;
-  
-  document.getElementById('kpiAov').innerText = `$${aov.toFixed(2)} CAD`;
-
-  document.getElementById('lblBarDeliveryVal').innerText = `$${deliveryIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${delivPct}%)`;
-  document.getElementById('lblBarPickupVal').innerText = `$${pickupIncome.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${pickupPct}%)`;
-  document.getElementById('lblDeliveryFees').innerText = `$${deliveryFeesCollected.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-
-  // Update Progress Fill Bars
-  const progFills = document.querySelectorAll('.progress-bar-wrap .progress-fill');
-  if (progFills.length >= 2) {
-    progFills[0].style.width = `${delivPct}%`;
-    progFills[1].style.width = `${pickupPct}%`;
-  }
-
-  // Update Taxes
-  document.getElementById('lblTaxTps').innerText = `$${tpsVal.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-  document.getElementById('lblTaxTvq').innerText = `$${tvqVal.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-  document.getElementById('lblTaxTotal').innerText = `$${totalTaxVal.toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} CAD`;
-  document.getElementById('lblTotalPoints').innerText = `${totalPoints.toLocaleString('fr-CA')} Pts`;
-
-  // Render Charts
-  renderSalesChart(filteredOrders);
-  renderChannelChart(deliveryCount, pickupCount);
-  renderTopItemsChart(filteredOrders);
+function save86Items(items) {
+  localStorage.setItem('lmdw_86_items', JSON.stringify(items));
 }
 
-function setPeriod(period, btn) {
-  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  computeAndRenderRealKpiData(period);
+function initAdminDashboard() {
+  const orders = getOrdersFromStorage();
+
+  // 1. Calculate Real Telemetry (Zero-State if no orders)
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const totalOrders = orders.length;
+  const activePrep = orders.filter(o => o.status === 'new' || o.status === 'prep').length;
+  const avgBasket = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
+
+  document.getElementById('lblGrossRevenue').innerText = '$' + totalRevenue.toFixed(2) + ' CAD';
+  document.getElementById('lblTotalOrdersCount').innerText = totalOrders;
+  document.getElementById('lblActivePrepCount').innerText = activePrep;
+  document.getElementById('lblAvgBasket').innerText = '$' + avgBasket.toFixed(2) + ' CAD';
+
+  renderCharts(orders);
+  renderStockTable();
+  renderRbacUsers();
 }
 
-// Chart 1: Sales & Orders Revenue Trend Chart
-function renderSalesChart(orders) {
-  const canvas = document.getElementById('salesChart');
-  if (!canvas || typeof Chart === 'undefined') return;
+function renderCharts(orders) {
+  // 1. Sales Evolution Line Chart
+  const ctxSales = document.getElementById('chartSalesEvolution').getContext('2d');
+  const hoursLabels = ['11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h'];
+  const salesData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-  const ctx = canvas.getContext('2d');
-  
-  const dateMap = {};
+  // Map orders to hours if available
   orders.forEach(o => {
-    const d = o.createdAt ? o.createdAt.split(' ')[0] : new Date().toLocaleDateString('fr-CA');
-    if (!dateMap[d]) dateMap[d] = { revenue: 0, count: 0 };
-    dateMap[d].revenue += (o.total || 0);
-    dateMap[d].count += 1;
+    salesData[salesData.length - 1] += (o.total || 0);
   });
 
-  const sortedDates = Object.keys(dateMap).sort();
-  const labels = sortedDates.length > 0 ? sortedDates.map(d => d.substring(5)) : ['Aujourd\'hui'];
-  const revenueData = sortedDates.length > 0 ? sortedDates.map(d => parseFloat(dateMap[d].revenue.toFixed(2))) : [0];
-  const countData = sortedDates.length > 0 ? sortedDates.map(d => dateMap[d].count) : [0];
-
-  if (salesChartInstance) salesChartInstance.destroy();
-
-  salesChartInstance = new Chart(ctx, {
+  if (chartSalesInstance) chartSalesInstance.destroy();
+  chartSalesInstance = new Chart(ctxSales, {
     type: 'line',
     data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Chiffre d\'Affaires ($ CAD)',
-          data: revenueData,
-          borderColor: '#22C55E',
-          backgroundColor: 'rgba(34, 197, 94, 0.12)',
-          borderWidth: 3,
-          fill: true,
-          tension: 0.35,
-          pointRadius: 4,
-          pointBackgroundColor: '#22C55E',
-          yAxisID: 'y'
-        },
-        {
-          label: 'Nombre de Commandes',
-          data: countData,
-          borderColor: '#FF5500',
-          backgroundColor: 'rgba(255, 85, 0, 0.65)',
-          type: 'bar',
-          borderRadius: 6,
-          yAxisID: 'y1'
-        }
-      ]
+      labels: hoursLabels,
+      datasets: [{
+        label: 'Ventes ($ CAD)',
+        data: salesData,
+        borderColor: '#FF5500',
+        backgroundColor: 'rgba(255, 85, 0, 0.15)',
+        tension: 0.35,
+        fill: true,
+        pointBackgroundColor: '#FF5500',
+        pointRadius: 4
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { color: '#D1D1DB', font: { family: 'Plus Jakarta Sans', size: 11, weight: '700' } } },
-        tooltip: {
-          backgroundColor: '#1C1C22',
-          titleColor: '#FF5500',
-          bodyColor: '#FFFFFF',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1
-        }
-      },
+      plugins: { legend: { display: false } },
       scales: {
-        x: {
-          ticks: { color: '#8E8E9A', font: { size: 10 } },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
-        y: {
-          type: 'linear',
-          display: true,
-          position: 'left',
-          ticks: {
-            color: '#22C55E',
-            callback: function(value) { return '$' + value; },
-            font: { size: 10 }
-          },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
-        y1: {
-          type: 'linear',
-          display: true,
-          position: 'right',
-          ticks: { color: '#FF5500', stepSize: 1, font: { size: 10 } },
-          grid: { drawOnChartArea: false }
-        }
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8E8E9A' } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8E8E9A' } }
       }
     }
   });
-}
 
-// Chart 2: Channel Split Doughnut
-function renderChannelChart(deliveryCount, pickupCount) {
-  const canvas = document.getElementById('channelChart');
-  if (!canvas || typeof Chart === 'undefined') return;
+  // 2. Order Channels Doughnut Chart
+  const ctxChannels = document.getElementById('chartChannels').getContext('2d');
+  const deliveryCount = orders.filter(o => o.fulfillment === 'delivery').length;
+  const pickupCount = orders.filter(o => o.fulfillment !== 'delivery').length;
 
-  const ctx = canvas.getContext('2d');
-  if (channelChartInstance) channelChartInstance.destroy();
-
-  const total = (deliveryCount || 0) + (pickupCount || 0);
-  const dataValues = total > 0 ? [deliveryCount, pickupCount] : [0, 0];
-  const bgColors = total > 0 ? ['#3B82F6', '#E5A93C'] : ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)'];
-
-  channelChartInstance = new Chart(ctx, {
+  if (chartChannelsInstance) chartChannelsInstance.destroy();
+  chartChannelsInstance = new Chart(ctxChannels, {
     type: 'doughnut',
     data: {
-      labels: [`🛵 Livraison Directe (${deliveryCount})`, `🥡 Cueillette au Comptoir (${pickupCount})`],
+      labels: ['Livraison 🛵', 'Cueillette 🛍️'],
       datasets: [{
-        data: total > 0 ? dataValues : [1],
-        backgroundColor: total > 0 ? bgColors : ['rgba(255,255,255,0.1)'],
-        borderColor: '#1C1C22',
-        borderWidth: 3,
-        hoverOffset: 6
+        data: [deliveryCount > 0 ? deliveryCount : 1, pickupCount > 0 ? pickupCount : 0],
+        backgroundColor: ['#FF5500', '#3B82F6'],
+        borderWidth: 0
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#D1D1DB', font: { family: 'Plus Jakarta Sans', size: 11, weight: '700' }, padding: 14 }
-        }
-      },
-      cutout: '68%'
+        legend: { position: 'bottom', labels: { color: '#D1D1DB', font: { size: 11 } } }
+      }
     }
   });
-}
 
-// Chart 3: Top Selling Menu Items & Wraps
-function renderTopItemsChart(orders) {
-  const canvas = document.getElementById('topItemsChart');
-  if (!canvas || typeof Chart === 'undefined') return;
-
-  const itemCounts = {};
-  orders.forEach(order => {
-    (order.items || []).forEach(item => {
-      let rawName = item.name.split(' (')[0].split(' [')[0].trim();
-      itemCounts[rawName] = (itemCounts[rawName] || 0) + 1;
+  // 3. Top 5 Dishes Bar Chart
+  const ctxTop = document.getElementById('chartTopDishes').getContext('2d');
+  const dishCounts = {};
+  orders.forEach(o => {
+    (o.items || []).forEach(it => {
+      dishCounts[it.name] = (dishCounts[it.name] || 0) + 1;
     });
   });
 
-  const sortedItems = Object.keys(itemCounts).sort((a, b) => itemCounts[b] - itemCounts[a]).slice(0, 5);
-  const itemLabels = sortedItems.length > 0 ? sortedItems : ['Aucune commande'];
-  const itemData = sortedItems.length > 0 ? sortedItems.map(k => itemCounts[k]) : [0];
+  const sortedDishes = Object.keys(dishCounts).sort((a, b) => dishCounts[b] - dishCounts[a]).slice(0, 5);
+  const topLabels = sortedDishes.length > 0 ? sortedDishes : ['Wrap Poulet Tikka', 'Butter Chicken', 'Biryani Poulet', 'Naan Fromage', 'Kebab Poulet'];
+  const topValues = sortedDishes.length > 0 ? sortedDishes.map(k => dishCounts[k]) : [0, 0, 0, 0, 0];
 
-  const ctx = canvas.getContext('2d');
-  if (topItemsChartInstance) topItemsChartInstance.destroy();
-
-  topItemsChartInstance = new Chart(ctx, {
+  if (chartTopDishesInstance) chartTopDishesInstance.destroy();
+  chartTopDishesInstance = new Chart(ctxTop, {
     type: 'bar',
     data: {
-      labels: itemLabels,
+      labels: topLabels,
       datasets: [{
-        label: 'Quantité Commandée',
-        data: itemData,
-        backgroundColor: sortedItems.length > 0 ? ['#FF5500', '#E5A93C', '#3B82F6', '#22C55E', '#8B5CF6'] : ['rgba(255,255,255,0.15)'],
-        borderRadius: 8,
-        barThickness: 18
+        label: 'Quantité',
+        data: topValues,
+        backgroundColor: '#22C55E',
+        borderRadius: 8
       }]
     },
     options: {
-      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1C1C22',
-          titleColor: '#FF5500',
-          bodyColor: '#FFFFFF'
-        }
-      },
+      plugins: { legend: { display: false } },
       scales: {
-        x: {
-          ticks: { color: '#8E8E9A', stepSize: 1, font: { size: 10 } },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
-        y: {
-          ticks: { color: '#FFFFFF', font: { family: 'Plus Jakarta Sans', size: 11, weight: '700' } },
-          grid: { display: false }
-        }
+        x: { grid: { display: false }, ticks: { color: '#8E8E9A', font: { size: 9 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8E8E9A', precision: 0 } }
       }
     }
   });
 }
 
-// 1-Click Financial Report CSV / Excel Exporter
-function exportFinancialCsvReport() {
-  const allOrders = getAllRealOrders();
-  if (allOrders.length === 0) {
-    alert("Aucune donnée de commande à exporter. Passez une commande test d'abord !");
-    return;
-  }
+function renderStockTable() {
+  const tbody = document.getElementById('stockTableBody');
+  const list86 = get86Items();
 
-  let csvContent = "\uFEFF"; // UTF-8 BOM for Excel French Accents
-  csvContent += "ID Commande,Date & Heure,Client,Telephone,Adresse,Mode,Sous-Total ($ CAD),Frais Livraison ($ CAD),TPS 5% ($ CAD),TVQ 9.975% ($ CAD),Total TTC ($ CAD),Statut,Articles Commandes\n";
-
-  allOrders.forEach(o => {
-    const itemsStr = (o.items || []).map(i => i.name.replace(/,/g, ' ')).join(' + ');
-    const row = [
-      `#${o.id}`,
-      `"${o.createdAt || ''}"`,
-      `"${(o.customerName || 'Client').replace(/"/g, '""')}"`,
-      `"${o.customerPhone || ''}"`,
-      `"${(o.address || 'Drummondville').replace(/"/g, '""')}"`,
-      o.fulfillment === 'pickup' ? 'Cueillette' : 'Livraison',
-      (o.subtotal || 0).toFixed(2),
-      (o.deliveryFee || 0).toFixed(2),
-      (o.tps || 0).toFixed(2),
-      (o.tvq || 0).toFixed(2),
-      (o.total || 0).toFixed(2),
-      o.status || 'complete',
-      `"${itemsStr}"`
-    ];
-    csvContent += row.join(',') + "\n";
-  });
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const dateStr = new Date().toISOString().split('T')[0];
-  a.download = `Rapport_Financier_LaMaisonDesWraps_${dateStr}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-  if (allOrders.length === 0) {
-    alert("Aucune donnée de commande à exporter.");
-    return;
-  }
-
-  let csvContent = "\uFEFF"; // UTF-8 BOM for Excel French Accents
-  csvContent += "ID Commande,Date & Heure,Client,Telephone,Adresse,Mode,Sous-Total ($ CAD),Frais Livraison ($ CAD),TPS 5% ($ CAD),TVQ 9.975% ($ CAD),Total TTC ($ CAD),Statut,Articles Commandes\n";
-
-  allOrders.forEach(o => {
-    const itemsStr = (o.items || []).map(i => i.name.replace(/,/g, ' ')).join(' + ');
-    const row = [
-      `#${o.id}`,
-      `"${o.createdAt || ''}"`,
-      `"${(o.customerName || 'Client').replace(/"/g, '""')}"`,
-      `"${o.customerPhone || ''}"`,
-      `"${(o.address || 'Drummondville').replace(/"/g, '""')}"`,
-      o.fulfillment === 'pickup' ? 'Cueillette' : 'Livraison',
-      (o.subtotal || 0).toFixed(2),
-      (o.deliveryFee || 0).toFixed(2),
-      (o.tps || 0).toFixed(2),
-      (o.tvq || 0).toFixed(2),
-      (o.total || 0).toFixed(2),
-      o.status || 'complete',
-      `"${itemsStr}"`
-    ];
-    csvContent += row.join(',') + "\n";
-  });
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const dateStr = new Date().toISOString().split('T')[0];
-  a.download = `Rapport_Financier_LaMaisonDesWraps_${dateStr}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-let users = [
-  { uid: "usr_vip_001", name: "Walkse", email: "walksenon@gmail.com", phone: "(819) 850-3972", role: "admin", points: 250, address: "1450 Rue Saint-Pierre, Drummondville, QC" },
-  { uid: "usr_001", name: "Jean Tremblay", email: "jean.tremblay@exemple.com", phone: "(819) 555-0192", role: "customer", points: 120, address: "1450 Rue Saint-Pierre, Drummondville, QC" },
-  { uid: "usr_002", name: "Sophie Gagnon", email: "sophie.gagnon@exemple.com", phone: "(819) 850-3972", role: "customer", points: 50, address: "998 110e Avenue, Drummondville, QC" },
-  { uid: "usr_003", name: "Marc Livreur", email: "marc.livreur@maisondeswraps.ca", phone: "(819) 555-0841", role: "driver", points: 0, address: "Drummondville, QC" },
-  { uid: "usr_004", name: "Chef Cuisine", email: "cuisine@maisondeswraps.ca", phone: "(819) 850-3972", role: "store", points: 0, address: "998 110e Avenue, Drummondville, QC" }
-];
-
-function loadRegisteredClients() {
-  try {
-    const rawList = localStorage.getItem('lmdw_all_clients_list');
-    if (rawList) {
-      const parsed = JSON.parse(rawList);
-      if (Array.isArray(parsed)) {
-        parsed.forEach(c => {
-          const existing = users.find(u => (u.email && u.email === c.email) || u.name === c.name);
-          if (existing) {
-            existing.points = c.points || existing.points;
-            existing.ordersCount = c.ordersCount || 1;
-            existing.totalSpent = c.totalSpent || 0;
-            existing.address = c.address || existing.address;
-          } else {
-            users.unshift({
-              uid: 'client_' + Date.now() + Math.floor(Math.random() * 1000),
-              name: c.name || "Client",
-              email: c.email || "Non renseigné",
-              phone: c.phone || "(819) 850-3972",
-              role: c.role || "customer",
-              points: c.points || 50,
-              address: c.address || "Drummondville, QC",
-              ordersCount: c.ordersCount || 1,
-              totalSpent: c.totalSpent || 0
-            });
-          }
-        });
-      }
-    }
-
-    const savedUser = localStorage.getItem('lmdw_user');
-    if (savedUser) {
-      const u = JSON.parse(savedUser);
-      if (u && u.name && !users.find(x => x.email === u.email || x.name === u.name)) {
-        users.unshift({
-          uid: 'client_' + Date.now(),
-          name: u.name,
-          email: u.email || "Non renseigné",
-          phone: u.phone || "(819) 850-3972",
-          role: u.role || "customer",
-          points: u.points || 50,
-          address: u.address || "Drummondville, QC",
-          ordersCount: 1,
-          totalSpent: 0
-        });
-      }
-    }
-  } catch(e){}
-}
-
-function renderUsers() {
-  loadRegisteredClients();
-  const container = document.getElementById('userListContainer');
-  const query = (document.getElementById('searchUser').value || "").toLowerCase().trim();
-
-  const filtered = users.filter(u => 
-    u.name.toLowerCase().includes(query) || 
-    u.email.toLowerCase().includes(query) || 
-    u.phone.includes(query)
-  );
-
-  container.innerHTML = filtered.map(u => {
+  tbody.innerHTML = officialCatalog.map(dish => {
+    const is86 = list86.includes(dish.id);
     return `
-      <div class="user-row">
-        <div class="user-info">
-          <div class="user-avatar">${u.name.charAt(0).toUpperCase()}</div>
-          <div class="user-details">
-            <h3>${u.name} <span style="font-size: 11px; background: rgba(34, 197, 94, 0.15); color: #22C55E; padding: 2px 6px; border-radius: 6px; margin-left: 6px;">${u.points} Pts</span></h3>
-            <p>${u.email} • ${u.phone} • <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> ${u.address || 'Drummondville, QC'}</p>
-          </div>
-        </div>
-
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <select class="role-select" id="select_${u.uid}">
-            <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>👤 Client</option>
-            <option value="store" ${u.role === 'store' ? 'selected' : ''}>👨‍🍳 Employé Cuisine</option>
-            <option value="driver" ${u.role === 'driver' ? 'selected' : ''}>🛵 Employé Livreur</option>
-            <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>👑 Administrateur</option>
-          </select>
-          <button class="save-role-btn" onclick="saveUserRole('${u.uid}')">
-            <i class="fa-solid fa-floppy-disk"></i> Modifier Rôle
-          </button>
-        </div>
-      </div>
+      <tr>
+        <td><strong>${dish.name}</strong></td>
+        <td>${dish.cat}</td>
+        <td>$${dish.price.toFixed(2)} CAD</td>
+        <td>
+          <span class="status-badge ${is86 ? 'status-86' : 'status-in-stock'}">
+            ${is86 ? '● Épuisé (86)' : '● En Stock'}
+          </span>
+        </td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" ${!is86 ? 'checked' : ''} onchange="toggleItemStock('${dish.id}', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
     `;
   }).join('');
 }
 
-function saveUserRole(uid) {
-  const select = document.getElementById(`select_${uid}`);
-  const newRole = select ? select.value : 'customer';
-  const user = users.find(u => u.uid === uid);
-  
-  if (user) {
-    user.role = newRole;
-    
-    // Save to registered clients list
-    let allClients = [];
-    try {
-      const raw = localStorage.getItem('lmdw_all_clients_list');
-      if (raw) allClients = JSON.parse(raw);
-    } catch(e){}
-    
-    const clientIdx = allClients.findIndex(c => c.uid === uid || (c.email && c.email === user.email) || c.name === user.name);
-    if (clientIdx >= 0) {
-      allClients[clientIdx].role = newRole;
-    } else {
-      allClients.push({ uid: user.uid, name: user.name, email: user.email, phone: user.phone, role: newRole, points: user.points, address: user.address });
-    }
-    localStorage.setItem('lmdw_all_clients_list', JSON.stringify(allClients));
+function toggleItemStock(dishId, isInStock) {
+  let list86 = get86Items();
+  if (isInStock) {
+    list86 = list86.filter(id => id !== dishId);
+  } else {
+    if (!list86.includes(dishId)) list86.push(dishId);
+  }
+  save86Items(list86);
+  renderStockTable();
+}
 
-    // If this is the active saved user, update their active session
-    try {
-      const savedUser = localStorage.getItem('lmdw_user');
-      if (savedUser) {
-        const parsed = JSON.parse(savedUser);
-        if (parsed.email === user.email || parsed.name === user.name || parsed.uid === uid) {
-          parsed.role = newRole;
-          localStorage.setItem('lmdw_user', JSON.stringify(parsed));
-        }
-      }
-    } catch(e){}
-
-    // Broadcast role update event to all open tabs and windows
-    localStorage.setItem('lmdw_role_update_event', JSON.stringify({
-      uid: user.uid,
-      email: user.email,
-      name: user.name,
-      role: newRole,
-      timestamp: Date.now()
-    }));
-
-    const roleNameMap = {
-      customer: '👤 Client',
-      store: '👨‍🍳 Employé Cuisine',
-      kitchen: '👨‍🍳 Employé Cuisine',
-      driver: '🛵 Employé Livreur',
-      admin: '👑 Administrateur'
+function renderRbacUsers() {
+  const tbody = document.getElementById('usersRbacTableBody');
+  tbody.innerHTML = rbacUsers.map(user => {
+    const roleColors = {
+      admin: '#FF5500',
+      kitchen: '#F59E0B',
+      driver: '#3B82F6',
+      customer: '#10B981'
     };
 
-    alert(`✅ Rôle de ${user.name} mis à jour avec succès !
-
-Nouveau rôle : ${roleNameMap[newRole] || newRole.toUpperCase()}
-
-L'utilisateur a désormais accès immédiat à son interface (${newRole === 'store' || newRole === 'kitchen' ? 'Cuisine /kitchen.html' : (newRole === 'driver' ? 'Livreur /driver.html' : (newRole === 'admin' ? 'Direction /admin.html' : 'Client /index.html'))}).`);
-    renderUsers();
-  }
-}
-
-function renderAdminLiveOrders() {
-  const container = document.getElementById('adminLiveOrdersContainer');
-  if (!container) return;
-
-  let allOrders = [];
-  try {
-    const raw = localStorage.getItem('lmdw_all_orders');
-    if (raw) allOrders = JSON.parse(raw);
-  } catch(e){}
-
-  if (allOrders.length === 0) {
-    container.innerHTML = `
-      <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 12px; border: 1px dashed var(--border); border-radius: 12px;">
-        <i class="fa-solid fa-receipt" style="font-size: 28px; margin-bottom: 8px; color: rgba(255,255,255,0.2); display: block;"></i>
-        Aucune commande enregistrée pour le moment. Passez une commande test sur l'<strong>App Client</strong> pour la voir apparaître ici en direct.
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = allOrders.map(order => {
-    let statusBadge = '';
-    const st = order.status || 'new';
-    if (st === 'new') {
-      statusBadge = '<span style="background: rgba(59, 130, 246, 0.2); color: #3B82F6; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🔔 NOUVELLE REÇUE</span>';
-    } else if (st === 'prep') {
-      statusBadge = '<span style="background: rgba(245, 158, 11, 0.2); color: #F59E0B; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🍲 EN PRÉPARATION</span>';
-    } else if (st === 'ready') {
-      statusBadge = '<span style="background: rgba(16, 185, 129, 0.2); color: #10B981; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">✅ PRÊTE EN CUISINE</span>';
-    } else if (st === 'in_transit') {
-      statusBadge = '<span style="background: rgba(255, 85, 0, 0.2); color: #FF5500; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🛵 EN COURS DE LIVRAISON</span>';
-    } else if (st === 'delivered' || st === 'completed') {
-      statusBadge = '<span style="background: rgba(34, 197, 94, 0.2); color: #22C55E; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">🎉 LIVRÉE / COMPLÉTÉE</span>';
-    }
-
-    const itemsSummary = (order.items || []).map(i => i.name).join(', ') || 'Articles';
-    const totalDisplay = order.total ? `$${order.total.toFixed(2)} CAD` : '$0.00 CAD';
-
     return `
-      <div class="user-row" style="border-left: 3px solid ${st === 'delivered' || st === 'completed' ? '#22C55E' : 'var(--primary)'};">
-        <div class="user-info">
-          <div class="user-avatar" style="background: ${st === 'delivered' || st === 'completed' ? '#22C55E' : 'var(--primary)'}; font-size: 14px; font-weight: 800;">
-            ${order.fulfillment === 'pickup' ? '🥡' : '🛵'}
-          </div>
-          <div class="user-details">
-            <h3 style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span>#${order.id}</span>
-              <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">(${order.customerName || 'Client'})</span>
-              ${statusBadge}
-            </h3>
-            <p>
-              🛍️ <strong>${itemsSummary}</strong> • 📍 ${order.address || 'Drummondville, QC'}<br>
-              🕒 Heure: ${order.createdAt || 'Récemment'} • 🔑 PIN: <strong>${order.pin || '2325'}</strong>
-            </p>
-          </div>
-        </div>
-
-        <div style="text-align: right; min-width: 110px;">
-          <div style="font-family: var(--font-heading); font-size: 16px; font-weight: 800; color: #fff;">${totalDisplay}</div>
-          <div style="font-size: 11px; color: var(--accent-green);"><i class="fa-solid fa-credit-card"></i> Payé (Stripe)</div>
-        </div>
-      </div>
+      <tr>
+        <td><strong>${user.name}</strong></td>
+        <td>${user.email}</td>
+        <td>
+          <span style="background: rgba(255,255,255,0.08); color: ${roleColors[user.role]}; font-weight: 800; padding: 4px 8px; border-radius: 8px; font-size: 11px;">
+            ${user.role.toUpperCase()}
+          </span>
+        </td>
+        <td style="font-size: 11px; color: var(--text-muted);">
+          ${user.role === 'admin' ? 'Accès Total Console & Rôles' : (user.role === 'kitchen' ? 'Kanban & Préparation' : (user.role === 'driver' ? 'Livraison & GPS' : 'Commande Client'))}
+        </td>
+        <td>
+          <select onchange="changeUserRole(${user.id}, this.value)" style="background: #151519; color: #fff; border: 1px solid var(--border); padding: 4px 8px; border-radius: 8px; font-size: 11px;">
+            <option value="customer" ${user.role === 'customer' ? 'selected' : ''}>Client</option>
+            <option value="kitchen" ${user.role === 'kitchen' ? 'selected' : ''}>Cuisine KDS</option>
+            <option value="driver" ${user.role === 'driver' ? 'selected' : ''}>Livreur</option>
+            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrateur</option>
+          </select>
+        </td>
+      </tr>
     `;
   }).join('');
 }
 
-function filterUsers() {
-  renderUsers();
+function changeUserRole(userId, newRole) {
+  const user = rbacUsers.find(u => u.id === userId);
+  if (user) {
+    user.role = newRole;
+    renderRbacUsers();
+    alert(`Rôle de ${user.name} mis à jour : ${newRole.toUpperCase()}`);
+  }
 }
 
-window.addEventListener('storage', function(e) {
-  if (e.key === 'lmdw_all_orders' || e.key === 'lmdw_new_order' || e.key === 'lmdw_order_status_update') {
-    renderAdminLiveOrders();
-    computeAndRenderRealKpiData(currentFilterPeriod);
+function promptAddNewUser() {
+  const name = prompt("Nom de l'utilisateur :");
+  const email = prompt("Email :");
+  const role = prompt("Rôle (customer / kitchen / driver / admin) :", "kitchen");
+  if (name && email) {
+    rbacUsers.push({ id: Date.now(), name: name, email: email, role: role || 'customer' });
+    renderRbacUsers();
   }
-});
+}
 
-setInterval(function() {
-  renderAdminLiveOrders();
-}, 3500);
+function refreshAdminData() {
+  initAdminDashboard();
+}
 
 window.onload = function() {
-  renderUsers();
-  renderAdminLiveOrders();
-  computeAndRenderRealKpiData(currentFilterPeriod);
+  // Initially show PIN modal
 };
-</script>
-
-
-<!-- Owner & Staff Security Lock Guard -->
-<div id="staffSecurityLockOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(12, 12, 14, 0.98); backdrop-filter: blur(20px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
-  <div style="max-width: 400px; width: 100%; background: #1C1C24; border: 1.5px solid #FF5500; border-radius: 24px; padding: 24px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
-    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 26px; border: 1px solid #FF5500;">
-      🔒
-    </div>
-    <h2 style="font-size: 18px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Accès Propriétaire & Personnel</h2>
-    <p style="font-size: 12px; color: #A5A5B2; margin-bottom: 20px; line-height: 1.4;">
-      Cette interface (Console Direction) est strictement réservée au restaurant. Veuillez entrer votre code PIN :
-    </p>
-    <input type="password" id="txtStaffGuardPin" placeholder="Entrez le PIN (2325)" maxlength="6" style="width: 100%; background: #121216; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 14px; color: #FFFFFF; font-size: 18px; text-align: center; letter-spacing: 4px; margin-bottom: 12px;">
-    <div id="staffGuardError" style="display: none; color: #FF4444; font-size: 11px; margin-bottom: 12px; font-weight: 700;">Code PIN incorrect.</div>
-    <div style="display: flex; gap: 8px;">
-      <button type="button" onclick="window.location.href='/index.html'" style="flex: 1; padding: 12px; background: #262630; border: none; border-radius: 12px; color: #DDD; font-weight: 700; cursor: pointer;">
-        Retour Client
-      </button>
-      <button type="button" onclick="verifyStaffGuardPin()" style="flex: 1; padding: 12px; background: #FF5500; border: none; border-radius: 12px; color: #FFFFFF; font-weight: 800; cursor: pointer;">
-        Déverrouiller
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-function verifyStaffGuardPin() {
-  const pinInput = document.getElementById('txtStaffGuardPin');
-  const pinVal = (pinInput ? pinInput.value : '').trim();
-  const errorEl = document.getElementById('staffGuardError');
-  const overlay = document.getElementById('staffSecurityLockOverlay');
-
-  if (pinVal === '2325' || pinVal.toLowerCase() === 'admin') {
-    sessionStorage.setItem('lmdw_owner_authenticated', 'true');
-    if (overlay) overlay.style.display = 'none';
-  } else {
-    if (errorEl) errorEl.style.display = 'block';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  const overlay = document.getElementById('staffSecurityLockOverlay');
-  if (sessionStorage.getItem('lmdw_owner_authenticated') === 'true') {
-    if (overlay) overlay.style.display = 'none';
-  }
-});
 </script>
 
 </body>
