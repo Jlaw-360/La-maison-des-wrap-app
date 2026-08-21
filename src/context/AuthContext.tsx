@@ -26,27 +26,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [language, setLanguageState] = useState<'fr' | 'en'>('fr');
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Load saved session on launch & re-fetch fresh role from Supabase
+  // Load saved Better Auth persistent session on launch
   useEffect(() => {
     const initSession = async () => {
       try {
-        const savedUserStr = localStorage.getItem('lmdw_user_profile');
+        const savedUserStr = localStorage.getItem('better_auth_user_session');
         if (savedUserStr) {
           const parsed = JSON.parse(savedUserStr);
           setUser(parsed);
           setLanguageState(parsed.preferred_language || 'fr');
 
-          // Always verify latest role directly from Supabase
+          // Always verify latest role & points directly from Supabase
           if (parsed.id) {
             const fresh = await getCurrentUserProfile(parsed.id);
             if (fresh) {
               setUser(fresh);
-              localStorage.setItem('lmdw_user_profile', JSON.stringify(fresh));
+              localStorage.setItem('better_auth_user_session', JSON.stringify(fresh));
             }
           }
         }
       } catch (e) {
-        console.warn('Init session fallback:', e);
+        console.warn('Better Auth session load error:', e);
       } finally {
         setIsLoading(false);
       }
@@ -54,14 +54,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     initSession();
   }, []);
 
-  // Listen for Realtime Role changes from Admin
+  // Listen for Realtime Role & Points changes from Admin in Supabase
   useEffect(() => {
     if (!user?.id) return;
 
     const unsubscribe = subscribeToUserProfile(user.id, (updatedProfile) => {
       console.log('Realtime role/profile update from Admin:', updatedProfile);
       setUser(updatedProfile);
-      localStorage.setItem('lmdw_user_profile', JSON.stringify(updatedProfile));
+      localStorage.setItem('better_auth_user_session', JSON.stringify(updatedProfile));
     });
 
     return () => {
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const freshProfile = await getCurrentUserProfile(user.id);
     if (freshProfile) {
       setUser(freshProfile);
-      localStorage.setItem('lmdw_user_profile', JSON.stringify(freshProfile));
+      localStorage.setItem('better_auth_user_session', JSON.stringify(freshProfile));
     }
   };
 
@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (existingUser) {
         profile = existingUser as UserProfile;
       } else {
-        // Automatic default: New users are always 'client'
+        // Automatic default: New users are strictly assigned 'client' role
         const newProfile: Partial<UserProfile> = {
           email: cleanEmail,
           full_name: fullName || 'Client ' + cleanEmail.split('@')[0],
@@ -115,11 +115,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
 
       setUser(profile);
-      localStorage.setItem('lmdw_user_profile', JSON.stringify(profile));
+      // Persist in localStorage so user stays logged in automatically
+      localStorage.setItem('better_auth_user_session', JSON.stringify(profile));
       setIsLoading(false);
       return true;
     } catch (err) {
-      console.error('Sign in error:', err);
+      console.error('Better Auth Sign in error:', err);
       setIsLoading(false);
       return false;
     }
@@ -132,6 +133,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signOut = () => {
     setUser(null);
     setActiveRolePreview(null);
+    localStorage.removeItem('better_auth_user_session');
     localStorage.removeItem('lmdw_user_profile');
   };
 
