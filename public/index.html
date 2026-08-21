@@ -545,7 +545,7 @@
       background: #111116;
       border-radius: 28px 28px 0 0;
       border-top: 1.5px solid rgba(255, 255, 255, 0.12);
-      max-height: 90vh;
+      max-height: 92vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -583,7 +583,7 @@
 
     .sheet-hero-banner {
       width: 100%;
-      height: 220px;
+      height: 200px;
       position: relative;
       background: #08080C;
     }
@@ -595,27 +595,27 @@
     }
 
     .sheet-scroll-body {
-      padding: 18px 20px 20px 20px;
+      padding: 16px 18px 20px 18px;
       overflow-y: auto;
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .sheet-dish-badge-card {
       background: #171720;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
-      padding: 14px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .sheet-dish-thumb {
-      width: 58px;
-      height: 58px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #FF5500;
@@ -623,27 +623,82 @@
       flex-shrink: 0;
     }
 
-    .meta-pills-row {
+    .customizer-section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 6px;
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .meta-pill {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+    .customizer-section-title span {
+      font-size: 11px;
+      color: #FF5500;
+      font-weight: 700;
+    }
+
+    .option-pill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 8px;
+    }
+
+    .option-card-label {
+      background: #181822;
+      border: 1.5px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .option-card-label.selected {
+      border-color: #FF5500;
+      background: rgba(255, 85, 0, 0.08);
+    }
+
+    .option-card-label input { display: none; }
+
+    .option-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .option-price {
+      font-size: 11px;
+      font-weight: 700;
+      color: #FF5500;
+      margin-top: 2px;
+    }
+
+    .chip-tag {
+      background: #181822;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
       padding: 6px 12px;
       font-size: 11px;
       font-weight: 700;
       color: #D1D1DB;
-      display: flex;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
     }
 
+    .chip-tag.selected {
+      background: #FF5500;
+      border-color: #FF5500;
+      color: #FFFFFF;
+    }
+
     .sheet-bottom-bar {
-      padding: 14px 20px 20px 20px;
+      padding: 14px 18px 18px 18px;
       border-top: 1px solid var(--border-subtle);
       background: #111116;
       display: flex;
@@ -719,7 +774,6 @@
     }
 
     .tab-btn i { font-size: 18px; }
-
     .tab-btn.active { color: #FF5500; }
 
     .tab-center-icon {
@@ -931,7 +985,7 @@
     <div class="app-view active" id="view-home">
       <div class="greeting-container">
         <h1 class="greeting-title" id="greetingUserTitle">Hello, Walkse</h1>
-        <p class="greeting-subtitle">Let's Explore Wrap World & Authentic Flavors</p>
+        <p class="greeting-subtitle">Explorez les Saveurs Culinaires & Formules Trios</p>
       </div>
 
       <!-- Mode Selector -->
@@ -951,13 +1005,13 @@
 
       <!-- Section Title -->
       <div class="section-head">
-        <h2 id="currentCategorySectionTitle">Wrap Category</h2>
-        <button onclick="switchTab('menu')">See all <i class="fa-solid fa-arrow-right"></i></button>
+        <h2 id="currentCategorySectionTitle">Nos Wraps & Kebabs</h2>
+        <button onclick="switchTab('menu')">Voir Tout <i class="fa-solid fa-arrow-right"></i></button>
       </div>
 
       <!-- Full-Bleed Cards List -->
       <div class="cards-vertical-list" id="luxuryFeaturedCardsContainer">
-        <!-- Rendered dynamically -->
+        <!-- Rendered dynamically with real food photos -->
       </div>
 
       <!-- Restaurant Info Card -->
@@ -966,7 +1020,7 @@
           <div style="width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 85, 0, 0.15); display: flex; align-items: center; justify-content: center; font-size: 16px;">🏪</div>
           <div>
             <h3 style="font-size: 13px; font-weight: 800;">La Maison des Wraps</h3>
-            <p style="font-size: 10px; color: #E5A93C;">100% Halal • Drummondville, QC</p>
+            <p style="font-size: 10px; color: #E5A93C;">100% Halal Certifié • Drummondville, QC</p>
           </div>
         </div>
         <p style="font-size: 11px; color: var(--text-body); line-height: 1.5;">
@@ -979,8 +1033,8 @@
     <!-- VIEW 2: FULL MENU CATALOGUE -->
     <div class="app-view" id="view-menu">
       <div class="greeting-container">
-        <h1 class="greeting-title">Full Menu</h1>
-        <p class="greeting-subtitle">Explore our complete catalog of 23 specialty dishes</p>
+        <h1 class="greeting-title">Menu Complet</h1>
+        <p class="greeting-subtitle">Toutes nos spécialités aux prix officiels</p>
       </div>
       <div class="cards-vertical-list" id="menuFullListContainer">
         <!-- Rendered dynamically -->
@@ -1164,12 +1218,12 @@
 
 </div> <!-- /.phone-frame -->
 
-<!-- SCREEN 3: DETAILS & CUSTOMIZER BOTTOM SHEET -->
+<!-- SCREEN 3: DYNAMIC TRIO & CUSTOMIZER BOTTOM SHEET -->
 <div class="sheet-modal-backdrop" id="refDetailsModal">
   <div class="sheet-modal-container">
     <div class="sheet-top-nav-bar">
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal()"><i class="fa-solid fa-chevron-left"></i></div>
-      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Details</div>
+      <div style="font-weight: 800; font-size: 14px; color: #FFFFFF;">Personnalisation & Trio</div>
       <div class="sheet-nav-circle-btn" onclick="closeRefDetailsModal(); openCartModal();"><i class="fa-solid fa-bag-shopping"></i></div>
     </div>
 
@@ -1178,51 +1232,31 @@
       <div class="card-dark-gradient"></div>
     </div>
 
-    <div class="sheet-scroll-body">
+    <div class="sheet-scroll-body" id="customizerScrollBody">
+      <!-- Dish Header Badge -->
       <div class="sheet-dish-badge-card">
         <img id="refModalThumbImg" src="/assets/food/wrap_naan_poulet_tikka.png" alt="Thumb" class="sheet-dish-thumb">
         <div style="flex: 1;">
-          <h2 id="refModalTitle" style="font-size: 16px; font-weight: 800;">Wrap Naan Poulet Tikka</h2>
-          <div style="font-size: 18px; font-weight: 900; color: #FF5500; margin-top: 2px;">
+          <h2 id="refModalTitle" style="font-size: 15px; font-weight: 800;">Wrap Naan Poulet Tikka</h2>
+          <div style="font-size: 17px; font-weight: 900; color: #FF5500; margin-top: 2px;">
             <span id="refModalPrice">$8.95 CAD</span>
-            <span style="font-size: 11px; color: #E5A93C; font-weight: 700; margin-left: 8px;">★ 4.9/5 (500+ avis)</span>
+            <span style="font-size: 10px; color: #E5A93C; font-weight: 700; margin-left: 6px;">★ 4.9/5 (100% Halal)</span>
           </div>
         </div>
       </div>
 
-      <div class="meta-pills-row">
-        <div class="meta-pill"><i class="fa-solid fa-location-dot" style="color: #FF5500;"></i> Drummondville</div>
-        <div class="meta-pill"><i class="fa-solid fa-fire" style="color: #FF5500;"></i> 580 Kcal</div>
-        <div class="meta-pill"><i class="fa-solid fa-clock" style="color: #22C55E;"></i> 15-20 min</div>
-      </div>
-
+      <!-- Description -->
       <div>
-        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 6px;">Description</h3>
-        <p id="refModalDesc" style="font-size: 12px; color: var(--text-body); line-height: 1.5;">
-          Pain naan artisanal cuit minute au four tandoor, garni de suprêmes de poulet marinés aux 12 épices, oignons rouges et sauce maison.
+        <p id="refModalDesc" style="font-size: 12px; color: var(--text-body); line-height: 1.4;">
+          Pain naan cuit minute au four tandoor, suprêmes de poulet mariné aux 12 épices rouges.
         </p>
       </div>
 
-      <div>
-        <h3 style="font-size: 13px; font-weight: 800; color: #FFFFFF; margin-bottom: 8px;">1. Choix du Format</h3>
-        <div style="display: flex; gap: 10px;">
-          <label style="flex: 1; background: #181822; border: 1.5px solid #FF5500; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-            <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Plat Seul</div>
-              <div style="font-size: 11px; color: var(--text-body);" id="lblPriceSeul">$8.95</div>
-            </div>
-            <input type="radio" name="refDishFormat" value="solo" checked onchange="calcRefModalPrice()">
-          </label>
-
-          <label style="flex: 1; background: #181822; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-            <div>
-              <div style="font-size: 12px; font-weight: 800; color: #fff;">Formule Trio 🍟🥤</div>
-              <div style="font-size: 11px; color: #FF5500; font-weight: 700;">+ $5.30</div>
-            </div>
-            <input type="radio" name="refDishFormat" value="trio" onchange="calcRefModalPrice()">
-          </label>
-        </div>
+      <!-- DYNAMIC CUSTOMIZATION SECTIONS -->
+      <div id="dynamicCustomizerContainer" style="display: flex; flex-direction: column; gap: 14px;">
+        <!-- Injected dynamically based on dish category -->
       </div>
+
     </div>
 
     <div class="sheet-bottom-bar">
@@ -1292,6 +1326,22 @@ let currentCategory = 'all';
 let currentRefDish = null;
 let currentLanguage = 'fr';
 
+// Selection State inside modal
+let modalState = {
+  bread: "kebab",      // kebab ($8.95), tortilla ($9.95), naan ($10.95)
+  format: "solo",      // solo vs trio
+  curryCombo: "base",  // base ($17.65), combo1 ($21.35), combo2 ($24.35), combo3 ($25.35)
+  trioSide: "frites",  // frites vs patates
+  trioDrink: "pepsi",  // pepsi, 7up, diet, crush, nestea, eau
+  poutineBase: "frites", // frites vs patates
+  poutineSize: "petit",  // petit vs grand
+  poutineSauce: "brune", // brune vs butter_chicken
+  plateDrink: false,     // false ($17.65) vs true ($19.15)
+  plateSalad: "maison",  // maison, chou, macaroni, nouilles
+  selectedSauces: ["maison"],
+  extras: []           // oeuf (+0.99), cheddar (+0.99)
+};
+
 let clientProfile = {
   name: "Walkse",
   email: "walksenon@gmail.com",
@@ -1301,212 +1351,337 @@ let clientProfile = {
   role: "customer"
 };
 
-// All 23 Signature Real Dishes with 100% verified real food photos
+// 23 Official Menu Dishes exactly mapped to official boards & high-resolution photos
 const officialDishes = [
-  // Wraps & Kebabs
+  // 1. NOS WRAPS & KEBABS (Board 3)
   {
-    id: "wrap-naan-poulet-tikka",
-    name: "Wrap Naan Poulet Tikka",
+    id: "wrap-poulet-tikka",
+    name: "Wrap au Poulet Tikka",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.9/5",
     reviews: "630+ avis",
     img: "/assets/food/wrap_naan_poulet_tikka.png",
-    desc: "Pain naan cuit minute au four tandoor, suprêmes de poulet mariné aux 12 épices rouges, oignons rouges et sauce menthe fraîche."
+    desc: "Morceaux de poulet mariné aux épices tandoori rouges et grillé minute. Choix de Pain Kebab ($8.95), Tortilla ($9.95) ou Naan ($10.95)."
   },
   {
-    id: "wrap-naan-poulet-masala",
-    name: "Wrap Naan Poulet Masala",
+    id: "wrap-poulet-masala",
+    name: "Wrap au Poulet Masala",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.8/5",
     reviews: "480+ avis",
     img: "/assets/food/wrap_naan_poulet_masala.png",
-    desc: "Poulet mariné dans un mélange savoureux d'épices masala traditionnelles, roulé chaud dans un naan avec salade croquante."
+    desc: "Poulet mariné dans un mélange d'épices masala traditionnelles avec garniture fraîche et sauces."
   },
   {
     id: "wrap-poulet-curry",
     name: "Wrap Poulet Curry",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.9/5",
     reviews: "390+ avis",
     img: "/assets/food/wrap_poulet_curry.png",
-    desc: "Émincé de poulet mijoté au curry parfumé, tomates fraîches, coriandre et sauce crémeuse maison."
+    desc: "Émincé de poulet mijoté au curry doux et herbes fraîches, roulé chaud au choix dans un Kebab, Tortilla ou Naan."
   },
   {
     id: "wrap-poulet-malai-tikka",
     name: "Wrap Poulet Malai Tikka",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.9/5",
     reviews: "450+ avis",
     img: "/assets/food/wrap_poulet_malai_tikka.png",
-    desc: "Poulet ultra-tendre mariné dans une sauce veloutée aux herbes douces, fromage doux et cardamome."
+    desc: "Blanc de volaille doré au tandoor dans une sauce onctueuse à la crème, fromage et cardamome."
   },
   {
-    id: "wrap-kebab-poulet",
-    name: "Kebab au Poulet Grillé",
+    id: "kebab-au-poulet",
+    name: "Kebab au Poulet",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.8/5",
     reviews: "520+ avis",
     img: "/assets/food/wrap_kebab_poulet.png",
-    desc: "Brochettes de kebab de poulet assaisonné aux herbes fraîches, grillé à la flamme et servi avec sauce à l'ail."
+    desc: "Kebab de poulet assaisonné et grillé à la flamme, servi avec salade et sauce au choix."
   },
   {
-    id: "wrap-kebab-dinde-boeuf",
-    name: "Kebab Dinde & Boeuf",
+    id: "kebab-dinde-boeuf",
+    name: "Kebab à la Dinde et Boeuf",
     cat: "wraps",
     catName: "Nos Wraps & Kebabs",
-    price: 8.95,
+    basePriceKebab: 8.95,
+    basePriceTortilla: 9.95,
+    basePriceNaan: 10.95,
+    trioAddon: 5.30,
     rating: "4.8/5",
     reviews: "410+ avis",
     img: "/assets/food/wrap_kebab_dinde_boeuf.png",
-    desc: "Mélange savoureux de dinde et de boeuf émincé et doré à la perfection avec oignons doux et sauce blanche."
+    desc: "Mélange savoureux de dinde et de boeuf émincé et grillé avec oignons doux et sauce blanche."
   },
   {
-    id: "trio-naan-poulet-tikka",
-    name: "Trio Festin Naan & Frites",
-    cat: "trios",
-    catName: "Trios & Combos",
-    price: 14.25,
+    id: "wrap-steak-fromage",
+    name: "Wrap au Steak Fromage",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    basePriceKebab: 9.75,
+    basePriceTortilla: 10.75,
+    basePriceNaan: 11.75,
+    trioAddon: 5.20,
+    rating: "4.9/5",
+    reviews: "380+ avis",
+    img: "/assets/food/wrap_kebab_poulet.png",
+    desc: "Lamelles de steak de boeuf tendre grillé et fromage fondant coulant."
+  },
+  {
+    id: "wrap-mix-2-viandes",
+    name: "Wrap Mix (2 Viandes au choix)",
+    cat: "wraps",
+    catName: "Nos Wraps & Kebabs",
+    basePriceKebab: 9.95,
+    basePriceTortilla: 10.95,
+    basePriceNaan: 11.95,
+    trioAddon: 5.30,
     rating: "5.0/5",
-    reviews: "780+ avis",
-    img: "/assets/food/trio_naan_poulet_tikka.png",
-    desc: "Le combo signature : 1 Grand Wrap Naan garni + Grande portion de frites dorées croustillantes + 1 Boisson fraîche."
+    reviews: "580+ avis",
+    img: "/assets/food/assiette_mix_2_viandes.png",
+    desc: "Combinaison royale de 2 viandes au choix parmi nos spécialités grillées."
   },
 
-  // Bols de Curry
+  // 2. SAVEURS DE L'INDE & BOLS DE CURRY (Board 1)
   {
-    id: "combo-bol-curry",
+    id: "curry-butter-chicken",
     name: "Poulet au Beurre (Butter Chicken)",
     cat: "curry",
     catName: "Bols de Curry",
-    price: 17.65,
+    basePrice: 17.65,
+    combo1Price: 21.35, // + Riz
+    combo2Price: 24.35, // + Riz + Naan Fromage
+    combo3Price: 25.35, // + Riz + Naan Fromage + Boisson
     rating: "5.0/5",
     reviews: "890+ avis",
     img: "/assets/food/combo_bol_curry.png",
-    desc: "Le roi des currys : morceaux de poulet tendre mijotés dans une sauce riche au beurre, crème et tomates douces."
+    desc: "Morceaux de poulet tikka grillés dans une sauce crémeuse au beurre et aux amandes."
   },
   {
-    id: "bol-riz-basmati",
-    name: "Bol de Riz Basmati Parfumé",
+    id: "curry-poulet-curry",
+    name: "Poulet Curry Traditionnel",
     cat: "curry",
     catName: "Bols de Curry",
-    price: 5.25,
+    basePrice: 17.65,
+    combo1Price: 21.35,
+    combo2Price: 24.35,
+    combo3Price: 25.35,
+    rating: "4.9/5",
+    reviews: "450+ avis",
+    img: "/assets/food/wrap_poulet_curry.png",
+    desc: "Poulet mijoté dans notre sauce curry spéciale aux herbes et épices indiennes."
+  },
+  {
+    id: "curry-poulet-malai",
+    name: "Poulet Malai Tikka Bowl",
+    cat: "curry",
+    catName: "Bols de Curry",
+    basePrice: 17.65,
+    combo1Price: 21.35,
+    combo2Price: 24.35,
+    combo3Price: 25.35,
+    rating: "4.9/5",
+    reviews: "360+ avis",
+    img: "/assets/food/wrap_poulet_malai_tikka.png",
+    desc: "Blanc de volaille doré au tandoor, préparé dans une sauce à la crème et au fromage."
+  },
+  {
+    id: "curry-crevettes",
+    name: "Curry aux Crevettes",
+    cat: "curry",
+    catName: "Bols de Curry",
+    basePrice: 17.65,
+    combo1Price: 21.35,
+    combo2Price: 24.35,
+    combo3Price: 25.35,
     rating: "4.8/5",
-    reviews: "320+ avis",
-    img: "/assets/food/bol_riz.png",
-    desc: "Riz basmati grande qualité cuit à la vapeur avec notes subtiles d'épices douces et safran."
+    reviews: "290+ avis",
+    img: "/assets/food/combo_bol_curry.png",
+    desc: "Crevettes marinées, cuites dans une sauce au curry onctueuse avec épices."
+  },
+  {
+    id: "curry-paneer-makhani",
+    name: "Paneer Makhani (Végétarien)",
+    cat: "curry",
+    catName: "Bols de Curry",
+    basePrice: 15.25,
+    combo1Price: 18.35,
+    combo2Price: 21.35,
+    combo3Price: 22.35,
+    rating: "4.8/5",
+    reviews: "340+ avis",
+    img: "/assets/food/combo_bol_curry.png",
+    desc: "Paneer (fromage maison) cuit dans une sauce crémeuse à base de tomates et d'épices indiennes."
   },
 
-  // Biryani
+  // 3. BIRYANI (Board 1)
   {
-    id: "assiette-biryani-raita",
-    name: "Biryani Poulet Royal + Raita",
+    id: "biryani-poulet-raita",
+    name: "Biryani Poulet + Raita*",
     cat: "biryani",
     catName: "Biryani & Riz",
-    price: 18.85,
+    basePrice: 18.85,
     rating: "4.9/5",
     reviews: "610+ avis",
     img: "/assets/food/assiette_biryani_raita.png",
-    desc: "Riz basmati mijoté en étouffée avec poulet aux épices royales, safran, oignons dorés et sauce raïta fraîche."
+    desc: "Mélange subtil de riz basmati, d'épices, d'amandes, raisins et noix de cajou, accompagné de poulet et sauce Raïta* incluse."
   },
   {
-    id: "assiette-biryani",
-    name: "Assiette Biryani Tradition",
+    id: "biryani-crevette-raita",
+    name: "Biryani Crevettes + Raita*",
     cat: "biryani",
     catName: "Biryani & Riz",
-    price: 15.49,
+    basePrice: 18.85,
     rating: "4.9/5",
-    reviews: "430+ avis",
+    reviews: "320+ avis",
     img: "/assets/food/assiette_biryani.png",
-    desc: "Généreuse assiette de biryani parfumé aux herbes fraîches et raisins dorés."
+    desc: "Riz basmati aux épices royales avec crevettes juteuses et sauce Raïta* fraîche."
   },
 
-  // Assiettes Complètes
+  // 4. NOS ASSIETTES COMPLÈTES (Board 4)
   {
     id: "assiette-poulet-tikka",
     name: "Assiette Poulet Tikka",
     cat: "assiettes",
-    catName: "Assiettes Complètes",
-    price: 17.65,
+    catName: "Nos Assiettes Complètes",
+    basePrice: 17.65,
+    drinkPrice: 19.15,
     rating: "5.0/5",
     reviews: "750+ avis",
     img: "/assets/food/assiette_poulet_tikka.png",
-    desc: "Suprêmes de poulet tikka marinés tandoori, servis avec riz basmati chaud, frites dorées et salade fraîche."
-  },
-  {
-    id: "assiette-poulet-tikka-grille",
-    name: "Assiette Tikka Grillé au Four",
-    cat: "assiettes",
-    catName: "Assiettes Complètes",
-    price: 17.65,
-    rating: "4.9/5",
-    reviews: "560+ avis",
-    img: "/assets/food/assiette_poulet_tikka_grille.png",
-    desc: "Brochettes de poulet grillées au tandoor avec légumes glacés, riz basmati et sauces maison."
-  },
-  {
-    id: "assiette-poulet-masala",
-    name: "Assiette Poulet Masala",
-    cat: "assiettes",
-    catName: "Assiettes Complètes",
-    price: 17.65,
-    rating: "4.8/5",
-    reviews: "360+ avis",
-    img: "/assets/food/assiette_poulet_masala.png",
-    desc: "Poulet mijoté dans une sauce masala onctueuse, accompagné de riz basmati et garnitures du chef."
+    desc: "Suprêmes de poulet tikka marinés tandoori. Servi avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
   },
   {
     id: "assiette-kebab-poulet",
     name: "Assiette Kebab au Poulet",
     cat: "assiettes",
-    catName: "Assiettes Complètes",
-    price: 17.65,
+    catName: "Nos Assiettes Complètes",
+    basePrice: 17.65,
+    drinkPrice: 19.15,
     rating: "4.9/5",
     reviews: "480+ avis",
     img: "/assets/food/assiette_kebab_poulet.png",
-    desc: "Généreuses brochettes de kebab de poulet grillé avec frites dorées, riz et sauce blanche à l'ail."
+    desc: "Brochettes de kebab de poulet grillé. Servi avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
+  },
+  {
+    id: "assiette-kebab-dinde-boeuf",
+    name: "Assiette Kebab Dinde et Boeuf",
+    cat: "assiettes",
+    catName: "Nos Assiettes Complètes",
+    basePrice: 17.65,
+    drinkPrice: 19.15,
+    rating: "4.8/5",
+    reviews: "410+ avis",
+    img: "/assets/food/wrap_kebab_dinde_boeuf.png",
+    desc: "Émincé de dinde et de boeuf grillé avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
+  },
+  {
+    id: "assiette-poulet-masala",
+    name: "Assiette Poulet Masala",
+    cat: "assiettes",
+    catName: "Nos Assiettes Complètes",
+    basePrice: 17.65,
+    drinkPrice: 19.15,
+    rating: "4.8/5",
+    reviews: "360+ avis",
+    img: "/assets/food/assiette_poulet_masala.png",
+    desc: "Poulet mijoté au masala avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
   },
   {
     id: "assiette-mix-2-viandes",
-    name: "Assiette Mix Royale (2 Viandes)",
+    name: "Assiette Mix (2 Viandes au choix)",
     cat: "assiettes",
-    catName: "Assiettes Complètes",
-    price: 19.95,
+    catName: "Nos Assiettes Complètes",
+    basePrice: 19.95,
+    drinkPrice: 21.20,
     rating: "5.0/5",
     reviews: "820+ avis",
     img: "/assets/food/assiette_mix_2_viandes.png",
-    desc: "Le festin suprême : 2 viandes au choix parmi nos spécialités, servies avec riz basmati, frites et salade."
+    desc: "Le festin royal : 2 viandes au choix avec Salade au choix, Frites ou Patates à l'Ail, Riz Basmati et Pain Kebab."
   },
 
-  // Burgers
+  // 5. BURGERS & POUTINES (Board 2)
   {
-    id: "burger-maison",
+    id: "burger-de-poulet",
     name: "Burger de Poulet Maison",
     cat: "burgers",
     catName: "Nos Burgers",
-    price: 8.45,
+    basePrice: 6.95,
+    trioPrice: 11.95,
     rating: "4.8/5",
     reviews: "310+ avis",
     img: "/assets/food/burger.png",
-    desc: "Pain brioché toasté, filet de poulet pané croustillant, cheddar fondant, laitue fraîche et sauce spéciale."
+    desc: "Pain brioché toasté, filet de poulet pané croustillant, salade fraîche et sauce burger. Seul $6.95 | Trio $11.95."
+  },
+  {
+    id: "cheese-burger",
+    name: "Cheese Burger",
+    cat: "burgers",
+    catName: "Nos Burgers",
+    basePrice: 6.75,
+    trioPrice: 11.75,
+    rating: "4.7/5",
+    reviews: "280+ avis",
+    img: "/assets/food/burger.png",
+    desc: "Steak de boeuf pur grillé, cheddar fondant et sauce burger. Seul $6.75 | Trio $11.75."
+  },
+  {
+    id: "double-cheese-burger",
+    name: "Double Cheese Burger",
+    cat: "burgers",
+    catName: "Nos Burgers",
+    basePrice: 8.45,
+    trioPrice: 13.45,
+    rating: "4.9/5",
+    reviews: "390+ avis",
+    img: "/assets/food/burger.png",
+    desc: "Double steak de boeuf pur, double cheddar fondant et oignons doux. Seul $8.45 | Trio $13.45."
+  },
+  {
+    id: "panini-poulet-tikka",
+    name: "Panini Poulet Tikka",
+    cat: "paninis",
+    catName: "Paninis au Choix",
+    basePrice: 9.25,
+    trioPrice: 14.45,
+    rating: "4.8/5",
+    reviews: "220+ avis",
+    img: "/assets/food/wrap_naan_poulet_tikka.png",
+    desc: "Panini grillé pressé au poulet tikka et fromage fondu. Seul $9.25 | Trio $14.45 (Frites/Patates + Boisson)."
   },
 
-  // Pains Naans
+  // 6. PAINS NAANS & CÔTÉS (Board 1 & 2)
   {
     id: "pain-naan-nature",
     name: "Pain Naan Nature au Tandoor",
     cat: "naans",
-    catName: "Pains Naans",
-    price: 3.00,
+    catName: "Pains Naans & Côtés",
+    basePrice: 3.00,
     rating: "4.9/5",
     reviews: "850+ avis",
     img: "/assets/food/pain_naan_nature.png",
@@ -1516,21 +1691,43 @@ const officialDishes = [
     id: "pain-naan-ail",
     name: "Pain Naan à l'Ail & Beurre",
     cat: "naans",
-    catName: "Pains Naans",
-    price: 4.50,
+    catName: "Pains Naans & Côtés",
+    basePrice: 4.50,
     rating: "5.0/5",
     reviews: "940+ avis",
     img: "/assets/food/pain_naan_ail.png",
-    desc: "Pain naan chaud badigeonné de beurre clarifié ghee et parsemé d'ail frais et coriandre hachée."
+    desc: "Pain naan chaud badigeonné de beurre clarifié ghee, ail frais et coriandre."
+  },
+  {
+    id: "pain-naan-fromage",
+    name: "Pain Naan au Fromage",
+    cat: "naans",
+    catName: "Pains Naans & Côtés",
+    basePrice: 4.50,
+    rating: "5.0/5",
+    reviews: "790+ avis",
+    img: "/assets/food/pain_naan_nature.png",
+    desc: "Fourré de fromage fondant à l'intérieur de la pâte chaude."
+  },
+  {
+    id: "pain-naan-ail-fromage",
+    name: "Pain Naan à l'Ail + Fromage",
+    cat: "naans",
+    catName: "Pains Naans & Côtés",
+    basePrice: 5.50,
+    rating: "5.0/5",
+    reviews: "910+ avis",
+    img: "/assets/food/pain_naan_ail.png",
+    desc: "La combinaison suprême : ail frais doré et coeur de fromage fondu."
   },
 
-  // Desserts & Boissons
+  // 7. DESSERTS & BOISSONS (Board 2)
   {
     id: "dessert-gulab-jamun",
     name: "Gulab Jamun Chauds (2 pcs)",
     cat: "desserts",
-    catName: "Desserts & Lassis",
-    price: 4.99,
+    catName: "Desserts & Boissons",
+    basePrice: 4.99,
     rating: "5.0/5",
     reviews: "420+ avis",
     img: "/assets/food/dessert_gulab_jamun.png",
@@ -1540,47 +1737,46 @@ const officialDishes = [
     id: "dessert-ras-malai",
     name: "Ras Malai Royal",
     cat: "desserts",
-    catName: "Desserts & Lassis",
-    price: 4.99,
+    catName: "Desserts & Boissons",
+    basePrice: 4.99,
     rating: "4.9/5",
     reviews: "380+ avis",
     img: "/assets/food/dessert_ras_malai.png",
-    desc: "Palets de fromage doux flottant dans un lait crémeux parfumé au safran, cardamome et éclats de pistaches."
+    desc: "Palets de fromage doux dans un lait crémeux parfumé au safran, cardamome et éclats de pistaches."
   },
   {
     id: "lassi-mangue",
     name: "Lassi Mangue Royale",
     cat: "desserts",
-    catName: "Desserts & Lassis",
-    price: 4.50,
+    catName: "Desserts & Boissons",
+    basePrice: 4.50,
     rating: "5.0/5",
     reviews: "980+ avis",
     img: "/assets/food/lassi_mangue.png",
-    desc: "Boisson traditionnelle au yaourt velouté et pulpe de mangue Alphonso mûrie au soleil. Ultra rafraîchissant."
+    desc: "Boisson traditionnelle au yaourt velouté et pulpe de mangue Alphonso mûrie au soleil."
   },
   {
     id: "lassi-rose",
     name: "Lassi Rose de Damas",
     cat: "desserts",
-    catName: "Desserts & Lassis",
-    price: 4.50,
+    catName: "Desserts & Boissons",
+    basePrice: 4.50,
     rating: "4.9/5",
     reviews: "470+ avis",
     img: "/assets/food/lassi_rose.png",
-    desc: "Lassi doux aromatisé à l'essence de rose et cardamome, garni d'une touche florale délicate."
+    desc: "Lassi doux aromatisé à l'essence de rose et cardamome avec touche florale délicate."
   }
 ];
 
 const categoriesList = [
   { id: "all", name: "Tous les Plats" },
-  { id: "wraps", name: "🌯 Wraps & Kebabs" },
+  { id: "wraps", name: "🌯 Nos Wraps & Kebabs" },
   { id: "curry", name: "🍲 Bols de Curry" },
   { id: "biryani", name: "🍚 Biryani & Riz" },
   { id: "assiettes", name: "🍽️ Assiettes Complètes" },
-  { id: "trios", name: "🍟 Trios & Combos" },
-  { id: "burgers", name: "🍔 Burgers" },
-  { id: "naans", name: "🫓 Pains Naans" },
-  { id: "desserts", name: "🥤 Desserts & Lassis" }
+  { id: "burgers", name: "🍔 Burgers & Paninis" },
+  { id: "naans", name: "🫓 Naans & Accompagnements" },
+  { id: "desserts", name: "🥤 Lassis & Desserts" }
 ];
 
 function enterAppFromSplash() {
@@ -1605,6 +1801,12 @@ function renderCategoryPills() {
   `).join('');
 }
 
+function getDisplayPrice(dish) {
+  if (dish.cat === 'wraps') return '$' + dish.basePriceKebab.toFixed(2) + ' CAD';
+  if (dish.basePrice) return '$' + dish.basePrice.toFixed(2) + ' CAD';
+  return '$8.95 CAD';
+}
+
 function renderDishes() {
   const container = document.getElementById('luxuryFeaturedCardsContainer');
   if (!container) return;
@@ -1627,7 +1829,7 @@ function renderDishes() {
 
         <div class="card-top-row">
           <div class="card-price-stack">
-            <div class="card-price-val">$\${dish.price.toFixed(2)} CAD</div>
+            <div class="card-price-val">\${getDisplayPrice(dish)}</div>
             <div class="card-rating-val">★ \${dish.rating} <span style="color: rgba(255,255,255,0.6);">(\${dish.reviews})</span></div>
           </div>
           <div class="card-fav-circle" onclick="event.stopPropagation(); this.classList.toggle('active'); showToast('Ajouté aux favoris !', '⭐');">
@@ -1659,7 +1861,7 @@ function renderDishes() {
         </div>
         <div class="card-top-row">
           <div class="card-price-stack">
-            <div class="card-price-val">$\${dish.price.toFixed(2)} CAD</div>
+            <div class="card-price-val">\${getDisplayPrice(dish)}</div>
             <div class="card-rating-val">★ \${dish.rating} • \${dish.catName}</div>
           </div>
         </div>
@@ -1682,19 +1884,29 @@ function filterCategory(cat, btn) {
   renderDishes();
 }
 
+// OPEN SCREEN 3: DYNAMIC TRIO & CUSTOMIZER MODAL
 function openRefDetailsModal(dishId) {
   const found = officialDishes.find(d => d.id === dishId) || officialDishes[0];
   currentRefDish = found;
 
+  // Reset modal state
+  modalState.bread = "kebab";
+  modalState.format = "solo";
+  modalState.curryCombo = "base";
+  modalState.trioSide = "frites";
+  modalState.trioDrink = "pepsi";
+  modalState.plateDrink = false;
+  modalState.plateSalad = "maison";
+  modalState.selectedSauces = ["maison"];
+  modalState.extras = [];
+
   document.getElementById('refModalHeroImg').src = found.img;
   document.getElementById('refModalThumbImg').src = found.img;
   document.getElementById('refModalTitle').innerText = found.name;
-  document.getElementById('lblPriceSeul').innerText = '$' + found.price.toFixed(2);
   document.getElementById('refModalDesc').innerText = found.desc;
 
-  const radioSolo = document.querySelector('input[name="refDishFormat"][value="solo"]');
-  if (radioSolo) radioSolo.checked = true;
-  calcRefModalPrice();
+  buildDynamicCustomizer(found);
+  recalculateModalTotal();
 
   document.getElementById('refDetailsModal').classList.add('open');
 }
@@ -1703,20 +1915,376 @@ function closeRefDetailsModal() {
   document.getElementById('refDetailsModal').classList.remove('open');
 }
 
-function calcRefModalPrice() {
+// BUILD CUSTOMIZER ACCORDING TO OFFICIAL BOARD RULES
+function buildDynamicCustomizer(dish) {
+  const container = document.getElementById('dynamicCustomizerContainer');
+  if (!container) return;
+
+  let html = '';
+
+  // 1. IF DISH IS A WRAP OR KEBAB (Board 3)
+  if (dish.cat === 'wraps') {
+    html += `
+      <!-- Step 1: Choix de Pain -->
+      <div>
+        <div class="customizer-section-title">
+          <span>1. Choix du Pain</span>
+          <small style="color: var(--text-muted);">Obligatoire</small>
+        </div>
+        <div class="option-pill-grid">
+          <div class="option-card-label \${modalState.bread === 'kebab' ? 'selected' : ''}" onclick="selectBread('kebab', this)">
+            <div class="option-name">Pain Kebab</div>
+            <div class="option-price">$8.95 CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.bread === 'tortilla' ? 'selected' : ''}" onclick="selectBread('tortilla', this)">
+            <div class="option-name">Pain Tortilla</div>
+            <div class="option-price">+$1.00 ($9.95)</div>
+          </div>
+          <div class="option-card-label \${modalState.bread === 'naan' ? 'selected' : ''}" onclick="selectBread('naan', this)">
+            <div class="option-name">Pain Naan Tandoor</div>
+            <div class="option-price">+$2.00 ($10.95)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Format Seul vs Trio -->
+      <div>
+        <div class="customizer-section-title">
+          <span>2. Format du Plat</span>
+          <small style="color: #FF5500;">Trio: +$5.30</small>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div class="option-card-label \${modalState.format === 'solo' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('solo', this)">
+            <div class="option-name">Seul (Solo)</div>
+            <div class="option-price" id="lblSoloPrice">$8.95 CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.format === 'trio' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('trio', this)">
+            <div class="option-name">Formule Trio 🍟🥤</div>
+            <div class="option-price" id="lblTrioPrice">+$5.30 (Dès $14.25)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Trio Options (Only if Trio Selected) -->
+      <div id="trioOptionsSection" style="display: \${modalState.format === 'trio' ? 'flex' : 'none'}; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
+        <div>
+          <div class="customizer-section-title">
+            <span style="color: #E5A93C;">Accompagnement Trio (Inclus)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
+            <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="customizer-section-title">
+            <span style="color: #E5A93C;">Boisson Trio Incluse (Canette)</span>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <div class="chip-tag \${modalState.trioDrink === 'pepsi' ? 'selected' : ''}" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
+            <div class="chip-tag \${modalState.trioDrink === 'diet' ? 'selected' : ''}" onclick="selectTrioDrink('diet', this)">🥤 Pepsi Diète</div>
+            <div class="chip-tag \${modalState.trioDrink === '7up' ? 'selected' : ''}" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
+            <div class="chip-tag \${modalState.trioDrink === 'crush' ? 'selected' : ''}" onclick="selectTrioDrink('crush', this)">🥤 Crush Orange</div>
+            <div class="chip-tag \${modalState.trioDrink === 'nestea' ? 'selected' : ''}" onclick="selectTrioDrink('nestea', this)">🥤 Nestea</div>
+            <div class="chip-tag \${modalState.trioDrink === 'eau' ? 'selected' : ''}" onclick="selectTrioDrink('eau', this)">💧 Bouteille d'Eau</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Choix des Sauces (Board 3) -->
+      <div>
+        <div class="customizer-section-title">
+          <span>3. Sauces au Choix (1 ou 2 Incluses)</span>
+        </div>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <div class="chip-tag selected" onclick="toggleSauce('Maison', this)">Sauce Maison</div>
+          <div class="chip-tag" onclick="toggleSauce('Mayo', this)">Mayo</div>
+          <div class="chip-tag" onclick="toggleSauce('Ketchup', this)">Ketchup</div>
+          <div class="chip-tag" onclick="toggleSauce('Moutarde', this)">Moutarde</div>
+          <div class="chip-tag" onclick="toggleSauce('Harissa', this)">🌶️ Harissa</div>
+          <div class="chip-tag" onclick="toggleSauce('Verte', this)">🌿 Sauce Verte</div>
+          <div class="chip-tag" onclick="toggleSauce('Sauce à l\'ail', this)">🧄 Sauce à l'Ail</div>
+          <div class="chip-tag" onclick="toggleSauce('Thaï', this)">🍯 Sauce Thaï</div>
+        </div>
+      </div>
+
+      <!-- Step 5: Extras Optionnels -->
+      <div>
+        <div class="customizer-section-title">
+          <span>4. Extras Gourmands</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div class="option-card-label" style="flex: 1;" onclick="toggleExtra('oeuf', 0.99, this)">
+            <div class="option-name">🍳 Extra Oeuf</div>
+            <div class="option-price">+ $0.99 CAD</div>
+          </div>
+          <div class="option-card-label" style="flex: 1;" onclick="toggleExtra('cheddar', 0.99, this)">
+            <div class="option-name">🧀 Extra Cheddar</div>
+            <div class="option-price">+ $0.99 CAD</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  // 2. IF DISH IS A CURRY BOWL (Board 1)
+  else if (dish.cat === 'curry') {
+    const isVege = dish.id === 'curry-paneer-makhani';
+    const c1 = isVege ? 18.35 : 21.35;
+    const c2 = isVege ? 21.35 : 24.35;
+    const c3 = isVege ? 22.35 : 25.35;
+    const base = isVege ? 15.25 : 17.65;
+
+    html += `
+      <div>
+        <div class="customizer-section-title">
+          <span>Formules Combo Nos Bols Curry</span>
+          <small style="color: #FF5500;">Au Choix</small>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="option-card-label \${modalState.curryCombo === 'base' ? 'selected' : ''}" onclick="selectCurryCombo('base', this)">
+            <div class="option-name">Bol Seul (Sans Accompagnement)</div>
+            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.curryCombo === 'combo1' ? 'selected' : ''}" onclick="selectCurryCombo('combo1', this)">
+            <div class="option-name">COMBO 1 : Bol + Riz Basmati 🍚</div>
+            <div class="option-price">$\${c1.toFixed(2)} CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.curryCombo === 'combo2' ? 'selected' : ''}" onclick="selectCurryCombo('combo2', this)">
+            <div class="option-name">COMBO 2 : Bol + Riz + Naan Fromage 🫓🧀</div>
+            <div class="option-price">$\${c2.toFixed(2)} CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.curryCombo === 'combo3' ? 'selected' : ''}" onclick="selectCurryCombo('combo3', this)">
+            <div class="option-name">COMBO 3 : Bol + Riz + Naan Fromage + Boisson 🥤</div>
+            <div class="option-price">$\${c3.toFixed(2)} CAD</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  // 3. IF DISH IS AN ASSIETTE COMPLÈTE (Board 4)
+  else if (dish.cat === 'assiettes') {
+    const isMix = dish.id === 'assiette-mix-2-viandes';
+    const base = isMix ? 19.95 : 17.65;
+    const withDrink = isMix ? 21.20 : 19.15;
+
+    html += `
+      <div>
+        <div class="customizer-section-title">
+          <span>Option Boisson Fraîche</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div class="option-card-label \${!modalState.plateDrink ? 'selected' : ''}" style="flex: 1;" onclick="selectPlateDrink(false, this)">
+            <div class="option-name">Assiette Seule</div>
+            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.plateDrink ? 'selected' : ''}" style="flex: 1;" onclick="selectPlateDrink(true, this)">
+            <div class="option-name">Avec Boisson 🥤</div>
+            <div class="option-price">$\${withDrink.toFixed(2)} CAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="customizer-section-title">
+          <span>Choix de Salade (Incluse avec Riz & Pain Kebab)</span>
+        </div>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <div class="chip-tag \${modalState.plateSalad === 'maison' ? 'selected' : ''}" onclick="selectPlateSalad('maison', this)">🥗 Salade Maison</div>
+          <div class="chip-tag \${modalState.plateSalad === 'chou' ? 'selected' : ''}" onclick="selectPlateSalad('chou', this)">🥗 Salade de Chou</div>
+          <div class="chip-tag \${modalState.plateSalad === 'macaroni' ? 'selected' : ''}" onclick="selectPlateSalad('macaroni', this)">🥗 Salade Macaroni</div>
+          <div class="chip-tag \${modalState.plateSalad === 'nouilles' ? 'selected' : ''}" onclick="selectPlateSalad('nouilles', this)">🍜 Nouilles Légumes Sautés</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="customizer-section-title">
+          <span>Choix d'Accompagnement Chaud</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites Dorées</div>
+          <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+        </div>
+      </div>
+    `;
+  }
+  // 4. IF DISH IS A BURGER OR PANINI (Board 2 & 3)
+  else if (dish.cat === 'burgers' || dish.cat === 'paninis') {
+    const base = dish.basePrice || 6.95;
+    const trio = dish.trioPrice || (base + 5.00);
+
+    html += `
+      <div>
+        <div class="customizer-section-title">
+          <span>Format</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div class="option-card-label \${modalState.format === 'solo' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('solo', this)">
+            <div class="option-name">Seul (Solo)</div>
+            <div class="option-price">$\${base.toFixed(2)} CAD</div>
+          </div>
+          <div class="option-card-label \${modalState.format === 'trio' ? 'selected' : ''}" style="flex: 1;" onclick="selectFormat('trio', this)">
+            <div class="option-name">Formule Trio 🍟🥤</div>
+            <div class="option-price">$\${trio.toFixed(2)} CAD</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="trioOptionsSection" style="display: \${modalState.format === 'trio' ? 'flex' : 'none'}; flex-direction: column; gap: 12px; background: #181822; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,85,0,0.25);">
+        <div>
+          <div class="customizer-section-title">
+            <span style="color: #E5A93C;">Accompagnement Trio (Inclus)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div class="chip-tag \${modalState.trioSide === 'frites' ? 'selected' : ''}" onclick="selectTrioSide('frites', this)">🍟 Frites</div>
+            <div class="chip-tag \${modalState.trioSide === 'patates' ? 'selected' : ''}" onclick="selectTrioSide('patates', this)">🥔 Patates à l'Ail</div>
+          </div>
+        </div>
+        <div>
+          <div class="customizer-section-title">
+            <span style="color: #E5A93C;">Boisson Incluse</span>
+          </div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <div class="chip-tag \${modalState.trioDrink === 'pepsi' ? 'selected' : ''}" onclick="selectTrioDrink('pepsi', this)">🥤 Pepsi</div>
+            <div class="chip-tag \${modalState.trioDrink === '7up' ? 'selected' : ''}" onclick="selectTrioDrink('7up', this)">🥤 7Up</div>
+            <div class="chip-tag \${modalState.trioDrink === 'eau' ? 'selected' : ''}" onclick="selectTrioDrink('eau', this)">💧 Eau</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = html;
+}
+
+// SELECTION ACTIONS
+function selectBread(breadType, el) {
+  modalState.bread = breadType;
+  el.parentElement.querySelectorAll('.option-card-label').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  recalculateModalTotal();
+}
+
+function selectFormat(formatType, el) {
+  modalState.format = formatType;
+  el.parentElement.querySelectorAll('.option-card-label').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const trioSec = document.getElementById('trioOptionsSection');
+  if (trioSec) trioSec.style.display = formatType === 'trio' ? 'flex' : 'none';
+  recalculateModalTotal();
+}
+
+function selectCurryCombo(comboType, el) {
+  modalState.curryCombo = comboType;
+  el.parentElement.querySelectorAll('.option-card-label').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  recalculateModalTotal();
+}
+
+function selectPlateDrink(hasDrink, el) {
+  modalState.plateDrink = hasDrink;
+  el.parentElement.querySelectorAll('.option-card-label').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  recalculateModalTotal();
+}
+
+function selectPlateSalad(saladType, el) {
+  modalState.plateSalad = saladType;
+  el.parentElement.querySelectorAll('.chip-tag').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectTrioSide(side, el) {
+  modalState.trioSide = side;
+  el.parentElement.querySelectorAll('.chip-tag').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectTrioDrink(drink, el) {
+  modalState.trioDrink = drink;
+  el.parentElement.querySelectorAll('.chip-tag').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function toggleSauce(sauce, el) {
+  el.classList.toggle('selected');
+}
+
+function toggleExtra(extraName, price, el) {
+  el.classList.toggle('selected');
+  const idx = modalState.extras.findIndex(e => e.name === extraName);
+  if (idx >= 0) {
+    modalState.extras.splice(idx, 1);
+  } else {
+    modalState.extras.push({ name: extraName, price: price });
+  }
+  recalculateModalTotal();
+}
+
+function recalculateModalTotal() {
   if (!currentRefDish) return;
-  const isTrio = document.querySelector('input[name="refDishFormat"][value="trio"]')?.checked;
-  const finalPrice = isTrio ? (currentRefDish.price + 5.30) : currentRefDish.price;
-  document.getElementById('refModalPrice').innerText = '$' + finalPrice.toFixed(2) + ' CAD';
+
+  let total = 0;
+
+  if (currentRefDish.cat === 'wraps') {
+    if (modalState.bread === 'kebab') total = currentRefDish.basePriceKebab || 8.95;
+    else if (modalState.bread === 'tortilla') total = currentRefDish.basePriceTortilla || 9.95;
+    else if (modalState.bread === 'naan') total = currentRefDish.basePriceNaan || 10.95;
+
+    if (modalState.format === 'trio') {
+      total += (currentRefDish.trioAddon || 5.30);
+    }
+  } else if (currentRefDish.cat === 'curry') {
+    const isVege = currentRefDish.id === 'curry-paneer-makhani';
+    if (modalState.curryCombo === 'combo1') total = isVege ? 18.35 : 21.35;
+    else if (modalState.curryCombo === 'combo2') total = isVege ? 21.35 : 24.35;
+    else if (modalState.curryCombo === 'combo3') total = isVege ? 22.35 : 25.35;
+    else total = isVege ? 15.25 : 17.65;
+  } else if (currentRefDish.cat === 'assiettes') {
+    const isMix = currentRefDish.id === 'assiette-mix-2-viandes';
+    total = modalState.plateDrink ? (isMix ? 21.20 : 19.15) : (isMix ? 19.95 : 17.65);
+  } else if (currentRefDish.cat === 'burgers' || currentRefDish.cat === 'paninis') {
+    total = modalState.format === 'trio' ? (currentRefDish.trioPrice || currentRefDish.basePrice + 5.00) : currentRefDish.basePrice;
+  } else {
+    total = currentRefDish.basePrice || 8.95;
+  }
+
+  // Add extras
+  modalState.extras.forEach(ext => { total += ext.price; });
+
+  const priceEl = document.getElementById('refModalPrice');
+  if (priceEl) priceEl.innerText = '$' + total.toFixed(2) + ' CAD';
+
+  return total;
 }
 
 function addCurrentDishToCart(andCheckout = false) {
   if (!currentRefDish) return;
-  const isTrio = document.querySelector('input[name="refDishFormat"][value="trio"]')?.checked;
-  const price = isTrio ? (currentRefDish.price + 5.30) : currentRefDish.price;
-  const name = isTrio ? (currentRefDish.name + " (Trio Frites & Boisson)") : currentRefDish.name;
 
-  cart.push({ id: currentRefDish.id + (isTrio ? '-trio' : ''), name: name, price: price, img: currentRefDish.img });
+  const finalPrice = recalculateModalTotal();
+  let customizedName = currentRefDish.name;
+
+  if (currentRefDish.cat === 'wraps') {
+    const breadLbl = modalState.bread === 'naan' ? 'Pain Naan' : (modalState.bread === 'tortilla' ? 'Tortilla' : 'Pain Kebab');
+    const formatLbl = modalState.format === 'trio' ? `Trio (\${modalState.trioSide} + \${modalState.trioDrink})` : 'Seul';
+    customizedName += ` (\${breadLbl} - \${formatLbl})`;
+  } else if (currentRefDish.cat === 'curry') {
+    if (modalState.curryCombo === 'combo1') customizedName += ' (Combo 1: +Riz)';
+    else if (modalState.curryCombo === 'combo2') customizedName += ' (Combo 2: +Riz +Naan Fromage)';
+    else if (modalState.curryCombo === 'combo3') customizedName += ' (Combo 3: +Riz +Naan Fromage +Boisson)';
+  } else if (currentRefDish.cat === 'assiettes') {
+    customizedName += modalState.plateDrink ? ` (Avec Boisson - \${modalState.plateSalad})` : ` (\${modalState.plateSalad})`;
+  } else if (modalState.format === 'trio') {
+    customizedName += ` (Trio \${modalState.trioSide} + \${modalState.trioDrink})`;
+  }
+
+  cart.push({
+    id: currentRefDish.id + '-' + Date.now(),
+    name: customizedName,
+    price: finalPrice,
+    img: currentRefDish.img
+  });
+
   updateCartUI();
   closeRefDetailsModal();
 
@@ -1746,13 +2314,13 @@ function updateCartUI() {
       container.innerHTML = cart.map((item, idx) => `
         <div style="display: flex; align-items: center; justify-content: space-between; background: #181822; padding: 12px; border-radius: 14px; margin-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <img src="${item.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
+            <img src="\${item.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;">
             <div>
-              <div style="font-size: 13px; font-weight: 800;">${item.name}</div>
-              <div style="font-size: 12px; color: #FF5500;">$${item.price.toFixed(2)} CAD</div>
+              <div style="font-size: 13px; font-weight: 800;">\${item.name}</div>
+              <div style="font-size: 12px; color: #FF5500;">$\${item.price.toFixed(2)} CAD</div>
             </div>
           </div>
-          <button onclick="removeFromCart(${idx})" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>
+          <button onclick="removeFromCart(\${idx})" style="background: transparent; border: none; color: #EF4444; cursor: pointer; padding: 6px;"><i class="fa-solid fa-trash"></i></button>
         </div>
       `).join('');
     }

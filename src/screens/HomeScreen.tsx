@@ -34,7 +34,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <View style={styles.greetingRow}>
           <View style={styles.brandRow}>
             <Image 
-              source={require('../../assets/icon.png')} 
+              source={require('../../assets/logo.png')} 
               style={styles.brandLogo} 
               defaultSource={{ uri: '/logo.png' }} 
             />
