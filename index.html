@@ -2727,21 +2727,37 @@ function checkoutOrder() {
     return;
   }
 
-  const orderId = Math.floor(1000 + Math.random() * 9000);
-  const securityPin = Math.floor(1000 + Math.random() * 9000).toString();
-  const total = cart.reduce((sum, item) => sum + item.price, 0) * 1.14975;
+  const singlePin = Math.floor(1000 + Math.random() * 9000).toString();
+  const orderNumber = 'LMDW-' + singlePin;
+  const isDelivery = document.getElementById('btnModeDelivery')?.classList.contains('active');
+  const fulfillmentMode = isDelivery ? 'delivery' : 'pickup';
+  
+  const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+  const taxes = subtotal * 0.14975;
+  const deliveryFee = isDelivery ? currentCalculatedDeliveryFee : 0.00;
+  const total = subtotal + taxes + deliveryFee;
 
   const newOrder = {
-    id: orderId,
+    id: orderNumber,
+    orderNumber: orderNumber,
     customerName: clientProfile.name || "Client",
     customerPhone: clientProfile.phone || "(819) 850-3972",
     customerEmail: clientProfile.email || "",
     deliveryAddress: clientProfile.address || "Drummondville, QC",
-    fulfillment: document.getElementById('btnModeDelivery')?.classList.contains('active') ? 'delivery' : 'pickup',
+    fulfillment: fulfillmentMode,
+    fulfillment_type: fulfillmentMode,
+    subtotal: subtotal,
+    deliveryFee: deliveryFee,
     total: total,
+    total_cad: total,
     status: 'new', // new -> prep -> ready -> delivering -> completed
+    order_status: 'new',
     items: [...cart],
-    securityPin: securityPin,
+    pickupPin: singlePin,
+    pickup_pin: singlePin,
+    securityPin: singlePin,
+    backup_pin: singlePin,
+    scheduledSlot: selectedOrderTiming === 'later' ? selectedScheduledSlot : 'Dès que possible',
     createdAt: new Date().toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }),
     createdTimestamp: Date.now()
   };
@@ -2753,7 +2769,39 @@ function checkoutOrder() {
   } catch(e){}
   allOrders.unshift(newOrder);
   localStorage.setItem('lmdw_all_orders', JSON.stringify(allOrders));
-  localStorage.setItem('lmdw_last_order_id', orderId);
+  localStorage.setItem('lmdw_last_order_id', orderNumber);
+
+  // Direct Supabase Orders Sync
+  try {
+    fetch('https://zldxbaykxgdraxvejkdr.supabase.co/rest/v1/orders', {
+      method: 'POST',
+      headers: {
+        'apikey': 'sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy',
+        'Authorization': 'Bearer sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy',
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
+        order_number: orderNumber,
+        customer_name: newOrder.customerName,
+        customer_phone: newOrder.customerPhone,
+        customer_email: newOrder.customerEmail,
+        fulfillment_type: fulfillmentMode,
+        order_type: fulfillmentMode,
+        delivery_address: newOrder.deliveryAddress,
+        subtotal_cad: subtotal,
+        delivery_fee_cad: deliveryFee,
+        total_cad: total,
+        total_amount: total,
+        status: 'new',
+        order_status: 'new',
+        pickup_pin: singlePin,
+        backup_pin: singlePin,
+        tip_amount: 0.00,
+        items_json: cart
+      })
+    }).catch(err => console.warn("Supabase Sync Notice:", err));
+  } catch(e){}
 
   // Loyalty points accrued (1 pt per $1)
   const earnedPts = Math.floor(total);
@@ -2766,7 +2814,7 @@ function checkoutOrder() {
 
   displayActiveOrderTracking(newOrder);
   switchTab('chat');
-  showToast("🎉 Commande #" + orderId + " transmise à la cuisine !", "✅");
+  showToast("🎉 Commande #" + orderNumber + " transmise à la cuisine !", "✅");
 }
 
 function displayActiveOrderTracking(order) {
@@ -2782,25 +2830,42 @@ function displayActiveOrderTracking(order) {
   if (noOrderEl) noOrderEl.style.display = 'none';
   if (activeEl) activeEl.style.display = 'block';
 
-  document.getElementById('lblTrackOrderId').innerText = 'Commande #' + order.id;
-  document.getElementById('lblTrackSecurityPin').innerText = order.securityPin || '----';
+  const orderNum = order.orderNumber || order.id;
+  const pin = order.pickupPin || order.pickup_pin || order.securityPin || '----';
+
+  document.getElementById('lblTrackOrderId').innerText = 'Commande #' + orderNum;
+  document.getElementById('lblTrackSecurityPin').innerText = pin;
+
+  const isPickup = order.fulfillment === 'pickup' || order.fulfillment_type === 'pickup';
+  const driverText = order.driver_name || order.driverName ? `avec ${order.driver_name || order.driverName} 🛵` : 'avec votre livreur 🛵';
 
   const statusMap = {
-    new: 'Reçue en Cuisine',
-    prep: 'En Préparation',
-    ready: (order.fulfillment === 'delivery' ? 'Prêt - En attente livreur' : 'Prêt pour Cueillette'),
-    delivering: 'En Cours de Livraison 🛵',
-    completed: 'Livrée & Complétée ✅'
+    new: '🍳 Reçue en Cuisine',
+    prep: '🔥 En Préparation sur le grill',
+    ready: (isPickup ? '🛍️ Prêt au Comptoir pour Cueillette' : '📦 Prêt - En attente du Livreur'),
+    delivering: '🛵 En Cours de Livraison ' + driverText,
+    completed: '✅ Livrée & Complétée • Bon Appétit !'
   };
 
-  document.getElementById('lblTrackStatus').innerText = statusMap[order.status] || 'En Cuisine';
+  const currentStatus = order.status || order.order_status || 'new';
+  document.getElementById('lblTrackStatus').innerText = statusMap[currentStatus] || 'En Cuisine';
 
-  const itemsSummary = order.items.map(it => '• ' + it.name).join('<br>');
+  const itemsSummary = (order.items || []).map(it => '• ' + (it.quantity || 1) + 'x ' + it.name).join('<br>');
+  const pickupDirectionsBtn = isPickup ? `
+    <div style="margin-top: 10px;">
+      <a href="https://www.google.com/maps/dir/?api=1&destination=998+110e+Avenue,+Drummondville,+QC+J2B+6X2" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #FF5500; color: #fff; font-size: 11px; font-weight: 800; padding: 8px 14px; border-radius: 10px; text-decoration: none;">
+        <i class="fa-solid fa-diamond-turn-right"></i> Voir l'itinéraire Google Maps
+      </a>
+    </div>
+  ` : '';
+
   document.getElementById('lblTrackDetails').innerHTML = `
-    <strong>Mode :</strong> ` + (order.fulfillment === 'delivery' ? '🛵 Livraison à Domicile' : '🛍️ Cueillette au Comptoir') + `<br>
-    <strong>Adresse :</strong> ` + order.deliveryAddress + `<br>
-    <strong>Total :</strong> $` + order.total.toFixed(2) + ` CAD<br>
-    <strong>Articles :</strong><br>` + itemsSummary + `
+    <strong>Mode :</strong> ` + (isPickup ? '🛍️ Cueillette au Comptoir' : '🛵 Livraison à Domicile') + `<br>
+    <strong>Adresse :</strong> ` + (order.deliveryAddress || '998 110e Avenue, Drummondville, QC') + `<br>
+    <strong>Créneau :</strong> ` + (order.scheduledSlot || 'Dès que possible') + `<br>
+    <strong>Total :</strong> $` + Number(order.total || order.total_cad || 0).toFixed(2) + ` CAD<br>
+    ${pickupDirectionsBtn}
+    <div style="margin-top: 8px;"><strong>Articles :</strong><br>` + itemsSummary + `</div>
   `;
 }
 

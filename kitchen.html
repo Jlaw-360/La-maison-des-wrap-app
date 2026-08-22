@@ -430,6 +430,42 @@ function toggleAudioChime() {
   }
 }
 
+const SUPABASE_URL = 'https://zldxbaykxgdraxvejkdr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy';
+
+async function fetchLiveOrders() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=*&order=created_at.desc&limit=50`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped = data.map(o => ({
+          id: o.order_number || o.id,
+          orderNumber: o.order_number || o.id,
+          customerName: o.customer_name || 'Client',
+          customerPhone: o.customer_phone || '',
+          deliveryAddress: o.delivery_address || '',
+          fulfillment: o.fulfillment_type || o.order_type || 'delivery',
+          total: o.total_amount || o.total_cad || 0,
+          status: o.status || o.order_status || 'new',
+          pickupPin: o.pickup_pin || o.backup_pin || '5232',
+          pickup_pin: o.pickup_pin || o.backup_pin || '5232',
+          items: o.items_json || [{ name: 'Wrap Signature', quantity: 1, modifiers: ['PAIN NAAN'] }],
+          createdAt: o.created_at ? new Date(o.created_at).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' }) : '',
+          createdTimestamp: o.created_at ? new Date(o.created_at).getTime() : Date.now()
+        }));
+
+        saveOrdersToStorage(mapped);
+        renderKanban();
+      }
+    }
+  } catch(e) {
+    console.warn("Supabase live sync notice:", e);
+  }
+}
+
 function getOrdersFromStorage() {
   try {
     const raw = localStorage.getItem('lmdw_all_orders');
@@ -555,9 +591,9 @@ function renderTicket(order, stage) {
   `;
 }
 
-function advanceOrderStatus(orderId, nextStatus) {
+async function advanceOrderStatus(orderId, nextStatus) {
   let orders = getOrdersFromStorage();
-  const idx = orders.findIndex(o => String(o.id) === String(orderId));
+  const idx = orders.findIndex(o => String(o.id) === String(orderId) || String(o.orderNumber) === String(orderId));
   if (idx >= 0) {
     orders[idx].status = nextStatus;
     if (nextStatus === 'prep') {
@@ -567,10 +603,31 @@ function advanceOrderStatus(orderId, nextStatus) {
     }
     saveOrdersToStorage(orders);
     renderKanban();
+
+    // Supabase DB Update
+    try {
+      const dbStatus = nextStatus === 'ready' ? 'ready' : (nextStatus === 'prep' ? 'preparing' : 'delivered');
+      await fetch(`${SUPABASE_URL}/rest/v1/orders?order_number=eq.${encodeURIComponent(orderId)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          status: nextStatus,
+          order_status: dbStatus,
+          ready_at: nextStatus === 'ready' ? new Date().toISOString() : null
+        })
+      });
+    } catch(err) {
+      console.warn("Supabase update error:", err);
+    }
   }
 }
 
 function refreshKdsOrders() {
+  fetchLiveOrders();
   renderKanban();
 }
 
@@ -584,9 +641,12 @@ function closeShiftReport() {
   document.getElementById('shiftModal').classList.remove('open');
 }
 
-// Auto poll every 2.5 seconds for live tickets
-setInterval(renderKanban, 2500);
+// Auto poll every 2.5 seconds for live tickets & Supabase sync
+setInterval(fetchLiveOrders, 3000);
+setInterval(renderKanban, 2000);
+
 window.onload = function() {
+  fetchLiveOrders();
   renderKanban();
 };
 </script>

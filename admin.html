@@ -390,6 +390,53 @@
     </table>
   </div>
 
+  <!-- Driver Performance, Delivery Tracking & Payroll Calculation Table -->
+  <div class="table-section" style="border: 2px solid rgba(255, 85, 0, 0.3);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div>
+        <h2 style="font-family: var(--font-heading); font-size: 17px; font-weight: 800; color: #FFFFFF;">
+          <i class="fa-solid fa-motorcycle" style="color: #FF5500; margin-right: 6px;"></i> Rapport des Livreurs & Paie des Courses (Payroll)
+        </h2>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+          Calcul de rémunération propriétaire : <strong>4,00 $ CAD / course livrée + 100% des pourboires clients</strong>.
+        </p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="fetchLiveDriverPayroll()" style="background: #FF5500; border: none; color: #fff; padding: 7px 14px; border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer;">
+          <i class="fa-solid fa-arrows-rotate"></i> Actualiser les Paies
+        </button>
+      </div>
+    </div>
+
+    <!-- Drivers Payroll Summary Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Nom du Livreur</th>
+          <th style="text-align: center;">Courses Livrées</th>
+          <th style="text-align: center;">Courses Actives</th>
+          <th style="text-align: right;">Rémunération Fixe (4 $/course)</th>
+          <th style="text-align: right;">Pourboires Reçus</th>
+          <th style="text-align: right;">Paie Nette Due</th>
+          <th style="text-align: center;">Statut Règlement</th>
+        </tr>
+      </thead>
+      <tbody id="driverPayrollTableBody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+
+    <!-- Order Assignment Audit Log -->
+    <div style="margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
+      <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 8px; color: #D1D1DB;">
+        📋 Historique d'Attribution & Suivi des Livraisons
+      </h3>
+      <div style="max-height: 200px; overflow-y: auto; font-size: 11px;" id="driverOrdersAuditList">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
   <!-- User Role Management (RBAC) -->
   <div class="table-section">
     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -544,6 +591,140 @@ async function initAdminDashboard() {
   renderCharts(orders);
   renderStockTable();
   await fetchLiveRbacUsers();
+  await fetchLiveDriverPayroll();
+}
+
+async function fetchLiveDriverPayroll() {
+  const tbody = document.getElementById('driverPayrollTableBody');
+  const auditList = document.getElementById('driverOrdersAuditList');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('/api/admin/driver-stats');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.drivers) {
+        renderDriverPayrollData(data.drivers, data.totalRestaurantDeliveries);
+        return;
+      }
+    }
+  } catch(e) {
+    console.warn("API driver stats notice:", e);
+  }
+
+  // Local calculation fallback
+  const orders = getOrdersFromStorage();
+  const deliveryOrders = orders.filter(o => o.fulfillment === 'delivery' || o.fulfillment_type === 'delivery');
+  const driverBreakdown = {};
+
+  deliveryOrders.forEach(o => {
+    const dName = o.driver_name || o.driverName || 'Livreur En Service';
+    if (!driverBreakdown[dName]) {
+      driverBreakdown[dName] = {
+        driverName: dName,
+        completedTrips: 0,
+        activeTrips: 0,
+        basePay: 0,
+        totalTips: 0,
+        netPayoutDue: 0,
+        orders: []
+      };
+    }
+
+    if (o.status === 'completed' || o.order_status === 'delivered') {
+      driverBreakdown[dName].completedTrips++;
+      driverBreakdown[dName].totalTips += Number(o.tip_amount || o.tip || 0);
+    } else {
+      driverBreakdown[dName].activeTrips++;
+    }
+
+    driverBreakdown[dName].orders.push({
+      id: o.orderNumber || o.id,
+      address: o.deliveryAddress || 'Drummondville, QC',
+      total: o.total || o.total_cad || 0,
+      tip: o.tip_amount || o.tip || 0,
+      status: o.status,
+      time: o.createdAt || ''
+    });
+  });
+
+  const driversList = Object.values(driverBreakdown).map(d => {
+    d.basePay = d.completedTrips * 4.00;
+    d.netPayoutDue = d.basePay + d.totalTips;
+    return d;
+  });
+
+  renderDriverPayrollData(driversList, deliveryOrders.length);
+}
+
+function renderDriverPayrollData(driversList, totalRestaurantDeliveries) {
+  const tbody = document.getElementById('driverPayrollTableBody');
+  const auditList = document.getElementById('driverOrdersAuditList');
+
+  if (driversList.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px; font-weight: bold;">
+          Aucune livraison enregistrée pour le moment.
+        </td>
+      </tr>
+    `;
+    if (auditList) auditList.innerHTML = '<div style="color: var(--text-muted); padding: 8px;">Aucune course assignée.</div>';
+    return;
+  }
+
+  tbody.innerHTML = driversList.map(d => `
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <td style="font-weight: 800; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 28px; height: 28px; border-radius: 50%; background: rgba(255,85,0,0.15); display: flex; align-items: center; justify-content: center; color: #FF5500; font-weight: 900; font-size: 11px;">🛵</span>
+        <span>${d.driverName}</span>
+      </td>
+      <td style="text-align: center; font-weight: 900; font-size: 14px; color: #10B981;">
+        ${d.completedTrips}
+      </td>
+      <td style="text-align: center; font-weight: 800; color: #3B82F6;">
+        ${d.activeTrips}
+      </td>
+      <td style="text-align: right; font-family: monospace; font-weight: 800; color: #E4E4E7;">
+        $${(d.basePay || d.completedTrips * 4.00).toFixed(2)} CAD
+      </td>
+      <td style="text-align: right; font-family: monospace; font-weight: 800; color: #E5A93C;">
+        +$${(d.totalTips || 0).toFixed(2)} CAD
+      </td>
+      <td style="text-align: right; font-family: monospace; font-weight: 900; font-size: 15px; color: #FF5500;">
+        $${(d.netPayoutDue || 0).toFixed(2)} CAD
+      </td>
+      <td style="text-align: center;">
+        <button onclick="settleDriverPayment('${d.driverName}', ${d.netPayoutDue})" style="background: rgba(16,185,129,0.15); border: 1px solid #10B981; color: #10B981; font-weight: 800; font-size: 11px; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+          ✅ Régler Paie
+        </button>
+      </td>
+    </tr>
+  `).join('');
+
+  if (auditList) {
+    const allAssignedOrders = driversList.flatMap(d => (d.orders || []).map(o => ({ ...o, driverName: d.driverName })));
+    if (allAssignedOrders.length === 0) {
+      auditList.innerHTML = '<div style="color: var(--text-muted); padding: 8px;">Aucune course assignée.</div>';
+    } else {
+      auditList.innerHTML = allAssignedOrders.slice(0, 15).map(o => `
+        <div style="background: #14141A; padding: 8px 12px; border-radius: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.04);">
+          <div>
+            <strong style="color: #FFFFFF;">Commande #${o.id}</strong> • <span style="color: #FF5500; font-weight: 700;">${o.driverName}</span> • 📍 ${o.address}
+          </div>
+          <div style="font-family: monospace; font-weight: 800; color: #10B981;">
+            ${o.status === 'completed' ? 'Livrée' : 'En Cours'} • $${Number(o.total || 0).toFixed(2)} CAD
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+function settleDriverPayment(driverName, amount) {
+  if (confirm(`Confirmer le règlement de la paie de ${amount.toFixed(2)}$ CAD à ${driverName} ?`)) {
+    showToastNotification(`Paiement de ${amount.toFixed(2)}$ CAD enregistré pour ${driverName} !`);
+  }
 }
 
 async function fetchLiveRbacUsers() {
