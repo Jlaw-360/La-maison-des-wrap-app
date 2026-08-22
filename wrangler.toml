@@ -12,5 +12,6 @@ NEXT_PUBLIC_SUPABASE_URL = "https://zldxbaykxgdraxvejkdr.supabase.co"
 SUPABASE_ANON_KEY = "sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy"
 NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy"
 SUPABASE_PROJECT_ID = "zldxbaykxgdraxvejkdr"
-BETTER_AUTH_API_KEY = "ba_hed5bolcn4cj17vepv1wjd1d8nk04pif"
+BETTER_AUTH_API_KEY = "ba_9qkr04godgffz90vd3xb3vvsl0yk4jrl"
 BETTER_AUTH_SECRET = "xeGeJ7kC6zbIV37nATnb4hi50gyQWES0"
+
