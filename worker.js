@@ -49,15 +49,19 @@ export default {
     }
 
     // 3. BetterAuth & Health API
-    if (url.pathname.startsWith('/api/auth/')) {
+    if (url.pathname.startsWith('/api/auth')) {
       return new Response(JSON.stringify({ 
         status: 'ok', 
         connected: true, 
-        service: 'BetterAuth Cloudflare Edge', 
+        service: 'BetterAuth Cloudflare Edge Handler', 
         supabaseProject: env.SUPABASE_PROJECT_ID || 'zldxbaykxgdraxvejkdr',
         timestamp: new Date().toISOString() 
       }), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'true'
+        }
       });
     }
 
