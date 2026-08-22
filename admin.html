@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -448,7 +449,7 @@ const officialCatalog = [
   { id: "assiette-mix-2-viandes", name: "Assiette Mix (2 Viandes)", cat: "Assiettes Complètes", price: 19.95 },
   { id: "burger-de-poulet", name: "Burger de Poulet Maison", cat: "Nos Burgers", price: 6.95 },
   { id: "cheese-burger", name: "Cheese Burger", cat: "Nos Burgers", price: 6.75 },
-  { id: "pain-naan-nature", name: "Pain Naan Nature", cat: "Pains Naans", price: 3.00 },
+{ id: "pain-naan-nature", name: "Pain Naan Nature", cat: "Pains Naans", price: 3.00 },
   { id: "pain-naan-fromage", name: "Pain Naan au Fromage", cat: "Pains Naans", price: 4.50 },
   { id: "pain-naan-ail", name: "Pain Naan à l'Ail", cat: "Pains Naans", price: 4.50 },
   { id: "dessert-gulab-jamun", name: "Gulab Jamun Chauds", cat: "Desserts & Boissons", price: 4.99 },
@@ -456,16 +457,56 @@ const officialCatalog = [
   { id: "lassi-mangue", name: "Lassi Mangue Royale", cat: "Desserts & Boissons", price: 4.50 }
 ];
 
+// SUPABASE CLIENT INITIALIZATION FOR LIVE RBAC
+const SUPABASE_URL = "https://zldxbaykxgdraxvejkdr.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Ljj5EaZpRUDBuIPvd9Z89Q_A6Gr1qRy";
+const supabaseClient = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
 let rbacUsers = [
-  { id: 1, name: "Walkse Admin", email: "admin@lamaisondeswraps.ca", role: "admin" },
-  { id: 2, name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", role: "kitchen" },
-  { id: 3, name: "Marc Livreur", email: "livreur@lamaisondeswraps.ca", role: "driver" },
-  { id: 4, name: "Client Régulier", email: "client@gmail.com", role: "customer" }
+  { id: "1", name: "Walkse Admin", email: "admin@lamaisondeswraps.ca", role: "admin", points: 0 },
+  { id: "2", name: "Chef Cuisine", email: "cuisine@lamaisondeswraps.ca", role: "kitchen", points: 0 },
+  { id: "3", name: "Marc Livreur", email: "livreur@lamaisondeswraps.ca", role: "driver", points: 0 },
+  { id: "4", name: "Client Régulier", email: "client@gmail.com", role: "customer", points: 0 }
 ];
 
 let chartSalesInstance = null;
 let chartChannelsInstance = null;
 let chartTopDishesInstance = null;
+
+function showToast(message, type = 'success') {
+  let container = document.getElementById('adminToastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'adminToastContainer';
+    container.style.cssText = 'position: fixed; bottom: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    background: ${type === 'success' ? '#10B981' : (type === 'error' ? '#EF4444' : '#FF5500')};
+    color: #FFFFFF;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+    animation: fadeInSlide 0.3s ease forwards;
+  `;
+  toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-bell'}"></i> <span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
 
 function getOrdersFromStorage() {
   try {
@@ -487,10 +528,9 @@ function save86Items(items) {
   localStorage.setItem('lmdw_86_items', JSON.stringify(items));
 }
 
-function initAdminDashboard() {
+async function initAdminDashboard() {
   const orders = getOrdersFromStorage();
 
-  // 1. Calculate Real Telemetry (Zero-State if no orders)
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const totalOrders = orders.length;
   const activePrep = orders.filter(o => o.status === 'new' || o.status === 'prep').length;
@@ -503,16 +543,35 @@ function initAdminDashboard() {
 
   renderCharts(orders);
   renderStockTable();
+  await fetchLiveRbacUsers();
+}
+
+async function fetchLiveRbacUsers() {
+  if (supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from('user').select('*').order('createdAt', { ascending: false });
+      if (!error && data && data.length > 0) {
+        rbacUsers = data.map(u => ({
+          id: u.id,
+          name: u.name || 'Utilisateur',
+          email: u.email || 'N/A',
+          role: u.role || 'customer',
+          points: u.points || 0,
+          phone: u.phone || ''
+        }));
+      }
+    } catch(e) {
+      console.warn("Supabase fetch user error, using cached state", e);
+    }
+  }
   renderRbacUsers();
 }
 
 function renderCharts(orders) {
-  // 1. Sales Evolution Line Chart
   const ctxSales = document.getElementById('chartSalesEvolution').getContext('2d');
   const hoursLabels = ['11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h'];
   const salesData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-  // Map orders to hours if available
   orders.forEach(o => {
     salesData[salesData.length - 1] += (o.total || 0);
   });
@@ -544,7 +603,6 @@ function renderCharts(orders) {
     }
   });
 
-  // 2. Order Channels Doughnut Chart
   const ctxChannels = document.getElementById('chartChannels').getContext('2d');
   const deliveryCount = orders.filter(o => o.fulfillment === 'delivery').length;
   const pickupCount = orders.filter(o => o.fulfillment !== 'delivery').length;
@@ -569,7 +627,6 @@ function renderCharts(orders) {
     }
   });
 
-  // 3. Top 5 Dishes Bar Chart
   const ctxTop = document.getElementById('chartTopDishes').getContext('2d');
   const dishCounts = {};
   orders.forEach(o => {
@@ -646,32 +703,35 @@ function toggleItemStock(dishId, isInStock) {
 
 function renderRbacUsers() {
   const tbody = document.getElementById('usersRbacTableBody');
-  tbody.innerHTML = rbacUsers.map(user => {
-    const roleColors = {
-      admin: '#FF5500',
-      kitchen: '#F59E0B',
-      driver: '#3B82F6',
-      customer: '#10B981'
-    };
+  const roleColors = {
+    admin: '#FF5500',
+    kitchen: '#F59E0B',
+    driver: '#3B82F6',
+    customer: '#10B981'
+  };
 
+  tbody.innerHTML = rbacUsers.map(user => {
     return `
       <tr>
-        <td><strong>${user.name}</strong></td>
+        <td>
+          <div style="font-weight: 700; color: #fff;">${user.name}</div>
+          ${user.phone ? `<div style="font-size: 11px; color: var(--text-muted);"><i class="fa-solid fa-phone"></i> ${user.phone}</div>` : ''}
+        </td>
         <td>${user.email}</td>
         <td>
-          <span style="background: rgba(255,255,255,0.08); color: ${roleColors[user.role]}; font-weight: 800; padding: 4px 8px; border-radius: 8px; font-size: 11px;">
-            ${user.role.toUpperCase()}
+          <span style="background: rgba(255,255,255,0.08); color: ${roleColors[user.role] || '#fff'}; font-weight: 800; padding: 4px 8px; border-radius: 8px; font-size: 11px;">
+            ${(user.role || 'customer').toUpperCase()}
           </span>
         </td>
         <td style="font-size: 11px; color: var(--text-muted);">
-          ${user.role === 'admin' ? 'Accès Total Console & Rôles' : (user.role === 'kitchen' ? 'Kanban & Préparation' : (user.role === 'driver' ? 'Livraison & GPS' : 'Commande Client'))}
+          ${user.role === 'admin' ? 'Accès Total Console & Rôles' : (user.role === 'kitchen' ? 'Kanban & Préparation Cuisine' : (user.role === 'driver' ? 'Acceptation & Livraison GPS' : 'Passation Commandes Client'))}
         </td>
         <td>
-          <select onchange="changeUserRole(${user.id}, this.value)" style="background: #151519; color: #fff; border: 1px solid var(--border); padding: 4px 8px; border-radius: 8px; font-size: 11px;">
-            <option value="customer" ${user.role === 'customer' ? 'selected' : ''}>Client</option>
-            <option value="kitchen" ${user.role === 'kitchen' ? 'selected' : ''}>Cuisine KDS</option>
-            <option value="driver" ${user.role === 'driver' ? 'selected' : ''}>Livreur</option>
-            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrateur</option>
+          <select onchange="changeUserRole('${user.id}', this.value)" style="background: #151519; color: #fff; border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;">
+            <option value="customer" ${user.role === 'customer' ? 'selected' : ''}>🛍️ Client</option>
+            <option value="kitchen" ${user.role === 'kitchen' ? 'selected' : ''}>🍳 Cuisine KDS</option>
+            <option value="driver" ${user.role === 'driver' ? 'selected' : ''}>🚗 Livreur</option>
+            <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>👑 Administrateur</option>
           </select>
         </td>
       </tr>
@@ -679,31 +739,81 @@ function renderRbacUsers() {
   }).join('');
 }
 
-function changeUserRole(userId, newRole) {
-  const user = rbacUsers.find(u => u.id === userId);
+async function changeUserRole(userId, newRole) {
+  const user = rbacUsers.find(u => String(u.id) === String(userId));
   if (user) {
     user.role = newRole;
     renderRbacUsers();
-    alert(`Rôle de ${user.name} mis à jour : ${newRole.toUpperCase()}`);
+
+    if (supabaseClient) {
+      try {
+        const { error } = await supabaseClient.from('user').update({ role: newRole }).eq('id', userId);
+        if (error) {
+          console.error("Supabase update error:", error);
+          showToast(`Erreur mise à jour base de données: ${error.message}`, 'error');
+          return;
+        }
+      } catch(e) {
+        console.error("Network error on role update:", e);
+      }
+    }
+
+    const roleTitles = {
+      customer: 'CLIENT 🛍️',
+      kitchen: 'CUISINE KDS 🍳',
+      driver: 'LIVREUR 🚗',
+      admin: 'ADMINISTRATEUR 👑'
+    };
+    showToast(`Rôle de ${user.name} mis à jour : ${roleTitles[newRole] || newRole.toUpperCase()}`, 'success');
   }
 }
 
-function promptAddNewUser() {
-  const name = prompt("Nom de l'utilisateur :");
-  const email = prompt("Email :");
-  const role = prompt("Rôle (customer / kitchen / driver / admin) :", "kitchen");
-  if (name && email) {
-    rbacUsers.push({ id: Date.now(), name: name, email: email, role: role || 'customer' });
-    renderRbacUsers();
+async function promptAddNewUser() {
+  const name = prompt("Nom complet de l'utilisateur :");
+  if (!name) return;
+  const email = prompt("Adresse courriel (Email) :");
+  if (!email) return;
+  const role = prompt("Rôle (customer / kitchen / driver / admin) :", "kitchen") || "customer";
+
+  const newUser = {
+    id: 'user_' + Date.now(),
+    name: name,
+    email: email,
+    role: role.toLowerCase(),
+    points: 0
+  };
+
+  rbacUsers.unshift(newUser);
+  renderRbacUsers();
+
+  if (supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from('user').insert([{
+        id: crypto.randomUUID ? crypto.randomUUID() : 'usr_' + Date.now(),
+        name: name,
+        email: email,
+        role: role.toLowerCase(),
+        points: 0,
+        emailVerified: true
+      }]).select();
+      if (!error && data && data.length > 0) {
+        newUser.id = data[0].id;
+      }
+    } catch(e) {
+      console.warn("Could not insert user directly into Supabase:", e);
+    }
   }
+
+  showToast(`Utilisateur ${name} ajouté avec le rôle ${(role).toUpperCase()} !`, 'success');
 }
 
 function refreshAdminData() {
   initAdminDashboard();
+  showToast("Données actualisées en direct", "success");
 }
 
 window.onload = function() {
-  // Initially show PIN modal
+  // Check admin session if available
 };
 </script>
 
