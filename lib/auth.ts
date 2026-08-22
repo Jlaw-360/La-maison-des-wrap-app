@@ -6,6 +6,8 @@ import { dash } from "@better-auth/infra";
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET || "xeGeJ7kC6zbIV37nATnb4hi50gyQWES0",
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
@@ -21,13 +23,13 @@ export const auth = betterAuth({
     additionalFields: {
       phone: {
         type: "string",
-        required: true,
+        required: false,
         defaultValue: "",
       },
       address: {
         type: "string",
-        required: true,
-        defaultValue: "1450 Rue Saint-Pierre, Drummondville, QC",
+        required: false,
+        defaultValue: "Drummondville, QC",
       },
       role: {
         type: "string",
@@ -37,8 +39,9 @@ export const auth = betterAuth({
       points: {
         type: "number",
         required: false,
-        defaultValue: 50,
+        defaultValue: 0,
       },
     },
   },
 });
+
