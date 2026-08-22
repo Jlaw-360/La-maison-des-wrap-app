@@ -5,7 +5,7 @@ const getBaseURL = () => {
   if (typeof window !== 'undefined' && window.location && window.location.origin) {
     return window.location.origin;
   }
-  return process.env.NEXT_PUBLIC_APP_URL || "https://la-maison-des-wrap-app.btrade099.workers.dev";
+  return process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 };
 
 export const authClient = createAuthClient({
