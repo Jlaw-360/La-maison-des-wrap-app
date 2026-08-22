@@ -188,9 +188,42 @@
       </div>
     </div>
 
-    <!-- Section Title -->
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="font-size: 15px; font-weight: 800;">Courses Disponibles</h3>
+    <!-- Section Title & PIN Handshake Claim Box -->
+    <div style="background: #14141A; border: 1px solid var(--border); border-radius: 20px; padding: 16px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.4);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: #FFFFFF; letter-spacing: 0.5px;">
+          🔢 Prise en Charge Tablette Cuisine
+        </span>
+        <span style="font-size: 10px; font-weight: 900; background: rgba(255,85,0,0.2); color: #FF5500; padding: 2px 8px; border-radius: 6px;">
+          PIN 4 Chiffres
+        </span>
+      </div>
+      <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">
+        Entrez le code PIN affiché sur la tablette cuisine pour assigner la commande prête :
+      </p>
+      <form onsubmit="handleClaimByPin(event)" style="display: flex; gap: 8px;">
+        <input 
+          type="text" 
+          id="inputTabletPin" 
+          maxlength="4" 
+          inputmode="numeric" 
+          pattern="[0-9]*" 
+          placeholder="Ex: 5232" 
+          style="flex: 1; text-align: center; font-family: monospace; font-size: 22px; font-weight: 900; letter-spacing: 4px; background: #0B0B0F; border: 1px solid #27272A; color: #FF5500; border-radius: 12px; padding: 8px; outline: none;"
+          required
+        >
+        <button 
+          type="submit" 
+          style="background: #FF5500; border: none; color: #FFFFFF; font-weight: 800; font-size: 13px; padding: 0 18px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,85,0,0.3);"
+        >
+          Valider
+        </button>
+      </form>
+    </div>
+
+    <!-- Active Deliveries Section Title -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="font-size: 15px; font-weight: 800;">Mes Courses de Livraison</h3>
       <button onclick="refreshDriverDeliveries()" style="background: transparent; border: none; color: #FF5500; font-size: 12px; font-weight: 700; cursor: pointer;"><i class="fa-solid fa-arrows-rotate"></i> Actualiser</button>
     </div>
 
@@ -300,6 +333,47 @@ function renderDeliveries() {
       </div>
     `;
   }).join('');
+}
+
+async function handleClaimByPin(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('inputTabletPin');
+  if (!input) return;
+  const pin = input.value.trim();
+
+  if (!pin || pin.length < 4) {
+    alert("Veuillez entrer un code PIN à 4 chiffres.");
+    return;
+  }
+
+  let orders = getOrdersFromStorage();
+  const targetOrder = orders.find(o => String(o.pickupPin || o.pickup_pin || '5232') === String(pin) || String(o.securityPin || '2325') === String(pin));
+
+  if (targetOrder) {
+    targetOrder.status = 'delivering';
+    targetOrder.driverAssigned = true;
+    saveOrdersToStorage(orders);
+    input.value = '';
+    renderDeliveries();
+    showToast(`✅ Commande #${targetOrder.orderNumber || targetOrder.id} prise en charge !`, '🛵');
+  } else {
+    // Attempt backend edge call
+    try {
+      const res = await fetch('/api/driver/claim-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin })
+      });
+      const data = await res.json();
+      if (data.success) {
+        input.value = '';
+        showToast(`✅ Commande #${data.orderNumber || pin} assignée !`, '🛵');
+        refreshDriverDeliveries();
+        return;
+      }
+    } catch(err){}
+    alert("❌ Code PIN introuvable ou commande pas encore prête.");
+  }
 }
 
 function startDelivery(orderId) {

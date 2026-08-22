@@ -355,8 +355,9 @@
 <script>
 let chimeEnabled = true;
 let knownOrderIds = new Set();
+let loopAudioInterval = null;
 
-// Web Audio API Synthesizer Chime
+// Web Audio API Synthesizer High-Pitch Chime
 function playTicketChime() {
   if (!chimeEnabled) return;
   try {
@@ -364,7 +365,6 @@ function playTicketChime() {
     if (!AudioContext) return;
     const ctx = new AudioContext();
 
-    // Two-tone bright kitchen chime
     const osc1 = ctx.createOscillator();
     const osc2 = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -377,7 +377,7 @@ function playTicketChime() {
     osc2.frequency.setValueAtTime(880, ctx.currentTime);
     osc2.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.15); // D6
 
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.setValueAtTime(0.35, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
 
     osc1.connect(gain);
@@ -388,7 +388,31 @@ function playTicketChime() {
     osc2.start();
     osc1.stop(ctx.currentTime + 0.8);
     osc2.stop(ctx.currentTime + 0.8);
-  } catch (e) {}
+  } catch (e) {
+    console.warn("Audio chime error:", e);
+  }
+}
+
+// Continuous Alarm Controller
+function startContinuousAlarm() {
+  if (loopAudioInterval || !chimeEnabled) return;
+  playTicketChime();
+  loopAudioInterval = setInterval(() => {
+    const orders = getOrdersFromStorage();
+    const hasPending = orders.some(o => !o.status || o.status === 'new' || o.status === 'pending');
+    if (hasPending && chimeEnabled) {
+      playTicketChime();
+    } else {
+      stopContinuousAlarm();
+    }
+  }, 2200);
+}
+
+function stopContinuousAlarm() {
+  if (loopAudioInterval) {
+    clearInterval(loopAudioInterval);
+    loopAudioInterval = null;
+  }
 }
 
 function toggleAudioChime() {
@@ -402,6 +426,7 @@ function toggleAudioChime() {
   } else {
     btn.classList.remove('active');
     lbl.innerText = 'Sonnerie Muette';
+    stopContinuousAlarm();
   }
 }
 
@@ -442,69 +467,89 @@ function renderKanban() {
   let listPrep = [];
   let listReady = [];
 
-  let hasNewTicket = false;
-
   orders.forEach(order => {
-    if (!order.status || order.status === 'new') {
+    if (!order.status || order.status === 'new' || order.status === 'pending') {
       listNew.push(order);
-      if (!knownOrderIds.has(order.id)) {
-        knownOrderIds.add(order.id);
-        hasNewTicket = true;
-      }
-    } else if (order.status === 'prep') {
+    } else if (order.status === 'prep' || order.status === 'preparing') {
       listPrep.push(order);
-      knownOrderIds.add(order.id);
-    } else if (order.status === 'ready' || order.status === 'delivering') {
+    } else if (order.status === 'ready' || order.status === 'out_for_delivery') {
       listReady.push(order);
-      knownOrderIds.add(order.id);
     }
   });
 
-  if (hasNewTicket && knownOrderIds.size > 1) {
-    playTicketChime();
+  // If there are pending tickets, start repeating alarm until accepted!
+  if (listNew.length > 0) {
+    startContinuousAlarm();
+  } else {
+    stopContinuousAlarm();
   }
 
   document.getElementById('countNew').innerText = listNew.length;
   document.getElementById('countPrep').innerText = listPrep.length;
   document.getElementById('countReady').innerText = listReady.length;
 
-  colNew.innerHTML = listNew.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune nouvelle commande.</div>' : listNew.map(o => renderTicket(o, 'new')).join('');
-  colPrep.innerHTML = listPrep.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune commande en préparation.</div>' : listPrep.map(o => renderTicket(o, 'prep')).join('');
-  colReady.innerHTML = listReady.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 20px;">Aucune commande prête.</div>' : listReady.map(o => renderTicket(o, 'ready')).join('');
+  colNew.innerHTML = listNew.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 24px; font-weight: bold;">Aucune nouvelle commande.</div>' : listNew.map(o => renderTicket(o, 'new')).join('');
+  colPrep.innerHTML = listPrep.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 24px; font-weight: bold;">Aucune commande en préparation.</div>' : listPrep.map(o => renderTicket(o, 'prep')).join('');
+  colReady.innerHTML = listReady.length === 0 ? '<div style="text-align: center; color: var(--text-muted); padding: 24px; font-weight: bold;">Aucune commande prête.</div>' : listReady.map(o => renderTicket(o, 'ready')).join('');
 }
 
 function renderTicket(order, stage) {
-  const timerClass = getTimerClass(order.createdTimestamp);
-  const elapsed = getElapsedText(order.createdTimestamp);
+  const timerClass = getTimerClass(order.createdTimestamp || order.createdAtTimestamp);
+  const elapsed = getElapsedText(order.createdTimestamp || order.createdAtTimestamp);
+  const isPending = stage === 'new';
 
   let btnAction = '';
-  if (stage === 'new') {
-    btnAction = `<button class="btn-bump btn-bump-prep" onclick="advanceOrderStatus(${order.id}, 'prep')"><i class="fa-solid fa-play"></i> Démarrer Préparation</button>`;
+  if (isPending) {
+    btnAction = `<button class="btn-bump btn-bump-prep" style="font-size: 16px; font-weight: 900; padding: 14px; background: #10B981; border: none; color: #fff; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4);" onclick="advanceOrderStatus('${order.id}', 'prep')"><i class="fa-solid fa-bell"></i> 🔔 ACCEPTER LA COMMANDE</button>`;
   } else if (stage === 'prep') {
-    btnAction = `<button class="btn-bump btn-bump-ready" onclick="advanceOrderStatus(${order.id}, 'ready')"><i class="fa-solid fa-check"></i> Marquer Prêt</button>`;
+    btnAction = `<button class="btn-bump btn-bump-ready" style="font-size: 16px; font-weight: 900; padding: 14px; background: #FF5500; border: none; color: #fff; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(255,85,0,0.4);" onclick="advanceOrderStatus('${order.id}', 'ready')"><i class="fa-solid fa-check"></i> ✅ MARQUER PRÊTE</button>`;
   } else {
-    btnAction = `<button class="btn-bump btn-bump-complete" onclick="advanceOrderStatus(${order.id}, 'completed')"><i class="fa-solid fa-box-archive"></i> Terminer & Archiver</button>`;
+    btnAction = `<button class="btn-bump btn-bump-complete" style="font-size: 14px; font-weight: 800; padding: 10px; background: #1E293B; border: 1px solid #334155; color: #94A3B8; border-radius: 12px; cursor: pointer;" onclick="advanceOrderStatus('${order.id}', 'completed')"><i class="fa-solid fa-box-archive"></i> Archiver</button>`;
   }
 
   const itemsHtml = (order.items || []).map(it => `
-    <div class="ticket-item-row">
-      ${it.name}
+    <div style="background: rgba(0,0,0,0.4); padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 8px;">
+      <div style="font-size: 18px; font-weight: 900; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+        <span style="color: #FF5500; font-size: 22px; font-weight: 900;">${it.quantity || 1}x</span>
+        <span>${(it.name || 'PLAT').toUpperCase()}</span>
+      </div>
+      ${it.bread ? `<div style="margin-top: 4px;"><span style="background: rgba(255,85,0,0.2); color: #FFAA80; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">PAIN ${it.bread}</span></div>` : ''}
+      ${it.modifiers && it.modifiers.length > 0 ? `<div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px;">${it.modifiers.map(m => `<span style="background: #27272A; color: #E4E4E7; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;">${m}</span>`).join('')}</div>` : ''}
+      ${it.instructions ? `<div style="font-size: 11px; color: #F87171; font-weight: bold; margin-top: 4px;">⚠️ NOTE: ${it.instructions}</div>` : ''}
     </div>
   `).join('');
 
+  // 4-Digit Handover PIN Display for Ready Stage
+  let readyPinHtml = '';
+  if (stage === 'ready') {
+    const pin = order.pickupPin || order.pickup_pin || '5232';
+    readyPinHtml = `
+      <div style="text-align: center; background: #0B0B0F; padding: 12px; border-radius: 16px; border: 2px solid rgba(255,85,0,0.5); margin: 12px 0; box-shadow: inset 0 0 15px rgba(255,85,0,0.15);">
+        <div style="font-size: 10px; text-transform: uppercase; font-weight: 800; color: #A1A1AA; letter-spacing: 1.5px;">PIN de Retrait / Livreur</div>
+        <div style="font-size: 36px; font-family: monospace; font-weight: 900; color: #FF5500; letter-spacing: 5px; line-height: 1.1; margin-top: 2px;">
+          ${pin}
+        </div>
+        <div style="font-size: 10px; color: #34D399; font-weight: 700; margin-top: 2px;">● Prêt pour prise en charge</div>
+      </div>
+    `;
+  }
+
   return `
-    <div class="ticket-card">
-      <div class="ticket-header">
-        <span class="ticket-id">#${order.id}</span>
-        <span class="ticket-timer ${timerClass}"><i class="fa-regular fa-clock"></i> ${elapsed} (${order.createdAt || ''})</span>
+    <div class="ticket-card ${isPending ? 'pending-alarm-pulse' : ''}" style="background: ${isPending ? '#2A170A' : '#14141A'}; border: 2px solid ${isPending ? '#FF5500' : 'rgba(255,255,255,0.08)'}; border-radius: 20px; padding: 16px; margin-bottom: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <span style="font-size: 24px; font-weight: 900; color: #FFFFFF; font-family: 'Outfit';">#${order.orderNumber || order.id}</span>
+        <span class="ticket-timer ${timerClass}" style="font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 8px;"><i class="fa-regular fa-clock"></i> ${elapsed}</span>
       </div>
-      <div class="ticket-customer-info">
-        <span>👤 ${order.customerName || 'Client'}</span>
-        <span style="font-weight: 800; color: #FF5500;">${order.fulfillment === 'delivery' ? '🛵 Livraison' : '🛍️ Cueillette'}</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 12px; color: #A1A1AA;">
+        <span style="font-weight: 700; color: #FFFFFF;">👤 ${order.customerName || 'Client'}</span>
+        <span style="font-weight: 900; font-size: 11px; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; background: ${order.fulfillment === 'delivery' ? '#FF5500' : '#3B82F6'}; color: #FFFFFF;">
+          ${order.fulfillment === 'delivery' ? '🚗 Livraison' : '🛍️ Cueillette'}
+        </span>
       </div>
-      <div class="ticket-items-list">
+      <div class="ticket-items-list" style="margin-bottom: 12px;">
         ${itemsHtml}
       </div>
+      ${readyPinHtml}
       ${btnAction}
     </div>
   `;
@@ -512,10 +557,12 @@ function renderTicket(order, stage) {
 
 function advanceOrderStatus(orderId, nextStatus) {
   let orders = getOrdersFromStorage();
-  const idx = orders.findIndex(o => o.id == orderId);
+  const idx = orders.findIndex(o => String(o.id) === String(orderId));
   if (idx >= 0) {
     orders[idx].status = nextStatus;
-    if (nextStatus === 'completed') {
+    if (nextStatus === 'prep') {
+      stopContinuousAlarm();
+    } else if (nextStatus === 'completed') {
       orders[idx].completedAt = Date.now();
     }
     saveOrdersToStorage(orders);
@@ -537,8 +584,8 @@ function closeShiftReport() {
   document.getElementById('shiftModal').classList.remove('open');
 }
 
-// Auto poll every 3 seconds for live tickets
-setInterval(renderKanban, 3000);
+// Auto poll every 2.5 seconds for live tickets
+setInterval(renderKanban, 2500);
 window.onload = function() {
   renderKanban();
 };

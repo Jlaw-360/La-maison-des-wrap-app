@@ -1087,8 +1087,51 @@
         <p class="greeting-subtitle">Explorez nos wraps artisanaux & spécialités tandoori</p>
       </div>
 
+      <!-- Store Operating Hours & Pre-Order Scheduling Banner -->
+      <div id="storeHoursBanner" style="margin: 4px 18px 10px 18px; padding: 12px 14px; border-radius: 18px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: all 0.3s ease;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="storeStatusBadge" style="font-size: 11px; font-weight: 900; padding: 3px 8px; border-radius: 8px; text-transform: uppercase;">
+              ● VÉRIFICATION...
+            </span>
+            <span id="storeScheduleText" style="font-size: 11px; font-weight: 700; color: #E4E4E7;">
+              Mardi - Samedi : 11h-21h | Dim : 12h-20h
+            </span>
+          </div>
+          <span style="font-size: 11px; font-family: monospace; color: #A1A1AA;" id="storeEasternClock"></span>
+        </div>
+        <div id="storeClosedAlertMsg" style="display: none; font-size: 11px; font-weight: 700; color: #FCA5A5; line-height: 1.4;">
+          ⚠️ Nous sommes actuellement fermés. Commandez maintenant pour notre prochaine ouverture : <strong id="lblNextOpenSlotText" style="color: #FFFFFF;">Mardi à 11h00</strong> !
+        </div>
+      </div>
+
+      <!-- Scheduling Mode (ASAP vs Later Slot) -->
+      <div style="margin: 0 18px 10px 18px; background: #14141A; border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 10px 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 11px; font-weight: 800; color: #A1A1AA; text-transform: uppercase;">
+            ⏰ Moment du Retrait / Livraison
+          </span>
+          <span id="lblSelectedTimeSlot" style="font-size: 11px; font-weight: 800; color: #FF5500;">
+            Dès que possible
+          </span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" id="btnTimingAsap" onclick="selectOrderTiming('asap')" style="flex: 1; padding: 8px 4px; border-radius: 10px; font-size: 11px; font-weight: 800; background: #FF5500; color: #fff; border: none; cursor: pointer; transition: all 0.2s;">
+            ⚡ Dès que possible
+          </button>
+          <button type="button" id="btnTimingLater" onclick="selectOrderTiming('later')" style="flex: 1; padding: 8px 4px; border-radius: 10px; font-size: 11px; font-weight: 800; background: #27272A; color: #A1A1AA; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.2s;">
+            📅 Choisir un Créneau
+          </button>
+        </div>
+        <div id="timeSlotPickerContainer" style="display: none; margin-top: 10px;">
+          <select id="selectOrderSlot" onchange="updateScheduledSlot(this.value)" style="width: 100%; background: #0B0B0F; border: 1px solid #3F3F46; color: #FF5500; font-weight: 800; font-size: 12px; padding: 8px 12px; border-radius: 10px; outline: none; cursor: pointer;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
       <!-- Mode Selector -->
-      <div style="margin: 8px 18px 10px 18px; background: #14141A; border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 6px; display: flex; gap: 6px;">
+      <div style="margin: 0 18px 10px 18px; background: #14141A; border: 1px solid rgba(255, 85, 0, 0.25); border-radius: 18px; padding: 6px; display: flex; gap: 6px;">
         <button type="button" class="category-pill active" id="btnModeDelivery" onclick="selectFulfillment('delivery')" style="flex: 1; text-align: center; font-size: 11px; padding: 8px 4px; border-radius: 12px;">
           <i class="fa-solid fa-motorcycle"></i> Livraison (25-35 min)
         </button>
@@ -2831,10 +2874,172 @@ function showToast(msg, icon = '✅') {
   }, 2500);
 }
 
+let storeStatus = { isOpen: true, nextOpenSlot: '', availableTimeSlots: [] };
+let selectedOrderTiming = 'asap'; // 'asap' | 'later'
+let selectedScheduledSlot = '';
+
+function evaluateStoreHours() {
+  const now = new Date();
+  const easternTimeStr = now.toLocaleString('en-US', { timeZone: 'America/Toronto' });
+  const date = new Date(easternTimeStr);
+  const day = date.getDay(); // 0 = Sun, 1 = Mon, 2-6 = Tue-Sat
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const currentTime = hour + minute / 60;
+
+  let isOpen = false;
+  let nextOpenSlot = '';
+  let scheduleText = '';
+  let slots = [];
+
+  const timeFormatted = `${String(hour).padStart(2, '0')}h${String(minute).padStart(2, '0')}`;
+
+  if (day === 1) {
+    // Monday Closed
+    isOpen = false;
+    nextOpenSlot = 'Mardi à 11h00';
+    scheduleText = 'Fermé le lundi (Réouverture Mardi 11h)';
+    slots = ['Mardi 11h00', 'Mardi 11h30', 'Mardi 12h00', 'Mardi 12h30', 'Mardi 17h00', 'Mardi 18h00', 'Mardi 19h00'];
+  } else if (day >= 2 && day <= 6) {
+    // Tue - Sat: 11h - 21h
+    isOpen = currentTime >= 11 && currentTime < 21;
+    scheduleText = 'Mardi à Samedi : 11h00 - 21h00';
+    if (currentTime < 11) {
+      nextOpenSlot = "Aujourd'hui à 11h00";
+      slots = ['Aujourd\'hui 11h00', 'Aujourd\'hui 11h30', 'Aujourd\'hui 12h00', 'Aujourd\'hui 12h30', 'Aujourd\'hui 13h00', 'Aujourd\'hui 17h00', 'Aujourd\'hui 18h00', 'Aujourd\'hui 19h00', 'Aujourd\'hui 20h00'];
+    } else if (currentTime >= 21) {
+      nextOpenSlot = day === 6 ? 'Dimanche à 12h00' : 'Demain à 11h00';
+      slots = [day === 6 ? 'Dimanche 12h00' : 'Demain 11h00', day === 6 ? 'Dimanche 12h30' : 'Demain 11h30', 'Demain 12h00', 'Demain 17h00', 'Demain 18h00', 'Demain 19h00'];
+    } else {
+      nextOpenSlot = 'Ouvert actuellement';
+      // Next available 15-min intervals
+      for (let h = Math.ceil((currentTime + 0.5) * 4) / 4; h < 21; h += 0.25) {
+        const hh = Math.floor(h);
+        const mm = Math.round((h - hh) * 60);
+        slots.push(`Aujourd'hui ${String(hh).padStart(2, '0')}h${String(mm).padStart(2, '0')}`);
+      }
+    }
+  } else if (day === 0) {
+    // Sunday: 12h - 20h
+    isOpen = currentTime >= 12 && currentTime < 20;
+    scheduleText = 'Dimanche : 12h00 - 20h00';
+    if (currentTime < 12) {
+      nextOpenSlot = "Aujourd'hui à 12h00";
+      slots = ['Aujourd\'hui 12h00', 'Aujourd\'hui 12h30', 'Aujourd\'hui 13h00', 'Aujourd\'hui 17h00', 'Aujourd\'hui 18h00', 'Aujourd\'hui 19h00'];
+    } else if (currentTime >= 20) {
+      nextOpenSlot = 'Mardi à 11h00 (Fermé lundi)';
+      slots = ['Mardi 11h00', 'Mardi 11h30', 'Mardi 12h00', 'Mardi 17h00', 'Mardi 18h00', 'Mardi 19h00'];
+    } else {
+      nextOpenSlot = 'Ouvert actuellement';
+      for (let h = Math.ceil((currentTime + 0.5) * 4) / 4; h < 20; h += 0.25) {
+        const hh = Math.floor(h);
+        const mm = Math.round((h - hh) * 60);
+        slots.push(`Aujourd'hui ${String(hh).padStart(2, '0')}h${String(mm).padStart(2, '0')}`);
+      }
+    }
+  }
+
+  return { isOpen, nextOpenSlot, scheduleText, slots, timeFormatted };
+}
+
+function refreshStoreStatusUI() {
+  const status = evaluateStoreHours();
+  storeStatus = status;
+
+  const banner = document.getElementById('storeHoursBanner');
+  const badge = document.getElementById('storeStatusBadge');
+  const scheduleText = document.getElementById('storeScheduleText');
+  const closedAlert = document.getElementById('storeClosedAlertMsg');
+  const nextOpenLbl = document.getElementById('lblNextOpenSlotText');
+  const clock = document.getElementById('storeEasternClock');
+  const btnAsap = document.getElementById('btnTimingAsap');
+  const btnLater = document.getElementById('btnTimingLater');
+  const slotPicker = document.getElementById('timeSlotPickerContainer');
+  const selectSlot = document.getElementById('selectOrderSlot');
+
+  if (clock) clock.innerText = status.timeFormatted + ' HNE';
+  if (scheduleText) scheduleText.innerText = status.scheduleText;
+
+  if (status.isOpen) {
+    if (banner) banner.style.background = 'rgba(16, 185, 129, 0.12)';
+    if (banner) banner.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+    if (badge) {
+      badge.style.background = '#10B981';
+      badge.style.color = '#FFFFFF';
+      badge.innerText = '● OUVERT';
+    }
+    if (closedAlert) closedAlert.style.display = 'none';
+    if (btnAsap) {
+      btnAsap.disabled = false;
+      btnAsap.style.opacity = '1';
+    }
+  } else {
+    if (banner) banner.style.background = 'rgba(239, 68, 68, 0.15)';
+    if (banner) banner.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+    if (badge) {
+      badge.style.background = '#EF4444';
+      badge.style.color = '#FFFFFF';
+      badge.innerText = '● FERMÉ';
+    }
+    if (closedAlert) closedAlert.style.display = 'block';
+    if (nextOpenLbl) nextOpenLbl.innerText = status.nextOpenSlot;
+    
+    // Strictly force scheduled pre-order if closed!
+    if (btnAsap) {
+      btnAsap.disabled = true;
+      btnAsap.style.opacity = '0.4';
+      btnAsap.style.cursor = 'not-allowed';
+    }
+    selectOrderTiming('later');
+  }
+
+  // Populate slots in select dropdown
+  if (selectSlot && status.slots) {
+    selectSlot.innerHTML = status.slots.map(s => `<option value="${s}">${s}</option>`).join('');
+    if (!selectedScheduledSlot && status.slots.length > 0) {
+      selectedScheduledSlot = status.slots[0];
+    }
+  }
+}
+
+function selectOrderTiming(type) {
+  if (!storeStatus.isOpen && type === 'asap') {
+    showToast("Le restaurant est fermé. Choisissez un créneau de pré-commande.", "⚠️");
+    return;
+  }
+
+  selectedOrderTiming = type;
+  const btnAsap = document.getElementById('btnTimingAsap');
+  const btnLater = document.getElementById('btnTimingLater');
+  const slotPicker = document.getElementById('timeSlotPickerContainer');
+  const lblSelected = document.getElementById('lblSelectedTimeSlot');
+
+  if (type === 'asap') {
+    if (btnAsap) { btnAsap.style.background = '#FF5500'; btnAsap.style.color = '#fff'; }
+    if (btnLater) { btnLater.style.background = '#27272A'; btnLater.style.color = '#A1A1AA'; }
+    if (slotPicker) slotPicker.style.display = 'none';
+    if (lblSelected) lblSelected.innerText = 'Dès que possible (~20-35 min)';
+  } else {
+    if (btnAsap) { btnAsap.style.background = '#27272A'; btnAsap.style.color = '#A1A1AA'; }
+    if (btnLater) { btnLater.style.background = '#FF5500'; btnLater.style.color = '#fff'; }
+    if (slotPicker) slotPicker.style.display = 'block';
+    if (lblSelected) lblSelected.innerText = selectedScheduledSlot || 'Créneau planifié';
+  }
+}
+
+function updateScheduledSlot(slot) {
+  selectedScheduledSlot = slot;
+  const lblSelected = document.getElementById('lblSelectedTimeSlot');
+  if (lblSelected) lblSelected.innerText = slot;
+  showToast(`Créneau choisi : ${slot}`, '⏰');
+}
+
 window.onload = function() {
   loadSavedAuthSession();
   renderCategoryPills();
   renderDishes();
+  refreshStoreStatusUI();
+  setInterval(refreshStoreStatusUI, 60000);
 };
 </script>
 
