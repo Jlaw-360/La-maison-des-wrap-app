@@ -9,22 +9,75 @@ datasource db {
 }
 
 // ----------------------------------------------------
-// Core Models for La Maison des Wraps Restaurant System
+// Better Auth Models
 // ----------------------------------------------------
 
 model User {
-  id                String   @id @default(uuid())
-  name              String
-  email             String   @unique
-  phone             String?
-  role              String   @default("customer") // customer | store | driver | admin
-  address           String?
-  birthday          String?
-  points            Int      @default(50)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  orders            Order[]
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  phone         String?
+  address       String?
+  role          String    @default("customer") // customer | kitchen | driver | admin
+  points        Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  orders        Order[]
+
+  @@map("user")
 }
+
+model Session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// ----------------------------------------------------
+// Restaurant Menu & Orders Models
+// ----------------------------------------------------
 
 model MenuItem {
   id            String   @id @default(uuid())
@@ -39,21 +92,21 @@ model MenuItem {
 
 model Order {
   id                  String      @id @default(uuid())
-  orderNumber         String      @unique // e.g. CMD-4092
+  orderNumber         String      @unique
   userId              String?
   user                User?       @relation(fields: [userId], references: [id])
   customerName        String
   customerPhone       String
   customerEmail       String?
-  fulfillmentType     String      @default("delivery") // delivery | pickup
-  dropoffOption       String?     @default("hand") // hand | door
+  fulfillmentType     String      @default("delivery")
+  dropoffOption       String?     @default("hand")
   deliveryAddress     String?
   subtotal            Float
   deliveryFee         Float       @default(0.0)
   tpsTax              Float
   tvqTax              Float
   total               Float
-  status              String      @default("received") // received | preparing | ready | out_for_delivery | delivered | completed
+  status              String      @default("received")
   pickupPin           String      @default("52325")
   paymentMethod       String      @default("stripe_card")
   paymentStatus       String      @default("paid")

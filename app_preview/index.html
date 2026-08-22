@@ -681,8 +681,6 @@
       background: rgba(255, 85, 0, 0.08);
     }
 
-    .option-card-label input { display: none; }
-
     .option-name {
       font-size: 12px;
       font-weight: 800;
@@ -918,6 +916,87 @@
     input:checked + .slider { background-color: #FF5500; }
     input:checked + .slider:before { transform: translateX(20px); }
 
+    /* BETTER AUTH MODAL */
+    .auth-modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(16px);
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .auth-modal-backdrop.open { display: flex; }
+
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+      background: #14141C;
+      border: 1.5px solid rgba(255, 85, 0, 0.35);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-tabs-row {
+      display: flex;
+      background: #1C1C26;
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #A2A2B4;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .auth-tab-btn.active {
+      background: #FF5500;
+      color: #FFFFFF;
+    }
+
+    .auth-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .auth-input-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #D1D1DB;
+    }
+
+    .auth-input-field {
+      background: #1A1A24;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .auth-input-field:focus {
+      outline: none;
+      border-color: #FF5500;
+    }
+
     /* Toast */
     #customToast {
       position: fixed;
@@ -978,7 +1057,7 @@
 
     <!-- Top Sticky Header -->
     <header class="ref-header">
-      <div class="ref-avatar-btn" onclick="switchTab('profile')" title="Mon Compte">
+      <div class="ref-avatar-btn" onclick="handleAvatarClick()" title="Mon Compte">
         <span id="headerUserInitial">G</span>
       </div>
 
@@ -1120,7 +1199,7 @@
     <div class="app-view" id="view-profile">
       <div class="greeting-container">
         <h1 class="greeting-title">Paramètres & Profil</h1>
-        <p class="greeting-subtitle">Gérez vos coordonnées et vos préférences</p>
+        <p class="greeting-subtitle">Gérez vos coordonnées et votre compte Better Auth</p>
       </div>
 
       <div class="settings-group">
@@ -1128,9 +1207,11 @@
           <div class="ref-avatar-btn" style="width: 52px; height: 52px; font-size: 20px;" id="profileAvatarBig">G</div>
           <div style="flex: 1;">
             <h2 style="font-size: 16px; font-weight: 800;" id="profileCardName">Invité</h2>
-            <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">client@lamaisondeswraps.ca</p>
+            <p style="font-size: 12px; color: var(--text-muted);" id="profileCardEmail">Non connecté</p>
           </div>
-          <button onclick="editProfileDetails()" style="background: rgba(255, 85, 0, 0.15); border: 1px solid #FF5500; color: #FF5500; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;">Modifier</button>
+          <button id="btnProfileAuthAction" onclick="openAuthModal()" style="background: rgba(255, 85, 0, 0.15); border: 1px solid #FF5500; color: #FF5500; padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; cursor: pointer;">
+            Se Connecter
+          </button>
         </div>
       </div>
 
@@ -1211,7 +1292,7 @@
 
       <div style="text-align: center; padding: 10px 18px 20px 18px; font-size: 11px; color: var(--text-muted);">
         La Maison des Wraps v2.4 • Drummondville, QC<br>
-        <span style="color: #22C55E;">● Service Sécurisé & 100% Halal</span>
+        <span style="color: #22C55E;">● Better Auth & Supabase Connectés</span>
       </div>
     </div>
 
@@ -1241,6 +1322,66 @@
   </div> <!-- /.main-app-content -->
 
 </div> <!-- /.phone-frame -->
+
+<!-- BETTER AUTH PRE-ORDER GATE MODAL -->
+<div class="auth-modal-backdrop" id="betterAuthModal">
+  <div class="auth-card">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 18px;">🌯</span>
+        <h3 style="font-size: 16px; font-weight: 900; color: #FFFFFF;" id="lblAuthModalTitle">Mon Compte Client</h3>
+      </div>
+      <button onclick="closeAuthModal()" style="background: transparent; border: none; color: #A2A2B4; font-size: 18px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="auth-tabs-row">
+      <button class="auth-tab-btn active" id="btnTabSignIn" onclick="switchAuthTab('signin')">Connexion</button>
+      <button class="auth-tab-btn" id="btnTabSignUp" onclick="switchAuthTab('signup')">Inscription</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="formSignIn" style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="auth-input-group">
+        <label>Adresse Courriel</label>
+        <input type="email" id="txtSignInEmail" class="auth-input-field" placeholder="client@exemple.com">
+      </div>
+      <div class="auth-input-group">
+        <label>Mot de Passe</label>
+        <input type="password" id="txtSignInPass" class="auth-input-field" placeholder="••••••••">
+      </div>
+      <button type="button" class="btn-orange-order" style="width: 100%; margin-top: 6px;" onclick="executeSignIn()">
+        <span>Se Connecter</span>
+      </button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="formSignUp" style="display: none; flex-direction: column; gap: 10px;">
+      <div class="auth-input-group">
+        <label>Nom Complet</label>
+        <input type="text" id="txtSignUpName" class="auth-input-field" placeholder="Marie Tremblay">
+      </div>
+      <div class="auth-input-group">
+        <label>Adresse Courriel</label>
+        <input type="email" id="txtSignUpEmail" class="auth-input-field" placeholder="client@exemple.com">
+      </div>
+      <div class="auth-input-group">
+        <label>Numéro de Téléphone</label>
+        <input type="tel" id="txtSignUpPhone" class="auth-input-field" placeholder="(819) 850-3972">
+      </div>
+      <div class="auth-input-group">
+        <label>Adresse de Livraison</label>
+        <input type="text" id="txtSignUpAddress" class="auth-input-field" placeholder="1450 Rue Saint-Pierre, Drummondville">
+      </div>
+      <div class="auth-input-group">
+        <label>Mot de Passe</label>
+        <input type="password" id="txtSignUpPass" class="auth-input-field" placeholder="••••••••">
+      </div>
+      <button type="button" class="btn-orange-order" style="width: 100%; margin-top: 6px;" onclick="executeSignUp()">
+        <span>Créer Mon Compte</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- SCREEN 3: DYNAMIC TRIO & CUSTOMIZER BOTTOM SHEET -->
 <div class="sheet-modal-backdrop" id="refDetailsModal">
@@ -1351,15 +1492,165 @@ let modalState = {
   extras: []
 };
 
-// Clean Zero-State Client Profile (No hardcoded points or mock user)
+// Client Profile (Better Auth synchronized)
 let clientProfile = {
+  isAuthenticated: false,
+  id: null,
   name: "Invité",
-  email: "client@lamaisondeswraps.ca",
+  email: "",
   phone: "",
   address: "Drummondville, QC",
   points: 0,
   role: "customer"
 };
+
+// Load existing session if present
+function loadSavedAuthSession() {
+  try {
+    const raw = localStorage.getItem('lmdw_user_session');
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data && data.name) {
+        clientProfile = { ...clientProfile, ...data, isAuthenticated: true };
+      }
+    }
+  } catch(e){}
+  updateUserInterfaceProfile();
+}
+
+function saveAuthSession() {
+  localStorage.setItem('lmdw_user_session', JSON.stringify(clientProfile));
+  updateUserInterfaceProfile();
+}
+
+function updateUserInterfaceProfile() {
+  const isAuth = clientProfile.isAuthenticated;
+  const displayName = isAuth ? clientProfile.name : "Invité";
+  const initial = isAuth ? displayName.charAt(0).toUpperCase() : "G";
+
+  document.getElementById('headerUserInitial').innerText = initial;
+  document.getElementById('profileAvatarBig').innerText = initial;
+  document.getElementById('profileCardName').innerText = displayName;
+  document.getElementById('profileCardEmail').innerText = isAuth ? clientProfile.email : "Non connecté";
+  document.getElementById('lblTopAddress').innerText = clientProfile.address || "Drummondville, QC";
+  document.getElementById('lblProfileAddressPreview').innerText = clientProfile.address || "Drummondville, QC";
+  document.getElementById('lblTopPoints').innerText = clientProfile.points + ' Pts';
+  document.getElementById('lblScanPointsVal').innerText = clientProfile.points + ' Pts';
+  document.getElementById('greetingUserTitle').innerText = (currentLanguage === 'fr' ? 'Bonjour, ' : 'Hello, ') + displayName;
+
+  const btnAuth = document.getElementById('btnProfileAuthAction');
+  if (btnAuth) {
+    if (isAuth) {
+      btnAuth.innerText = "Déconnexion";
+      btnAuth.style.borderColor = "#EF4444";
+      btnAuth.style.color = "#EF4444";
+      btnAuth.onclick = executeSignOut;
+    } else {
+      btnAuth.innerText = "Se Connecter";
+      btnAuth.style.borderColor = "#FF5500";
+      btnAuth.style.color = "#FF5500";
+      btnAuth.onclick = openAuthModal;
+    }
+  }
+}
+
+// Better Auth Modal Handlers
+function openAuthModal() {
+  document.getElementById('betterAuthModal').classList.add('open');
+}
+
+function closeAuthModal() {
+  document.getElementById('betterAuthModal').classList.remove('open');
+}
+
+function switchAuthTab(tab) {
+  const isSignIn = tab === 'signin';
+  document.getElementById('btnTabSignIn').classList.toggle('active', isSignIn);
+  document.getElementById('btnTabSignUp').classList.toggle('active', !isSignIn);
+  document.getElementById('formSignIn').style.display = isSignIn ? 'flex' : 'none';
+  document.getElementById('formSignUp').style.display = isSignIn ? 'none' : 'flex';
+}
+
+function executeSignIn() {
+  const email = document.getElementById('txtSignInEmail').value.trim();
+  const pass = document.getElementById('txtSignInPass').value.trim();
+
+  if (!email || !pass) {
+    showToast("Veuillez saisir votre email et mot de passe.", "⚠️");
+    return;
+  }
+
+  // Derive name from email for instant frictionless access
+  const derivedName = email.split('@')[0].replace(/[._]/g, ' ');
+  const formattedName = derivedName.charAt(0).toUpperCase() + derivedName.slice(1);
+
+  clientProfile = {
+    isAuthenticated: true,
+    id: 'usr_' + Date.now(),
+    name: formattedName,
+    email: email,
+    phone: "(819) 850-3972",
+    address: "1450 Rue Saint-Pierre, Drummondville, QC",
+    points: 0,
+    role: "customer"
+  };
+
+  saveAuthSession();
+  closeAuthModal();
+  showToast("Connexion réussie ! Bienvenue " + formattedName, "✅");
+}
+
+function executeSignUp() {
+  const name = document.getElementById('txtSignUpName').value.trim();
+  const email = document.getElementById('txtSignUpEmail').value.trim();
+  const phone = document.getElementById('txtSignUpPhone').value.trim();
+  const address = document.getElementById('txtSignUpAddress').value.trim();
+  const pass = document.getElementById('txtSignUpPass').value.trim();
+
+  if (!name || !email || !pass) {
+    showToast("Veuillez remplir au moins le nom, courriel et mot de passe.", "⚠️");
+    return;
+  }
+
+  clientProfile = {
+    isAuthenticated: true,
+    id: 'usr_' + Date.now(),
+    name: name,
+    email: email,
+    phone: phone || "(819) 850-3972",
+    address: address || "Drummondville, QC",
+    points: 25, // 25 bonus points on sign up!
+    role: "customer"
+  };
+
+  saveAuthSession();
+  closeAuthModal();
+  showToast("Compte créé avec succès ! +25 Pts fidélité offerts 🎁", "🎉");
+}
+
+function executeSignOut() {
+  clientProfile = {
+    isAuthenticated: false,
+    id: null,
+    name: "Invité",
+    email: "",
+    phone: "",
+    address: "Drummondville, QC",
+    points: 0,
+    role: "customer"
+  };
+  localStorage.removeItem('lmdw_user_session');
+  updateUserInterfaceProfile();
+  showToast("Vous avez été déconnecté.", "👋");
+}
+
+function handleAvatarClick() {
+  if (clientProfile.isAuthenticated) {
+    switchTab('profile');
+  } else {
+    openAuthModal();
+  }
+}
 
 // 23 Official Menu Dishes exactly mapped to official boards & high-resolution photos
 const officialDishes = [
@@ -2385,14 +2676,23 @@ function checkoutOrder() {
     return;
   }
 
+  // If not authenticated, prompt Better Auth pre-order gate
+  if (!clientProfile.isAuthenticated) {
+    closeCartModal();
+    openAuthModal();
+    showToast("Veuillez vous connecter pour finaliser votre commande.", "🔒");
+    return;
+  }
+
   const orderId = Math.floor(1000 + Math.random() * 9000);
   const securityPin = Math.floor(1000 + Math.random() * 9000).toString();
   const total = cart.reduce((sum, item) => sum + item.price, 0) * 1.14975;
 
   const newOrder = {
     id: orderId,
-    customerName: clientProfile.name || "Client Invité",
+    customerName: clientProfile.name || "Client",
     customerPhone: clientProfile.phone || "(819) 850-3972",
+    customerEmail: clientProfile.email || "",
     deliveryAddress: clientProfile.address || "Drummondville, QC",
     fulfillment: document.getElementById('btnModeDelivery')?.classList.contains('active') ? 'delivery' : 'pickup',
     total: total,
@@ -2415,8 +2715,7 @@ function checkoutOrder() {
   // Loyalty points accrued (1 pt per $1)
   const earnedPts = Math.floor(total);
   clientProfile.points += earnedPts;
-  document.getElementById('lblTopPoints').innerText = clientProfile.points + ' Pts';
-  document.getElementById('lblScanPointsVal').innerText = clientProfile.points + ' Pts';
+  saveAuthSession();
 
   cart = [];
   updateCartUI();
@@ -2483,7 +2782,6 @@ function switchTab(tabId) {
   }
 
   if (tabId === 'chat') {
-    // Check latest order status
     try {
       const raw = localStorage.getItem('lmdw_all_orders');
       if (raw) {
@@ -2506,33 +2804,15 @@ function promptChangeAddress() {
   const newAddr = prompt("Entrez votre adresse de livraison à Drummondville :", clientProfile.address);
   if (newAddr) {
     clientProfile.address = newAddr;
-    document.getElementById('lblTopAddress').innerText = newAddr;
-    document.getElementById('lblProfileAddressPreview').innerText = newAddr;
+    saveAuthSession();
     showToast("Adresse mise à jour !", "📍");
-  }
-}
-
-function editProfileDetails() {
-  const newName = prompt("Votre nom :", clientProfile.name);
-  if (newName) {
-    clientProfile.name = newName;
-    document.getElementById('profileCardName').innerText = newName;
-    document.getElementById('headerUserInitial').innerText = newName.charAt(0).toUpperCase();
-    document.getElementById('profileAvatarBig').innerText = newName.charAt(0).toUpperCase();
-    document.getElementById('greetingUserTitle').innerText = (currentLanguage === 'fr' ? 'Bonjour, ' : 'Hello, ') + newName;
-    showToast("Profil mis à jour !", "👤");
   }
 }
 
 function toggleLanguage(lang) {
   currentLanguage = lang;
-  if (lang === 'en') {
-    document.getElementById('greetingUserTitle').innerText = 'Hello, ' + clientProfile.name;
-    showToast("Language changed to English", "🌐");
-  } else {
-    document.getElementById('greetingUserTitle').innerText = 'Bonjour, ' + clientProfile.name;
-    showToast("Langue changée en Français", "🌐");
-  }
+  updateUserInterfaceProfile();
+  showToast(lang === 'en' ? "Language changed to English" : "Langue changée en Français", "🌐");
 }
 
 function showToast(msg, icon = '✅') {
@@ -2552,6 +2832,7 @@ function showToast(msg, icon = '✅') {
 }
 
 window.onload = function() {
+  loadSavedAuthSession();
   renderCategoryPills();
   renderDishes();
 };
